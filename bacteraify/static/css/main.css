@@ -1,0 +1,334 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+h1 {
+  font-size: 36px;
+  margin-bottom: 0px;
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 0px;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 400;
+  margin-bottom: 0px;
+}
+
+a {
+  text-decoration: none;
+  color: #2F8AE4;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  max-width: 1280px;
+  width: 100%;
+  gap: 40px;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.top-0 {
+  top: 0px;
+}
+
+.left-0 {
+  left: 0px;
+}
+
+.right-0 {
+  right: 0px;
+}
+
+.bottom-0 {
+  bottom: 0px;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.h-half {
+  height: 50%;
+}
+
+.h-40 {
+  height: 40px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.w-half {
+  width: 50%;
+}
+
+.w-40 {
+  width: 40px;
+}
+
+.w-fit {
+  width: fit-content;
+}
+
+.bg-primary {
+  background-color: #003376;
+}
+
+.bg-secondary {
+  background-color: #009CDE;
+}
+
+.bg-tertiary {
+  background-color: #4C4C4C;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.grid {
+  display: grid;
+}
+
+.block {
+  display: block;
+}
+
+.object-contain {
+  object-fit: contain;
+}
+
+.object-fill {
+  object-fit: fill;
+}
+
+.object-cover {
+  object-fit: cover;
+}
+
+.object-none {
+  object-fit: none;
+}
+
+.aspect-square {
+  aspect-ratio: 1;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.justify-evenly {
+  justify-content: space-evenly;
+}
+
+.justify-stretch {
+  justify-content: stretch;
+}
+
+.p-10 {
+  padding: 40px;
+}
+
+.gap-40 {
+  gap: 40px;
+}
+
+.gap-30 {
+  gap: 30px;
+}
+
+.gap-20 {
+  gap: 20px;
+}
+
+.gap-10 {
+  gap: 10px;
+}
+
+.gap-5 {
+  gap: 5px;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.text-gray {
+  color: #9EA2B3;
+}
+
+.info-container {
+  height: 300px;
+}
+
+.info {
+  background-image: linear-gradient(-90deg, #464964, #2E3147);
+  position: relative;
+  width: 100%;
+}
+
+.info-item {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: transform 0.5s;
+}
+
+.info-item:hover {
+  cursor: pointer;
+  background-image: linear-gradient(#62BCF4, #116EE0);
+  transform: translateY(-40px);
+  animation: ease-in;
+}
+
+.icon {
+  object-fit: contain;
+}
+
+.info-icon {
+  background-color: #32354B;
+  border-radius: 100%;
+  height:80px;
+  width:80px;
+  padding:20px;
+}
+
+.text-white {
+  color: #fff;
+}
+
+.text-lg {
+  font-size: 20px;
+}
+
+.py-10 {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.px-10 {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.mt-20 {
+  margin-top: 80px;
+}
+
+.pt-10 {
+  padding-top: 40px;
+}
+
+.pb-10 {
+  padding-bottom: 40px;
+}
+
+.pb-20 {
+  padding-bottom: 80px;
+}
+
+.about-us {
+  background-color: #3B3E56;
+}
+
+.max-w-8xl {
+  max-width: 1366px;
+}
+
+.max-w-7xl {
+  max-width: 1280px;
+}
+
+.selected-nav {
+  color: #1881E2;
+  border-bottom: 3px solid #1881E2;
+  border-color: #1881E2;
+}
+
+.search-input {
+  border: 2px solid #1881E2;
+}
+
+.font-semibold {
+  font-weight: bold;
+}
+
+.font-bold {
+  font-weight: bolder;
+}
+
+.justify-end {
+  justify-content: end;
+}
+
+bottom {
+  background-color: #33364D;
+  width: 100vw;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+}
+
+.bottom-container {
+  max-width: 1280px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.bottom-item {
+  gap: 20px;
+  height: 100%;
+  width: 25%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.margin-auto {
+  margin: auto;
+}
