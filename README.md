@@ -19,6 +19,7 @@ Before you get started, make sure you have the following installed:
 ## Use Virtual Env
 1. use "pip install virtualenv" for install virtual env of python
 2. go to root directory of project and type Scripts\activate.bat
+3. run "python -m venv ."
 
 ## Start project
 Use "python manage.py runserver" command for start project

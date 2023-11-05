@@ -24,6 +24,7 @@ from bacteraify.core import views as core_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', core_views.index),
+    path('login/', core_views.login),
 ]
 
 if settings.DEBUG:
