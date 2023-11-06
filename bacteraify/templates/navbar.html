@@ -1,0 +1,33 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg w-full max-w-8xl">
+  <div class="container-fluid">
+    <a href="/">
+      <img src="{% static 'images/brand-logo.png' %}" alt="Bacteraify">
+    </a>
+    <div class="flex justify-end gap-40">
+      <ul class="navbar-nav me-auto gap-40">
+        <li class="nav-item ">
+          <a class="nav-link selected-nav" aria-current="page" href="#">
+            <h2>Нүүр</h2>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <h2>Шинжилгээ</h2>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <h2>FAQ</h2>
+          </a>
+        </li>
+      </ul>
+      <div class="flex">
+        <form class="d-flex" role="search">
+          <input class="form-control me-2 search-input" type="search" placeholder="Хайх...">
+        </form>
+        <button class="btn button bg-primary text-white font-semibold" type="submit">Нэвтрэх</button>
+      </div>
+    </div>
+  </div>
+</nav>

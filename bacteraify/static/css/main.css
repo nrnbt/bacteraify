@@ -332,3 +332,7 @@ bottom {
 .margin-auto {
   margin: auto;
 }
+
+.h-screen {
+  height: 100Vh;
+}
