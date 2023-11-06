@@ -3,4 +3,7 @@ __pycache__/
 staticfiles/
 .env/
 venv/
-pyvenv.cfg
+# pyvenv.cfg
+# Lib/
+# Scripts/
+# Include/
