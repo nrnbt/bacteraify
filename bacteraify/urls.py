@@ -22,9 +22,11 @@ from django.conf.urls.static import static
 from bacteraify.core import views as core_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', core_views.index),
-    path('login/', core_views.login),
+    path('admin/', admin.site.urls, name='admin'),
+    path('', core_views.index, name='home'),
+    path('login/', core_views.login, name='login'),
+    path('survey/', core_views.survery, name='survey'),
+    path('faq/', core_views.faq, name='faq'),
 ]
 
 if settings.DEBUG:
