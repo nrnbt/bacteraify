@@ -6,7 +6,7 @@ This is a Django project that uses a virtual environment (venv) for managing dep
 
 Before you get started, make sure you have the following installed:
 
-- Python 3.x
+- Python 3.10.8
 - `virtualenv` (if not already installed)
 
 ## Getting Started
@@ -19,7 +19,7 @@ Before you get started, make sure you have the following installed:
 
 ## Use Virtual Env
 1. use "pip install virtualenv" for install virtual env of python
-2. run "python -m venv ."
+2. run "python -m venv venv"
 3. go to root directory of project and type Scripts\activate.bat
 
 ## Start project

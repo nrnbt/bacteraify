@@ -337,3 +337,19 @@ bottom {
 .h-screen {
   height: 100Vh;
 }
+
+.p-2 {
+  padding: 2px;
+}
+
+.p-4 {
+  padding: 4px;
+}
+
+.p-6 {
+  padding: 6px;
+}
+
+.p-8 {
+  padding: 8px;
+}
