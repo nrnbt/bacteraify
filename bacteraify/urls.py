@@ -28,6 +28,7 @@ urlpatterns = [
     path('survey/', core_views.survery, name='survey'),
     path('survey/upload/', core_views.upload_survery, name='upload-survey'),
     path('survey/load/', core_views.load_model, name='load-model'),
+    path('survey/result/', core_views.survey_result, name='survey-result'),
     path('faq/', core_views.faq, name='faq'),
 ]
 

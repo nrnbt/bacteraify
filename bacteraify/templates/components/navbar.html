@@ -14,7 +14,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.path == '/survey/' %}selected-nav{% endif %}" href="{% url 'survey' %}">
+          <a class="nav-link {% if '/survey/' in request.path %}selected-nav{% endif %}" href="{% url 'survey' %}">
             <h2>Шинжилгээ</h2>
           </a>
         </li>

@@ -7,17 +7,32 @@ import PyPDF2
 import numpy as np
 import hashlib
 from datetime import datetime
+from tensorflow.keras.models import load_model
+import threading
 
-model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'model_jlib')
+model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
 upload_file_path = os.path.dirname(os.path.dirname(__file__))
 
-def save_file(file):
+def save_file(file, directory_name):
     _, file_extension = os.path.splitext(file.name)
     file_name = generate_hashed_filename()
-    file_path = os.path.join(upload_file_path, 'survey-files' , file_name + file_extension)
+    file_path = os.path.join(upload_file_path, directory_name , file_name + file_extension)
     data = read_file(file)
     data.to_csv(file_path, index=False)
     return file_name
+
+def save_data_to_file(data, directory_name):
+    file_name = generate_hashed_filename()
+    file_path = os.path.join(upload_file_path, directory_name , file_name + '.csv')
+    data.to_csv(file_path, index=False)
+
+def get_file(file_name, directory):
+    file_path = os.path.join(upload_file_path, directory , file_name + '.csv')
+    if os.path.isfile(file_path):
+        result = read_file(open(file_path, 'rb'))
+        return result
+    else:
+        return 'File not found'
 
 def read_file(file):
     _, file_extension = os.path.splitext(file.name)
@@ -73,16 +88,23 @@ def generate_hashed_filename():
 
     return file_name
 
-def predict(file):
+def predict(data):
   try:
-    data = read_file(file)
-    print('------------------------------ data ------------------------------\n', data, '\n')
-    model = joblib.load(model_file_path)
-    print('------------------------------ model ------------------------------\n', model, '\n')
-    y_pred = model.predict(data)
-    print('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
-    return ''
-
+    def task():
+        model = load_model(model_file_path)
+        print('------------------------------ model ------------------------------\n', model, '\n')
+        y_pred = model.predict(data)
+        print('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
+        save_data_to_file(pd.DataFrame(y_pred),'results')
+    thread = threading.Thread(target=task)
+    thread.start()
+    return 'Prediction started'
+    # print('------------------------------ data ------------------------------\n', data, '\n')
+    # model = load_model(model_file_path)
+    # print('------------------------------ model ------------------------------\n', model, '\n')
+    # y_pred = model.predict(data)
+    # print('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
+    # return ''
   except Exception as e:
     print(f"Error loading or predicting with the model: {e}")
     return None

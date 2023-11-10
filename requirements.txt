@@ -7,3 +7,4 @@ lxml==4.9.3
 Pillow==10.1.0
 keras==2.15.0
 tensorflow==2.14.0
+plotly==5.18.0
