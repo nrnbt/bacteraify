@@ -4,6 +4,8 @@
 <html lang="en">
 {% include 'components/head.html' %}
 <body>
+  <script src="{% static 'js/socket.js' %}"></script>
+
   {% include 'components/navbar.html' %}
   <div class="stepper-wrapper">
     <div class="step {% if request.path == '/survey/' %}active{% else %} completed {% endif %}">
