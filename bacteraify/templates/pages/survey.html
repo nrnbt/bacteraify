@@ -17,9 +17,10 @@
           <i class="fa-solid fa-check" style="color:#fff;"></i>
         {% endif %}
       </div>
-      <div class="step-title"> Өгөгдөл  оруулах</div>
+      <div class="step-title"> Өгөгдөл оруулах</div>
     </div>
-    <div class="step {% if request.path == '/survey/' or request.path == '/survey/upload/' %} incomplete {% elif request.path == '/survey/load/' %} active {% else %} completed {% endif %}">
+    <div class="step-line"></div>
+    <div class="step {% if request.path == '/survey/' or request.path == '/survey/upload/' %} incomplete {% elif request.path == '/survey/load/' %} loading {% else %} completed {% endif %}">
       <div class="step-img-wrapper">
         <img class="step-img" src="{% static 'images/icon-images/step2.png' %}" alt="step2">
       </div>
@@ -30,6 +31,7 @@
       </div>
       <div class="step-title">Бактери илрүүлэх</div>
     </div>
+    <div class="step-line"></div>
     <div class="step {% if request.path == '/survey/' or request.path == '/survey/upload/' or request.path == '/survey/load/' %} incomplete {% elif request.path == '/survey/finish/' %} completed {% else %} active {% endif %}">
       <div class="step-img-wrapper">
         <img class="step-img" src="{% static 'images/icon-images/step3.png' %}" alt="step3">

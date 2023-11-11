@@ -11,10 +11,20 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+def load_env_variables(env_file=".env"):
+    with open(env_file) as file:
+        for line in file:
+            if line.startswith('#') or not line.strip():
+                continue
+            key, value = line.strip().split('=', 1)
+            os.environ[key] = value
+
+load_env_variables()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -41,11 +51,14 @@ INSTALLED_APPS = [
 
 ASGI_APPLICATION = 'bacteraify.asgi.application'
 
+WEB_ENDPOINT = os.environ.get('WEB_ENDPOINT', '127.0.0.1')
+REDIS_CHANNEL_LAYER_PORT = os.environ.get('REDIS_CHANNEL_LAYER_PORT', '6379')
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            "hosts": [(WEB_ENDPOINT, REDIS_CHANNEL_LAYER_PORT)],
         },
     },
 }

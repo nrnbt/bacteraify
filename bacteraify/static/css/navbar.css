@@ -9,7 +9,6 @@
   width: 200px;
 }
 
-
 @media (max-width: 992px) {
   .container-fluid, .search-container {
     display: flex;

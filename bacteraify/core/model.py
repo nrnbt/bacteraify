@@ -1,4 +1,3 @@
-import joblib
 import os
 from django.http import HttpResponse
 import pandas as pd
@@ -11,6 +10,7 @@ from tensorflow.keras.models import load_model
 import threading
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from django.contrib import messages
 
 model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
 upload_file_path = os.path.dirname(os.path.dirname(__file__))

@@ -3,10 +3,10 @@
 <form 
   id="survey-form" 
   method="post" 
-  class="w-full flex justify-center" 
+  class="w-full flex justify-center m-5" 
   action="{% url 'upload-survey' %}" 
   enctype="multipart/form-data"
-  >
+>
   {% csrf_token %}
   <div class="uploader-wrapper">
     <h2>Upload</h2>

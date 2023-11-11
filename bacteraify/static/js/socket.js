@@ -5,7 +5,8 @@ const queryParams = new URLSearchParams(window.location.search)
 const hasQueryParam = queryParams.has('file_name')
 
 if (hasPath && hasQueryParam) {
-  const socketUrl = `ws://${window.location.hostname}:8001/ws/task/`
+  const socketPort = '{{ SOCKET_PORT }}' ?? '8001'
+  const socketUrl = `ws://${window.location.hostname}:${socketPort}/ws/task/`
 
   const socket = new WebSocket(socketUrl)
 
