@@ -2,23 +2,15 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bacteraify</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
-  </head>
+  {% include 'components/head.html' %}
   <body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    {% include 'navbar.html' %}
-    <main class="main py-10">
-      <div class="flex">
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> -->
+    {% include 'components/navbar.html' %}
+    <main class="main">
+      <div class="bnr-container">
         <div class="relative h-full w-1/2">
           <img src="{% static 'images/home-bnr.png' %}" alt="home-bnr" class="object-contain w-full">
-          <div class="absolute flex flex-col top-0 h-full justify-evenly p-10">
+          <div class="absolute flex flex-col top-0 h-full justify-evenly bnr-txt">
             <div class="grid">
               <h1>Орчин үеийн хурдан.</h1>
               <h1>Хамгийн нарийвчлалтай.</h1>
@@ -31,7 +23,7 @@
             </div>
 
             <a href="/more" class="flex w-fit gap-10 items-center">
-              <img src="{% static 'images/play-icon.png' %}" alt="play-icon">
+              <img src="{% static 'images/play-icon.png' %}" alt="play-icon" class="more-icon">
               <h2>Илүү дэлгэрэнгүй</h2>
             </a>
           </div>
@@ -53,7 +45,7 @@
         </div>
       </div>
 
-      <div class="flex w-full info-container mt-20">
+      <div class="info-container">
         <div class="info">
           <div class="info-item flex flex-col items-center justify-between h-full p-10 w-full">
             <div class="info-icon">
@@ -92,8 +84,8 @@
         </div>
       </div>
 
-      <div class="flex">
-        <div class="flex flex-col margin-auto gap-40">
+      <div class="tech-wrapper">
+        <div class="tech-text">
           <h1>Раман спектроскопи</h1>
           <div class="flex justify-center items-center" >
             <h2 class="text-gray">
@@ -106,8 +98,8 @@
       
     </main>
 
-    <div class="flex flex-col gap-5 items-center pb-10">
-      <div class="main">
+    <div class="main">
+      <div class="text-wrapper">
         <h1>Раман спектроскопийн хэрэглээ</h1>
       </div>
       <div class="scroll-container">
@@ -132,17 +124,19 @@
       </div>
     </div>
 
-    <main class="main pt-10 pb-20">
-      <h1>Бидний тухай</h1>
-      <div class="flex w-full">
-        <div class="flex w-half">
+    <main class="main pb-5">
+      <div class="text-wrapper">
+        <h1>Бидний тухай</h1>
+      </div>
+      <div class="bnr-container">
+        <div class="bottom-bnr-item">
           <img class="w-full object-fill" src="{% static 'images/about-us.png' %}" alt="about-us">
         </div>
-        <div class="flex flex-col w-half about-us">
-          <div class="p-10 text-white">
+        <div class="about-us-text-wrapper">
+          <div class="about-us-text text-white">
             <h2>Бидний тухай</h2>
           </div>
-          <div class="px-10 text-white">
+          <div class="about-us-desc text-white">
             <h3>Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургууль </h3>
           </div>
         </div>
@@ -150,24 +144,24 @@
     </main>
 
     <bottom>
-        <div class="bottom-container">
-          <div class="bottom-item">
-            <img class="bottom-img" src="{% static 'images/phone-icon.png' %}" alt="phone-icon">
-            <span class="text-white">(+976) 99887766</span>
-          </div>
-          <div class="bottom-item">
-            <img class="bottom-img" src="{% static 'images/location-icon.png' %}" alt="location-icon">
-            <span class="text-white">Баянзүрх дүүрэг, Шинэ Монгол Технологийн дээд сургууль</span>
-          </div>
-          <div class="bottom-item">
-            <img class="bottom-img" src="{% static 'images/email-icon.png' %}" alt="email-icon">
-            <span class="text-white">nmit@nmit.edu.mn</span>
-          </div>
-          <div class="bottom-item">
-            <img class="bottom-img" src="{% static 'images/facebook-icon.png' %}" alt="facebook-icon">
-            <span class="text-white">Шинэ Монгол Технологийн Дээд Сургууль</span>
-          </div>
+      <div class="bottom-container">
+        <div class="bottom-item">
+          <img class="bottom-img" src="{% static 'images/phone-icon.png' %}" alt="phone-icon">
+          <h3 class="text-white w-full">(+976) 99887766</h3>
         </div>
+        <div class="bottom-item">
+          <img class="bottom-img" src="{% static 'images/location-icon.png' %}" alt="location-icon">
+          <h3 class="text-white w-full">Баянзүрх дүүрэг, Шинэ Монгол Технологийн дээд сургууль</h3>
+        </div>
+        <div class="bottom-item">
+          <img class="bottom-img" src="{% static 'images/email-icon.png' %}" alt="email-icon">
+          <h3 class="text-white w-full">nmit@nmit.edu.mn</h3>
+        </div>
+        <div class="bottom-item">
+          <img class="bottom-img" src="{% static 'images/facebook-icon.png' %}" alt="facebook-icon">
+          <h3 class="text-white w-full">Шинэ Монгол Технологийн Дээд Сургууль</h3>
+        </div>
+      </div>
     </bottom>
 
   </body>

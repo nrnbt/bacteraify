@@ -1,0 +1,51 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+{% include 'components/head.html' %}
+<body>
+  {% include 'components/navbar.html' %}
+  <div class="stepper-wrapper">
+    <div class="step {% if request.path == '/survey/' %}active{% else %} completed {% endif %}">
+      <div class="step-img-wrapper">
+        <img class="step-img" src="{% static 'images/icon-images/step1.png' %}" alt="step1">
+      </div>
+      <div class="step-icon">
+        {% if request.path != '/survey/' %}
+          <i class="fa-solid fa-check" style="color:#fff;"></i>
+        {% endif %}
+      </div>
+      <div class="step-title"> Өгөгдөл  оруулах</div>
+    </div>
+    <div class="step {% if request.path == '/survey/' or request.path == '/survey/upload/' %} incomplete {% elif request.path == '/survey/load/' %} active {% else %} completed {% endif %}">
+      <div class="step-img-wrapper">
+        <img class="step-img" src="{% static 'images/icon-images/step2.png' %}" alt="step2">
+      </div>
+      <div class="step-icon">
+        {% if request.path != '/survey/' and request.path != '/survey/upload/' and request.path != '/survey/load/'  %}
+          <i class="fa-solid fa-check" style="color:#fff;"></i>
+        {% endif %}
+      </div>
+      <div class="step-title">Бактери илрүүлэх</div>
+    </div>
+    <div class="step {% if request.path == '/survey/' or request.path == '/survey/upload/' or request.path == '/survey/load/' %} incomplete {% elif request.path == '/survey/finish/' %} completed {% else %} active {% endif %}">
+      <div class="step-img-wrapper">
+        <img class="step-img" src="{% static 'images/icon-images/step3.png' %}" alt="step3">
+      </div>
+      <div class="step-icon">
+        {% if request.path != '/survey/' and request.path != '/survey/upload/' and request.path != '/survey/load/' and request.path != '/survey/result/' %}
+          <i class="fa-solid fa-check" style="color:#fff;"></i>
+        {% endif %}
+      </div>
+      <div class="step-title">Өгөгдөл татах</div>
+    </div>
+  </div>
+  {% if request.path == '/survey/' or request.path == '/survey/upload/' %}
+  {% include 'components/file-upload-form.html' %}
+  {% elif '/survey/load/' in request.path %}
+  loading
+  {% else %}
+  <div>{{ plot_html | safe }}</div>
+  {% endif %}
+</body>
+</html>

@@ -10,3 +10,11 @@ pyvenv.cfg
 Lib/
 Scripts/
 Include/
+
+#models
+bacteraify/models
+cnn_model
+
+#user data files
+bacteraify/survey-files/
+bacteraify/survey-results/
