@@ -24,3 +24,7 @@ Before you get started, make sure you have the following installed:
 
 ## Start project
 Use "python manage.py runserver" command for start project
+
+## To enable consumer
+1. Start redis server
+2. Use "daphne bacteraify.asgi:application --port 8001" command to start asgi on port 8001

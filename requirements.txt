@@ -8,3 +8,5 @@ Pillow==10.1.0
 keras==2.15.0
 tensorflow==2.14.0
 plotly==5.18.0
+channels==4.0.0
+channels-redis==4.1.0

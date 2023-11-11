@@ -9,6 +9,8 @@ import hashlib
 from datetime import datetime
 from tensorflow.keras.models import load_model
 import threading
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
 upload_file_path = os.path.dirname(os.path.dirname(__file__))
@@ -25,6 +27,7 @@ def save_data_to_file(data, directory_name):
     file_name = generate_hashed_filename()
     file_path = os.path.join(upload_file_path, directory_name , file_name + '.csv')
     data.to_csv(file_path, index=False)
+    return file_name
 
 def get_file(file_name, directory):
     file_path = os.path.join(upload_file_path, directory , file_name + '.csv')
@@ -88,6 +91,17 @@ def generate_hashed_filename():
 
     return file_name
 
+def notify_survey_result(data):
+    channel_layer = get_channel_layer()
+
+    async_to_sync(channel_layer.group_send) (
+        'survey_group',
+        {
+            'type': 'notify_survey_result',
+            'data': data
+        }
+    )
+
 def predict(data):
   try:
     def task():
@@ -95,7 +109,8 @@ def predict(data):
         print('------------------------------ model ------------------------------\n', model, '\n')
         y_pred = model.predict(data)
         print('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
-        save_data_to_file(pd.DataFrame(y_pred),'results')
+        file_name = save_data_to_file(pd.DataFrame(y_pred), 'survey-results')
+        notify_survey_result({ "file_name": file_name })
     thread = threading.Thread(target=task)
     thread.start()
     return 'Prediction started'
