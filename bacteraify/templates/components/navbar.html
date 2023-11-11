@@ -1,39 +1,35 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg w-full max-w-8xl">
+<nav class="navbar navbar-expand-lg w-full max-w-7xl flex justify-between gap-40">
   <div class="container-fluid">
     <a href="/">
       <img src="{% static 'images/brand-logo.png' %}" alt="Bacteraify">
     </a>
-    <div>
-    </div>
-    <div class="flex justify-end gap-40">
-      <ul class="navbar-nav me-auto gap-40">
-        <li class="nav-item ">
-          <a class="nav-link {% if request.path == '/' %}selected-nav{% endif %}" href="{% url 'home' %}">
-            <h2>Нүүр</h2>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if '/survey/' in request.path %}selected-nav{% endif %}" href="{% url 'survey' %}">
-            <h2>Шинжилгээ</h2>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.path == '/faq/' %}selected-nav{% endif %}" href="{% url 'faq' %}">
-            <h2>FAQ</h2>
-          </a>
-        </li>
-      </ul>
-      <div class="flex">
-        <form class="d-flex" role="search">
-          <input class="form-control me-2 search-input" type="search" placeholder="Хайх...">
-        </form>
-        <button class="btn button bg-primary" type="submit">
-          <a class="h-full w-full text-white font-semibold" href="{% url 'login' %}">
-            Нэвтрэх
-          </a>
-        </button>
-      </div>
-    </div>
+  </div>
+  <ul class="navbar-nav gap-40">
+    <li class="nav-item ">
+      <a class="nav-link {% if request.path == '/' %}selected-nav{% endif %}" href="{% url 'home' %}">
+        <h2>Нүүр</h2>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if '/survey/' in request.path %}selected-nav{% endif %}" href="{% url 'survey' %}">
+        <h2>Шинжилгээ</h2>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if request.path == '/faq/' %}selected-nav{% endif %}" href="{% url 'faq' %}">
+        <h2>FAQ</h2>
+      </a>
+    </li>
+  </ul>
+  <div class="flex gap-10 search-container">
+    <form class="flex" for="search">
+      <input class="form-control search-input" type="search" placeholder="Хайх...">
+    </form>
+    <button class="btn button bg-primary" type="submit">
+      <a class="h-full w-full text-white font-semibold" href="{% url 'login' %}">
+        Нэвтрэх
+      </a>
+    </button>
   </div>
 </nav>

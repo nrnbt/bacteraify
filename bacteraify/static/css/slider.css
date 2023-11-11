@@ -23,6 +23,12 @@
   margin-left: 40px;
 }
 
+@media (max-width: 356px) {
+  .scroll-container {
+    height: 50px;
+  }
+}
+
 .primary {
   animation: primary 8s linear infinite;
 }

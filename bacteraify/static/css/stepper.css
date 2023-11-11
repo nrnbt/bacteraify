@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   margin: 0 auto;
-  width: 60%;
+  width: 70%;
   background: #fff;
   padding: 20px;
   /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
@@ -60,13 +60,13 @@
 .step-title {
   color: #333;
   font-size: 0.9em;
-  margin-top: 15px;
+  font-weight: bold;
 }
 
 .step:not(:last-child):after {
   content: '';
   position: absolute;
-  top: 15px;
+  top: 75px;
   right: -40%;
   height: 4px;
   width: 80%;
@@ -75,4 +75,14 @@
 
 .fa-solid .fa-check i {
   color: #009CDE;
+}
+
+.step-img-wrapper {
+  margin-bottom: 15px;
+}
+
+.step-img {
+  height: 45px;
+  width: 45px;
+  object-fit: contain;
 }
