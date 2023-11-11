@@ -1,6 +1,7 @@
-.margin-t h1 {
+h1 {
     font-size: 36px;
     margin-top: 60px;
+    font-weight: bold;
 }
 
 .margin {
@@ -69,20 +70,95 @@
     grid-area: c;
 }
 
-@media screen and (max-width: 1300px) {
-    .grid-container {
-        grid-template-rows: 50px 300px;
-        grid-template-areas:
-            "m"
-            "m";
+@media (max-width: 1300px) {
+    h1 {
+        font-size: 20px;
+        margin-top: 20px;
+        font-weight: bold;
     }
 
-    .content2 {
-        grid-area: c;
+    .margin {
+        margin: 20px;
+    }
+
+    #accordion {
+        margin: 20px auto;
+        /* width: 100%; */
+        padding-left: 130px;
+        padding-right: 100px;
+    }
+
+    #accordion li label {
+        font-size: 12px;
+    }
+
+    #accordion li label span {
+        font-size: 12px;
+    }
+
+    #accordion .content {
+        line-height: 15px;
+        padding: 0 10px;
     }
 
     #accordion label+input[type="radio"]:checked+.content {
         max-height: 500px;
     }
 
+    .grid-container {
+        display: block;
+    }
+
+    .content1, .content2 {
+        grid-area: unset;
+    }
+    .text{
+        font-size:x-small;
+    }
+}
+
+@media (max-width: 400px) {
+    h1 {
+        font-size: 20px;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+
+    .margin {
+        margin: 20px;
+    }
+
+    #accordion {
+        margin: 10px auto;
+        width: 100%;
+        padding: 20%;
+    }
+
+    #accordion li label {
+        font-size: 12px;
+    }
+
+    #accordion li label span {
+        font-size: 12px;
+    }
+
+    #accordion .content {
+        line-height: 15px;
+        padding: 0 10px;
+    }
+
+    #accordion label+input[type="radio"]:checked+.content {
+        max-height: 500px;
+    }
+
+    .grid-container {
+        display: block;
+    }
+
+    .content1, .content2 {
+        grid-area: unset;
+    }
+    .text{
+        font-size:x-small;
+    }
 }
