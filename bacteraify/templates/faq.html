@@ -2,15 +2,99 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Faq</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'css/faq.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
   {% include 'navbar.html' %}
+  <h1>Түгээмэл асуултууд</h1>
+
+  <div class="grid-container">
+
+    <div class="content1">
+      <ul id="accordion">
+
+        <li>
+          <label for="first"> Хэрхэн ажилладаг вэ? <i class="fa fa-chevron-down" ></i></label>
+          <input type="radio" name="accordion" id="first">
+          <div class="content">
+            <p>Raman spectroscopy болон Biochip ашиглан нянгийн спектр өгөгдлийг гарган авах бөгөөд тус өгөгдөл дээр бидний сургасан модел ангилал хийх болно. Ингэснээр эмгэг үүсгэгч бактерийг өндөр нарийвчлалтайгаар тодорхойлж зохих антибиотикийг санал болгох юм.
+              Бид сургасан моделоо AWS(Amazon Web Services)-н виртуал сервер дээр байршуулана. Ингэснээр эдийн засагт хэмнэлттэй ба моделоо олон цэгүүд дээр зэрэг ажилуулах боломжтой юм.
+              </p>
+          </div>
+        </li>
+
+        <li>
+          <label for="second"> 2 <i class="fa fa-chevron-down" ></i></label>
+          <input type="radio" name="accordion" id="second">
+          <div class="content">
+            <p>dfsfsfdsfdsfsdfsdfsdfsdfsdddddddddddddddddddddddddddddddddddddd
+              ddddddddddddddddddsfsdfsdfsdffffffffffffsfsfshgfhfghfghgfhfghgfh
+              fghgfhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
+          </div>
+        </li>
+
+        <li>
+          <label for="third"> 3 <i class="fa fa-chevron-down" ></i></label>
+          <input type="radio" name="accordion" id="third">
+          <div class="content">
+            <p>dfsfsfdsfdsfsdfsdfsdfsdfsdddddddddddddddddddddddddddddddddddddd
+              ddddddddddddddddddsfsdfsdfsdffffffffffffsfsfshgfhfghfghgfhfghgfh
+              fghgfhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+    <div class="contetn2">
+      <ul id="accordion">
+
+        <li>
+          <label for="fourth"> 4 <i class="fa fa-chevron-down" ></i></label>
+          <input type="radio" name="accordion" id="fourth">
+          <div class="content">
+            <p>dfsfsfdsfdsfsdfsdfsdfsdfsdddddddddddddddddddddddddddddddddddddd
+              ddddddddddddddddddsfsdfsdfsdffffffffffffsfsfshgfhfghfghgfhfghgfh
+              fghgfhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
+          </div>
+        </li>
+
+        <li>
+          <label for="fifth"> 5<i class="fa fa-chevron-down" ></i></label>
+          <input type="radio" name="accordion" id="fifth">
+          <div class="content">
+            <p>dfsfsfdsfdsfsdfsdfsdfsdfsdddddddddddddddddddddddddddddddddddddd
+              ddddddddddddddddddsfsdfsdfsdffffffffffffsfsfshgfhfghfghgfhfghgfh
+              fghgfhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
+          </div>
+        </li>
+
+        <li>
+          <label for="sixth"> 6 <i class="fa fa-chevron-down" ></i></label>
+          <input type="radio" name="accordion" id="sixth">
+          <div class="content">
+            <p>dfsfsfdsfdsfsdfsdfsdfsdfsdddddddddddddddddddddddddddddddddddddd
+              ddddddddddddddddddsfsdfsdfsdffffffffffffsfsfshgfhfghfghgfhfghgfh
+              fghgfhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
+ 
+
 </body>
+
 </html>
