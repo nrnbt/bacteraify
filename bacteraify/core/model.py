@@ -10,10 +10,42 @@ from tensorflow.keras.models import load_model
 import threading
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from django.contrib import messages
 
 model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
 upload_file_path = os.path.dirname(os.path.dirname(__file__))
+
+STRAINS = {
+    0: "C. albicans",
+    1: "C. glabrata",
+    2: "K. aerogenes",
+    3: "E. coli 1",
+    4: "E. coli 2",
+    5: "E. faecium",
+    6: "E. faecalis 1",
+    7: "E. faecalis 2",
+    8: "E. cloacae",
+    9: "K. pneumoniae 1",
+    10: "K. pneumoniae 2",
+    11: "P. mirabilis",
+    12: "P. aeruginosa 1",
+    13: "P. aeruginosa 2",
+    14: "MSSA 1",
+    15: "MSSA 3",
+    16: "MRSA 1 (isogenic)",
+    17: "MRSA 2",
+    18: "MSSA 2",
+    19: "S. enterica",
+    20: "S. epidermidis",
+    21: "S. lugdunensis",
+    22: "S. marcescens",
+    23: "S. pneumoniae 2",
+    24: "S. pneumoniae 1",
+    25: "S. sanguinis",
+    26: "Group A Strep.",
+    27: "Group B Strep.",
+    28: "Group C Strep.",
+    29: "Group G Strep.",
+}
 
 def save_file(file, directory_name):
     _, file_extension = os.path.splitext(file.name)
@@ -36,7 +68,7 @@ def get_file(file_name, directory):
         return result
     else:
         return 'File not found'
-
+    
 def read_file(file):
     _, file_extension = os.path.splitext(file.name)
         
@@ -101,6 +133,16 @@ def notify_survey_result(data):
             'data': data
         }
     )
+
+def process_result_data(prediction):
+    result = {}
+    predicted_percentages = prediction * 100
+    for class_label, percentage in zip(range(len(predicted_percentages[0])), predicted_percentages[0]):
+        if percentage > 0.0001:
+            bacteria_name = STRAINS[class_label]
+            result.update({ f'{bacteria_name} (Class {class_label})': f'{percentage:.4f}%' })
+    print('---------------------------- result_data ----------------------------\n', result, '\n')
+    return result
 
 def predict(data):
   try:
