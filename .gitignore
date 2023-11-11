@@ -4,6 +4,7 @@ staticfiles/
 
 #venv
 
+.env
 .env/
 venv/
 pyvenv.cfg

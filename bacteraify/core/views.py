@@ -10,10 +10,6 @@ def index(request):
     return render(request, 'pages/index.html')
 
 def login(request):
-    try:
-        raise Exception("This is a custom error message")
-    except Exception as e:
-        messages.error(request, 'Error: Something went wrong!')
     return render(request, 'pages/login.html')
 
 def survey(request):
