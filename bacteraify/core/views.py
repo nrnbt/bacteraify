@@ -5,6 +5,7 @@ import plotly.express as px
 import plotly.offline as po
 import os
 from django.contrib import messages
+import json
 
 def index(request):
     return render(request, 'pages/index.html')
@@ -53,11 +54,14 @@ def survey_result(request):
     try:
         file_name = request.GET.get('file_name')
         data = core_model.get_file(file_name, 'survey-results')
+        result_data = core_model.process_result_data(data.values)
+        
         fig = px.line(data)
         plot_html = po.plot(fig, output_type='div')
 
         context = {
-            'plot_html': plot_html
+            'plot_html': plot_html,
+            'result_data': result_data
         }
 
         return render(request, 'pages/survey.html', context)
