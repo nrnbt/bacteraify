@@ -7,19 +7,21 @@
 
 <body>
     <div class="relative h-screen w-full">
-        <div class="absolute top-0 h-screen w-full">
-            {% include 'components/navbar.html' %}
+
+        <div class="absolute  h-full w-full top-0 bottom-0">
+            <div class="center">
+                <h1>Login</h1> 
+                <form class="inp" action="">
+                    <input class="input" type="text" placeholder="нэвтрэх нэр/майл хаяг" required>
+                    <i class="far fa-envelope"></i>
+                    <input class="input" type="password" placeholder="********" required>
+                    <i class="fas fa-lock"></i>
+                    <input class="input" type="submit" value="Нэвтрэх">
+                </form>
+            </div>
         </div>
-        <div class="center">
-            <!-- <div class="h1">Login</div> -->
-            <h1>Login</h1>
-            <form action="">
-                <input type="text" placeholder="Username/Email" required>
-                <i class="far fa-envelope"></i>
-                <input type="password" placeholder="******" required>
-                <i class="fas fa-lock"></i>
-                <input type="submit" value="Login In">
-            </form>
+        <div class="flex justify-center w-full">
+            {% include 'components/navbar.html' %}
         </div>
     </div>
     

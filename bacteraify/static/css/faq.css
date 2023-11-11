@@ -1,0 +1,164 @@
+h1 {
+    font-size: 36px;
+    margin-top: 60px;
+    font-weight: bold;
+}
+
+.margin {
+    margin: 30px;
+}
+
+#accordion {
+    margin: 40px auto;
+    width: 600px;
+}
+
+#accordion li {
+    list-style: none;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #E4E9EE;
+    border-radius: 10px;
+}
+
+#accordion li label {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+
+}
+
+#accordion li label span {
+    transform: rotate(90deg);
+    font-size: 22px;
+    color: #000000;
+}
+
+#accordion label+input[type="radio"] {
+    display: none;
+}
+
+#accordion .content {
+    padding: 0 10px;
+    line-height: 26px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s;
+}
+
+#accordion label+input[type="radio"]:checked+.content {
+    max-height: 400px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-rows: 50px 350px;
+    grid-template-areas:
+        "m m m m m m c c c c c c";
+}
+
+.content1 {
+    grid-area: m;
+}
+
+.content2 {
+    grid-area: c;
+}
+
+@media (max-width: 1300px) {
+    h1 {
+        font-size: 20px;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+
+    .margin {
+        margin: 20px;
+    }
+
+    #accordion {
+        margin: 20px auto;
+        /* width: 100%; */
+        padding-left: 130px;
+        padding-right: 100px;
+    }
+
+    #accordion li label {
+        font-size: 12px;
+    }
+
+    #accordion li label span {
+        font-size: 12px;
+    }
+
+    #accordion .content {
+        line-height: 15px;
+        padding: 0 10px;
+    }
+
+    #accordion label+input[type="radio"]:checked+.content {
+        max-height: 500px;
+    }
+
+    .grid-container {
+        display: block;
+    }
+
+    .content1, .content2 {
+        grid-area: unset;
+    }
+    .text{
+        font-size:x-small;
+    }
+}
+
+@media (max-width: 400px) {
+    h1 {
+        font-size: 20px;
+        margin-top: 20px;
+        font-weight: bold;
+    }
+
+    .margin {
+        margin: 20px;
+    }
+
+    #accordion {
+        margin: 10px auto;
+        width: 100%;
+        padding: 20%;
+    }
+
+    #accordion li label {
+        font-size: 12px;
+    }
+
+    #accordion li label span {
+        font-size: 12px;
+    }
+
+    #accordion .content {
+        line-height: 15px;
+        padding: 0 10px;
+    }
+
+    #accordion label+input[type="radio"]:checked+.content {
+        max-height: 500px;
+    }
+
+    .grid-container {
+        display: block;
+    }
+
+    .content1, .content2 {
+        grid-area: unset;
+    }
+    .text{
+        font-size:x-small;
+    }
+}
