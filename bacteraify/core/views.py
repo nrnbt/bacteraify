@@ -5,7 +5,6 @@ import plotly.express as px
 import plotly.offline as po
 import os
 from django.contrib import messages
-import json
 
 def index(request):
     return render(request, 'pages/index.html')

@@ -61,3 +61,13 @@
   width: 100%;
   text-align: center;
 }
+
+@media (max-width: 510px) {
+  .uploader-dropper {
+    max-width: 80%;
+  }
+  
+  .uploader-button {
+    max-width: 80%;
+  }
+}
