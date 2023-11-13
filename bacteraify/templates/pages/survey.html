@@ -5,7 +5,17 @@
 {% include 'components/head.html' %}
 <body>
   {% if request.path == '/survey/load/' %}
-    <script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const toaster = document.querySelector('.toaster')
+  
+      function showError() {
+        toaster.classList.add('show')
+        setTimeout(() => {
+          toaster.classList.remove('show')
+        }, 2900);
+      }
+  
       try {
         const url = window.location.href
         const hasPath = url.includes('/survey/load/')
@@ -15,34 +25,35 @@
         if (hasPath && hasQueryParam) {
           const socketPort = '{{ SOCKET_PORT }}' ?? '8001'
           const socketUrl = `ws://${window.location.hostname}:${socketPort}/ws/task/`
-
+  
           const socket = new WebSocket(socketUrl)
-
+  
           socket.onmessage = (e) => {
-            const data = JSON.parse(e.data)
-            if (data !== null && data !== undefined && data.file_name !== null && data.file_name !== undefined) {
-              const currentUrl = window.location.href
-              const baseUrl = currentUrl.split('/survey/')[0]
-              const newUrl = baseUrl + '/survey/result/?file_name=' + data.file_name
-              window.location.href = newUrl
+            try {
+              const data = JSON.parse(e.data)
+              if (data && data.file_name) {
+                const currentUrl = window.location.href
+                const baseUrl = currentUrl.split('/survey/')[0]
+                const newUrl = baseUrl + '/survey/result/?file_name=' + data.file_name
+                window.location.href = newUrl
+              }
+            } catch (err) {
+              console.error('Error processing message:', err);
+              showError()
             }
           }
-
-          socket.onerror((e) => {
-            throw new error(e)
-          })
-         
+  
+          socket.onerror = (e) => {
+            console.error('WebSocket error:', e);
+            showError()
+          };
         }
       } catch (error) {
-          document.addEventListener('DOMContentLoaded', (event) => {
-              const toaster = document.querySelector('.toaster')
-              toaster.classList.add('show');
-              setTimeout(() =>{ 
-                toaster.classList.remove('show'); 
-              }, 2900)
-          })
+        console.error('Error:', error)
+        showError()
       }
-    </script>
+    })
+  </script>
   {% endif %}
 
   {% include 'components/navbar.html' %}
