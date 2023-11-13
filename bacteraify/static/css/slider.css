@@ -1,56 +1,45 @@
 .scroll-container {
   position: relative;
-  width: 100vw;
+  width: calc(250px * 6 + 40px * 6);
   height: 250px;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .scroll-element {
-  width: inherit;
-  height: inherit;
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  animation: primary 8s linear infinite;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  display: flex;
+  width: fit-content;
+  animation: slide 10s linear infinite;
+  height: 100%;
 }
 
 .scroll-img {
   height: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  margin-left: 40px;
+  margin-right: 40px;
+}
+
+@keyframes slide {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-250px * 6 - 40px * 6)); }
 }
 
 @media (max-width: 356px) {
   .scroll-container {
-    height: 50px;
+    height: 150px;
+    width: calc(150px * 6 + 20px * 6); 
   }
-}
 
-.primary {
-  animation: primary 8s linear infinite;
-}
-
-.secondary {
-  animation: secondary 8s linear infinite;
-}
-
-@keyframes primary {
-  from {
-    left: 0%;
+  .scroll-element {
+    animation: slide 12s linear infinite;
   }
-  to {
-    left: -100%;
+  
+  .scroll-img {
+    margin-right: 20px;
   }
-}
 
-@keyframes secondary {
-  from {
-    left: 100%;
-  }
-  to {
-    left: 0%;
+  @keyframes slide {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-150px * 6 - 20px * 6)); /* Adjusted for smaller screen */ }
   }
 }

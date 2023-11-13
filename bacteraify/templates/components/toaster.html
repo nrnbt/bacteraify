@@ -2,19 +2,19 @@
     {% for message in messages %}
         <script>
           document.addEventListener('DOMContentLoaded', (event) => {
-              const toasters = document.querySelectorAll('.toaster');
-              toasters.forEach(function(toaster) {
-                  showToast(toaster);
-              });
-          });
-      
-          function showToast(toasterElement) {
-              toasterElement.classList.add('show');
-              setTimeout(function(){ toasterElement.classList.remove('show'); }, 2900);
-          }
+              const toaster = document.querySelector('.toaster')
+              toaster.classList.add('show');
+              setTimeout(() =>{ 
+                toaster.classList.remove('show'); 
+              }, 2900)
+          })
         </script>
-        <div class="toaster">
-            {{ message }}
-        </div>
     {% endfor %}
 {% endif %}
+<div class="toaster">
+    {% if messages %}
+    {{ message }}
+    {% else %}
+    Алдаа Гарлаа
+    {% endif %}
+</div>
