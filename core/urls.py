@@ -19,18 +19,26 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from bacteraify.core import views as core_views
+from core.core import views as core_views
+import authentication.views as auth_views
+import admin.views as admin_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls, name='admin'),
     path('', core_views.index, name='home'),
-    path('login/', core_views.login, name='login'),
+    path('login/', auth_views.user_login, name='login'),
+    path('logout/', auth_views.user_logout, name='logout'),
+    # path('login/', auth_views.user_login, name='login'),
     path('survey/', core_views.survey, name='survey'),
     path('survey/upload/', core_views.upload_survey, name='upload-survey'),
     path('survey/load/', core_views.load_model, name='load-model'),
     path('survey/result/', core_views.survey_result, name='survey-result'),
     path('faq/', core_views.faq, name='faq'),
 ]
+
+admin.site.get_urls = lambda: [
+    path('my_custom_view/', admin_views)
+] + admin.site.get_urls()
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

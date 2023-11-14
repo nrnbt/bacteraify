@@ -37,7 +37,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,12 +46,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'authentication'
 ]
 
-ASGI_APPLICATION = 'bacteraify.asgi.application'
+AUTH_USER_MODEL = 'authentication.UserAuth'
+
+ASGI_APPLICATION = 'core.asgi.application'
 
 WEB_ENDPOINT = os.environ.get('WEB_ENDPOINT', '127.0.0.1')
 REDIS_CHANNEL_LAYER_PORT = os.environ.get('REDIS_CHANNEL_LAYER_PORT', '6379')
+MY_SQL_PORT = os.environ.get('MY_SQL_PORT', '3306')
+MY_SQL_DB = os.environ.get('MY_SQL_DB', 'bacteraify')
+MY_SQL_USER = os.environ.get('MY_SQL_USER', '')
+MY_SQL_PASS = os.environ.get('MY_SQL_PASS', '')
 
 CHANNEL_LAYERS = {
     'default': {
@@ -73,12 +80,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'bacteraify.urls'
+ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'bacteraify'/'templates'],
+        'DIRS': [BASE_DIR/'core'/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,7 +98,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'bacteraify.wsgi.application'
+WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database
@@ -99,8 +106,12 @@ WSGI_APPLICATION = 'bacteraify.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': MY_SQL_DB,
+        'USER': MY_SQL_USER,
+        'PASSWORD': MY_SQL_PASS,
+        'HOST': WEB_ENDPOINT,
+        'PORT': MY_SQL_PORT
     }
 }
 
@@ -140,14 +151,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATICFILES_DIRS = [
-    BASE_DIR / "bacteraify" / "static",
+    BASE_DIR / "core" / "static",
 ]
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "bacteraify" / "staticfiles"
+STATIC_ROOT = BASE_DIR / "core" / "staticfiles"
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "bacteraify" / "media"
+MEDIA_ROOT = BASE_DIR / "core" / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

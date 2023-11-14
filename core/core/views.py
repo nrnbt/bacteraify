@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from bacteraify.core import model as core_model
+from core.core import model as core_model
 from django.shortcuts import redirect
 import plotly.express as px
 import plotly.offline as po
@@ -8,9 +8,6 @@ from django.contrib import messages
 
 def index(request):
     return render(request, 'pages/index.html')
-
-def login(request):
-    return render(request, 'pages/login.html')
 
 def survey(request):
     return render(request, 'pages/survey.html')
