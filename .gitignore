@@ -13,9 +13,9 @@ Scripts/
 Include/
 
 #models
-bacteraify/models
+core/models
 cnn_model
 
 #user data files
-bacteraify/survey-files/
-bacteraify/survey-results/
+core/survey-files/
+core/survey-results/
