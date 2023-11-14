@@ -47,10 +47,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'authentication'
+    'authentication',
+    'admin_soft.apps.AdminSoftDashboardConfig',
+    # 'admin'
 ]
 
 AUTH_USER_MODEL = 'authentication.UserAuth'
+LOGIN_URL = '/login/'
 
 ASGI_APPLICATION = 'core.asgi.application'
 
@@ -85,7 +88,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'core'/'templates'],
+        'DIRS': [BASE_DIR/'core'/'templates', BASE_DIR/'admin'/'admin-templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
