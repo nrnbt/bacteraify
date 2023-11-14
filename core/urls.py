@@ -35,7 +35,15 @@ urlpatterns = [
     path('survey/load/', login_required(core_views.load_model), name='load-model'),
     path('survey/result/', login_required(core_views.survey_result), name='survey-result'),
 
-    path('admin/dashboard/', admin_views.index, name='admin-index'),
+    path('admin/login/', admin_views.admin_logout, name='admin-login'),
+    path('admin/logout/', admin_views.admin_logout, name='admin-logout'),
+    path('admin/', admin_views.index, name='admin-index'),
+    path('admin/dashboard/', admin_views.dashboard, name='admin-dashboard'),
+    path('admin/tables/', admin_views.dashboard, name='admin-tables'),
+    path('admin/billing/', admin_views.dashboard, name='admin-billing'),
+    path('admin/customers/', admin_views.customers, name='admin-customers'),
+    path('admin/customers/register/', admin_views.RegisterView.as_view(), name='admin-register-customer'),
+    path('admin/profile/', admin_views.dashboard, name='admin-profile'),
 ]
 
 if settings.DEBUG:
