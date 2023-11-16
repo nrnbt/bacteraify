@@ -3,7 +3,7 @@
 
 {% block content %}
 
-  <main class="main-content h-100">
+  <main class="main-content">
     <div class="container">
       <div class="row">
         <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
@@ -17,7 +17,7 @@
                   <span class="text-danger">{{ msg | safe }}</span>
                 {% else %}
                   Add your credentials
-                {% endif %}                      
+                {% endif %}
               </p>
             </div>
             <div class="card-body">
@@ -55,15 +55,15 @@
 
 {% block extrascript %}
     <script type="application/javascript">
-        {% if form.username.errors %}
-            notification.danger("{{ form.username.errors }}", 'top', 'right');
+        {% if form.email.errors %}
+            notification.danger("{{ form.email.errors }}", 'top', 'right');
         {% endif %}
         {% if form.password.errors %}
             notification.danger("{{ form.password.errors }}", 'top', 'right');
         {% endif %}
 
         {% if user.is_authenticated %}
-            var msg = "You are authenticated as {{ username }}, but are not authorized to " +
+            var msg = "You are authenticated as {{ email }}, but are not authorized to " +
                 "access this page.Would you like to login to a different account ?"
             notification.warning(msg, 'top', 'right');
         {% endif %}

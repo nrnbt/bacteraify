@@ -3,19 +3,71 @@
 
 {% block content %}
 <div class="container-fluid py-4">
+
   <div class="row">
-    <button class="btn btn-link text-sm">
-      <a href="{% url 'admin-register-customer' %}" class="text-dark">New customer +</a>
-    </button>
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <div class="row justify-content-between">
+            <div class="w-50">
+              <h6>Хэрэглэгчдийн хүснэгт</h6>
+            </div>
+            <button class="btn btn-primary text-sm w-auto">
+              <a href="{% url 'admin-register-customer' %}" class="text-dark">Шинэ хэрэглэгч бүртгэх +</a>
+            </button>
+          </div>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Хэрэглэгч</th>
+                  <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Байгууллага</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Төлөв</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Үүсгэсэн</th>
+                  <th class="text-secondary opacity-7"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in users %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{ user.email }}</h6>
+                          <!-- <p class="text-xs text-secondary mb-0">{{ user.email }}</p> -->
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">{{ user.corporateId }}</p>
+                      <p class="text-xs text-secondary mb-0">{{ user.corporateName }}</p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      {% if user.is_active %}
+                        <span class="badge badge-sm bg-gradient-success">active</span>
+                      {% else %}
+                       <span class="badge badge-sm bg-gradient-error">inactive</span>
+                      {% endif %}
+                    </td>
+                    <td class="align-middle text-center">
+                      <span class="text-secondary text-xs font-weight-bold">{{ user.created_at }}</span>
+                    </td>
+                    <td class="align-middle">
+                      <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                        Edit
+                      </a>
+                    </td>
+                  </tr>
+                {% empty %}
+                    <li>No users found.</li>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="row">
-    <ul>
-      {% for user in users %}
-          <li>{{ user.username }} - {{ user.email }}</li>
-      {% empty %}
-          <li>No users found.</li>
-      {% endfor %}
-    </ul>
-  </div>
-</div>
-{% endblock content %}
+  {% endblock content %}

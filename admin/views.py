@@ -1,9 +1,13 @@
+from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
-from admin_soft.forms import RegistrationForm, LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
+from admin_soft.forms import LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from django.contrib.auth import logout, get_user_model
 from django.views import View
-from .forms import CustomerCreationForm
+from authentication.forms import UserAuthCreationForm
+from django.contrib.auth.tokens import default_token_generator
+import os 
+from django.core.mail import send_mail
 
 def index(request):
     if request.user.is_authenticated:
@@ -29,6 +33,9 @@ class AdminLoginView(LoginView):
             return redirect('admin-dashboard')
         else:
             return super().get(request, *args, **kwargs)
+    # def form_valid(self, form):
+    #     return redirect('admin-dashboard')
+
 
 # def login(request):
 #     if request.method == 'Post':
@@ -43,27 +50,46 @@ class AdminLoginView(LoginView):
 #         return render(request, 'admin-pages/pass_reset.html')
 
 def dashboard(request):
-    return render(request, 'admin-pages/index.html')
+    return render(request, 'admin-pages/index.html', { 'segment': 'Dashboard' })
 
 def customers(request):
     users = get_user_model().objects.all()
-    return render(request, 'admin-pages/customers.html',  {'users': users})
+    context = {
+        'users': users,
+        'segment': 'Customers'
+    }
+    return render(request, 'admin-pages/customers.html', context)
 
 def admin_logout(request):
     logout(request)
     return redirect('admin-login')
 
-class RegisterView(View):
-    def get(self, request, *args, **kwargs):
-        form = CustomerCreationForm()
-        return render(request, 'admin-pages/register-customer.html', {'form': form})
-
-    def post(self, request, *args, **kwargs):
-        form = CustomerCreationForm(request.POST)
+def register_customer(request):
+    if request.method == 'POST':
+        form = UserAuthCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('admin-customers')
-        return render(request, 'admin-pages/register-customer.html', {'form': form})
+            # send_mail(
+            #      'Set Your Password',
+            #     f'Please set your password using this token: {token}',
+            #     'from@example.com',
+            #     [user.email],
+            #     fail_silently=False,
+            # )
+                # request = HttpRequest()
+                # request.META['SERVER_NAME'] = os.environ.get('SERVER_NAME', 'bacteraify.com')
+                # request.META['SERVER_PORT'] = os.environ.get('SERVER_PORT', '8000')
+                # reset_form.save(
+                #     request=request,
+                #     use_https=True,
+                #     email_template_name='registration/password_reset_email.html',
+                #     subject_template_name='registration/password_reset_subject.txt'
+                # )
+
+            return redirect('success_url')
+    else:
+        form = UserAuthCreationForm()
+    return render(request, 'admin-pages/register-customer.html', {'form': form})
 
 class UserPasswordResetView(PasswordResetView):
   template_name = 'account/password_reset.html'

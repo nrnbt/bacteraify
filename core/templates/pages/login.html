@@ -13,10 +13,10 @@
                     {% csrf_token %}
                     <input 
                         class="input items-center" 
-                        id="id_username" 
-                        name="username"
+                        id="id_email" 
+                        name="email"
                         type="text" 
-                        value="{{ form.username.value|default_if_none:'' }}"
+                        value="{{ form.email.value|default_if_none:'' }}"
                         placeholder="нэвтрэх нэр/майл хаяг" 
                         required
                     >
