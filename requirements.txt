@@ -11,3 +11,4 @@ plotly==5.18.0
 channels==4.0.0
 channels-redis==4.1.0
 mysqlclient==2.2.0
+django-admin-soft-dashboard==1.0.12

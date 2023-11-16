@@ -23,6 +23,7 @@ from core.core import views as core_views
 import authentication.views as auth_views
 import admin.views as admin_views
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import views as admin_auth_views
 
 urlpatterns = [
     path('', core_views.index, name='home'),
@@ -35,9 +36,20 @@ urlpatterns = [
     path('survey/load/', login_required(core_views.load_model), name='load-model'),
     path('survey/result/', login_required(core_views.survey_result), name='survey-result'),
 
-    path('admin/login/', admin_views.admin_logout, name='admin-login'),
-    path('admin/logout/', admin_views.admin_logout, name='admin-logout'),
     path('admin/', admin_views.index, name='admin-index'),
+    path('admin/login/', admin_views.AdminLoginView.as_view(), name='admin-login'),
+    path('admin/logout/', admin_views.admin_logout, name='admin-logout'),
+    path('admin/password-change/', admin_views.UserPasswordChangeView.as_view(), name='password_change'),
+    path('admin/password-change-done/',admin_auth_views.PasswordChangeDoneView.as_view(
+        template_name='accounts/password_change_done.html'
+    ), name="password_change_done"),
+    path('admin/password-reset/', admin_views.UserPasswordResetView.as_view(), name='password_reset'),
+    path('admin/password-reset-confirm/<uidb64>/<token>/',
+        admin_views.UserPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('admin/password-reset-done/', admin_auth_views.PasswordResetDoneView.as_view(
+        template_name='accounts/password_reset_done.html'
+    ), name='password_reset_done'),
+
     path('admin/dashboard/', admin_views.dashboard, name='admin-dashboard'),
     path('admin/tables/', admin_views.dashboard, name='admin-tables'),
     path('admin/billing/', admin_views.dashboard, name='admin-billing'),
