@@ -28,8 +28,8 @@ from django.contrib.auth import views as admin_auth_views
 urlpatterns = [
     path('', core_views.index, name='home'),
     path('login/', auth_views.user_login, name='login'),
-    path('password_reset_confirm/', auth_views.password_reset_confirm, name='password_reset_confirm'),
     path('logout/', auth_views.user_logout, name='logout'),
+    path('set-password/<uidb64>/<token>/<email>', auth_views.password_reset_confirm, name='set-password'),
     path('faq/', core_views.faq, name='faq'),
 
     path('survey/', login_required(core_views.survey), name='survey'),
@@ -41,19 +41,20 @@ urlpatterns = [
     path('admin/login/', admin_views.AdminLoginView.as_view(), name='admin-login'),
     path('admin/logout/', admin_views.admin_logout, name='admin-logout'),
     path('admin/password-change/', admin_views.UserPasswordChangeView.as_view(), name='password_change'),
-    path('admin/password-change-done/',admin_auth_views.PasswordChangeDoneView.as_view(
+    path('admin/password-change-done/',
+        admin_auth_views.PasswordChangeDoneView.as_view(
         template_name='accounts/password_change_done.html'
-    ), name="password_change_done"),
+        ), name="password_change_done"),
     path('admin/password-reset/', admin_views.UserPasswordResetView.as_view(), name='password_reset'),
-    path('admin/password-reset-confirm/<uidb64>/<token>/',
-        admin_views.UserPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('admin/password-reset-confirm/<uidb64>/<token>/', admin_views.UserPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('admin/password-reset-done/', admin_auth_views.PasswordResetDoneView.as_view(
         template_name='accounts/password_reset_done.html'
-    ), name='password_reset_done'),
+        ), name='password_reset_done'),
 
     path('admin/dashboard/', admin_views.dashboard, name='admin-dashboard'),
     path('admin/tables/', admin_views.tables, name='admin-tables'),
     path('admin/billing/', admin_views.billing, name='admin-billing'),
+    path('admin/customer/<int:id>', admin_views.customer, name='admin-customer'),
     path('admin/customers/', admin_views.customers, name='admin-customers'),
     path('admin/customers/register/', admin_views.register_customer, name='admin-register-customer'),
     path('admin/profile/', admin_views.profile, name='admin-profile'),
