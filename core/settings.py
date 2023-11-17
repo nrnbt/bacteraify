@@ -12,17 +12,23 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os 
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 def load_env_variables(env_file=".env"):
-    with open(env_file) as file:
-        for line in file:
-            if line.startswith('#') or not line.strip():
-                continue
-            key, value = line.strip().split('=', 1)
-            os.environ[key] = value
+    try:
+        with open(env_file) as file:
+            for line in file:
+                if line.startswith('#') or not line.strip():
+                    continue
+                key, value = line.strip().split('=', 1)
+                os.environ[key] = value
+    except Exception as e:
+        logger.warning(e)
 
 load_env_variables()
 
@@ -47,10 +53,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'authentication'
+    'authentication',
+    'admin_soft.apps.AdminSoftDashboardConfig',
+    # 'admin'
+    'bacter_identification'
 ]
 
 AUTH_USER_MODEL = 'authentication.UserAuth'
+AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']
+
+LOGIN_URL = '/login/'
 
 ASGI_APPLICATION = 'core.asgi.application'
 
@@ -70,6 +82,13 @@ CHANNEL_LAYERS = {
     },
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.your-email-provider.com')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'your-email@example.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'your-email-password')
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -85,7 +104,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'core'/'templates'],
+        'DIRS': [BASE_DIR/'core'/'templates', BASE_DIR/'admin'/'admin-templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -152,6 +171,7 @@ USE_TZ = True
 
 STATICFILES_DIRS = [
     BASE_DIR / "core" / "static",
+    BASE_DIR / "admin" / "static"
 ]
 
 STATIC_URL = "/static/"

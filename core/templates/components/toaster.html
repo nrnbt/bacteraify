@@ -12,11 +12,15 @@
     {% endfor %}
 {% endif %}
 <div class="toaster">
-    {% if messages %}
-    {% for message in messages %}
-     {{ message }}
-    {% endfor %}
+  {% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'error' %}
+      <div class="error">{{ message }}</div>
     {% else %}
-    Алдаа Гарлаа
+      <div class="info">{{ message }}</div>
     {% endif %}
+  {% endfor %}
+  {% else %}
+    <div class="error">Алдаа Гарлаа</div>
+  {% endif %}
 </div>

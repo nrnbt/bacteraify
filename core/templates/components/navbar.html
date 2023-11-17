@@ -28,17 +28,16 @@
     <form class="flex w-full" for="search">
       <input class="form-control search-input" type="search" placeholder="Хайх...">
     </form>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and not user.is_superuser %}
     <div class="flex flex-col w-fit justify-center items-center">
-      <!-- <p class="w-full">Welcome, {{ user.username }}!</p> -->
       <a href="{% url 'logout' %}">Logout</a>
     </div>
     {% else %}
-      <button class="btn button bg-primary" type="submit">
-        <a class="h-full w-full text-white font-semibold" href="{% url 'login' %}">
-          Нэвтрэх
-        </a>
-      </button>
+    <button class="btn button bg-primary" type="submit">
+      <a class="h-full w-full text-white font-semibold" href="{% url 'login' %}">
+        Нэвтрэх
+      </a>
+    </button>
     {% endif %}
   </div>
 </nav>

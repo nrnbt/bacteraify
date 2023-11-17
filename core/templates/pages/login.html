@@ -13,9 +13,9 @@
                     {% csrf_token %}
                     <input 
                         class="input items-center" 
-                        id="id_username" 
+                        id="id_username"
                         name="username"
-                        type="text" 
+                        type="email"
                         value="{{ form.username.value|default_if_none:'' }}"
                         placeholder="нэвтрэх нэр/майл хаяг" 
                         required
