@@ -116,17 +116,16 @@ bottom {
 }
 
 .bottom-container {
-  max-width: 1280px;
-  overflow: hidden;
+  max-width: 100vw;
   width: 100%;
   display: flex;
   justify-content: space-between;
-  gap: 40px;
+  gap: 30px;
   flex: 1;
 }
 
 .bottom-item {
-  gap: 20px;
+  gap: 10px;
   height: 100%;
   width: 25%;
   display: flex;
@@ -394,6 +393,10 @@ bottom {
   padding: 20px;
 }
 
+.p-3 {
+  padding: 10px;
+}
+
 .p-2 {
   padding: 8px;
 }
@@ -442,6 +445,11 @@ bottom {
 .px-10 {
   padding-left: 40px;
   padding-right: 40px;
+}
+
+.px-2 {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .mt-20 {
@@ -564,4 +572,8 @@ bottom {
   height: 100%;
   aspect-ratio: 1;
   object-fit: contain;
+}
+
+.text-start {
+  text-align: start;
 }

@@ -94,24 +94,41 @@
   {% if request.path == '/survey/' or request.path == '/survey/upload/' %}
   {% include 'components/file-upload-form.html' %}
   {% elif '/survey/load/' in request.path %}
-  loading
+  <div style="max-width: 390px; width: 100%;">
+    {% include 'components/ai-loader.html' %}
+  </div>
   {% else %}
-  <!-- <div>{{ plot_html | safe }}</div> -->
-  <table class="table w-fit table-bordered">
-    <thead>
-      <tr>
-        <th>Bacter Label</th>
-        <th>Prediction Value</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for key, value in result_data.items %}
+  <div style="max-width: 780px;" class="w-full flex flex-col">
+    <table class="table table-striped w-full">
+      <thead>
         <tr>
-          <td>{{ key }}</td>
-          <td>{{ value }}</td>
+          <th scope="col" class="bg-primary text-white text-center">Bacter Label</th>
+          <th scope="col" class="bg-primary text-white text-center">Prediction Value</th>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for key, value in result_data.items %}
+          <tr>
+            <td class="text-center">{{ key }}</td>
+            <td class="text-center">{{ value }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button class="btn button bg-primary" type="submit">
+      <script type="text/javascript">
+        downloadFile = (path) => {
+          window.location.href = path
+        }
+      </script>
+      <a 
+        class="h-full w-full text-white font-semibold" 
+        href="#"
+        onclick="downloadFile('{% url 'download-survey' %}?result={{ request.GET.file_name|urlencode }}')"
+      >
+        татах
+      </a>
+    </button>
+  </div>
   {% endif %}
 {% endblock user-content %}

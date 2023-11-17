@@ -7,15 +7,15 @@
         <img src="{% static 'images/home-bnr.png' %}" alt="home-bnr" class="object-contain w-full">
         <div class="absolute flex flex-col top-0 h-full justify-evenly bnr-txt">
           <div class="grid">
-            <h1>Орчин үеийн хурдан.</h1>
-            <h1>Хамгийн нарийвчлалтай.</h1>
-            <h1>Найдвартай эмчилгээ.</h1>
+            <h1>Бодит үр дүн.</h1>
+            <h1>Өндөр нарийвчлал.</h1>
+            <h1>Богино хугацаа.</h1>
           </div>
 
-          <div class="grid text-gray">
+          <!-- <div class="grid text-gray">
             <h2>Хамгийн нарийвчлалтай.</h2>
             <h2>Аймар гое лаг систем шүү.</h2>
-          </div>
+          </div> -->
 
           <a href="/more" class="flex w-fit gap-10 items-center">
             <img src="{% static 'images/play-icon.png' %}" alt="play-icon" class="more-icon">
@@ -65,48 +65,44 @@
     <div class="info-container">
       <div class="info">
         <div class="info-item">
-          <div class="info-icon">
-            <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
+          <div class="info-icon p-2">
+            <img class="icon w-fit h-full" src="{% static 'images/icon-images/globe.png' %}" alt="info-icon">
           </div>
-          <div class="text-lg text-white">Инновацлаг</div>
-          <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
+          <div class="text-lg text-white">Хиймэл оюун ухаан</div>
         </div>
       </div>
       <div class="info">
         <div class="info-item">
-          <div class="info-icon">
-            <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
+          <div class="info-icon p-3">
+            <img class="icon w-fit h-full" src="{% static 'images/icon-images/graph.png' %}" alt="info-icon">
           </div>
-          <div class="text-lg text-white">Инновацлаг</div>
-          <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
+          <div class="text-lg text-white">Өндөр нарийвчлал</div>
         </div>
       </div>
       <div class="info">
         <div class="info-item">
-          <div class="info-icon">
-            <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
+          <div class="info-icon p-3">
+            <img class="icon w-fit h-full" src="{% static 'images/icon-images/dollar.png' %}" alt="info-icon">
           </div>
-          <div class="text-lg text-white">Инновацлаг</div>
-          <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
+          <div class="text-lg text-white">Хямд үнэ</div>
         </div>
       </div>
       <div class="info">
         <div class="info-item">
-          <div class="info-icon">
-            <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
+          <div class="info-icon p-3">
+            <img class="icon w-fit h-full" src="{% static 'images/icon-images/check.png' %}" alt="info-icon">
           </div>
-          <div class="text-lg text-white">Инновацлаг</div>
-          <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
+          <div class="text-lg text-white">Зохистой эмчилгээ</div>
         </div>
       </div>
     </div>
 
     <div class="tech-wrapper">
-      <div class="tech-text">
-        <h1>Раман спектроскопи</h1>
-        <div class="flex justify-center items-center" >
-          <h2 class="text-gray">
-            Аймар гое лаг систем шүү йыбйбй аг систем шүүаг систем шүүаг систем шүүаг систем шүүаг систем шүүаг систем шүүаг систем шүүаг сис
+      <div class="tech-text px-2">
+        <h1 class="font-bold">Раман спектроскопи</h1>
+        <div class="flex justify-center items-center">
+          <h2 class="px-2">
+            Раман спектроскопи багаж нь Япон болон Тайвань улсад 5000-75000$ -н үнэтэй үйлдвэрлэгддэг ба (өвчтнөөс авсан арчдас) дээжийг SERS чип ашиглан лазерийн тусгалаар спектр өгөгдөл гаргаж авдаг багаж юм.  
           </h2>
         </div>
       </div>
@@ -150,8 +146,8 @@
         <div class="about-us-text text-white">
           <h2>Бидний тухай</h2>
         </div>
-        <div class="about-us-desc text-white">
-          <h3>Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургууль </h3>
+        <div class="about-us-desc">
+          <h3 class="text-white text-start">Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургуулийн Програм хангамжийн инженер, Химийн инженер, Механикийн инженерийн ангийн  төгсөх курсийн оюутнуудаас бүрдсэн ба 6 хүний бүрэлдхүүнтэй. </h3>
         </div>
       </div>
     </div>
@@ -161,19 +157,19 @@
     <div class="bottom-container">
       <div class="bottom-item">
         <img class="bottom-img" src="{% static 'images/phone-icon.png' %}" alt="phone-icon">
-        <h3 class="text-white w-full">(+976) 99887766</h3>
+        <div class="text-white">(+976) 99887766</div>
       </div>
       <div class="bottom-item">
         <img class="bottom-img" src="{% static 'images/location-icon.png' %}" alt="location-icon">
-        <h3 class="text-white w-full">Баянзүрх дүүрэг, Шинэ Монгол Технологийн дээд сургууль</h3>
+        <div class="text-white">Баянзүрх дүүрэг, Шинэ Монгол Технологийн дээд сургууль</div>
       </div>
       <div class="bottom-item">
         <img class="bottom-img" src="{% static 'images/email-icon.png' %}" alt="email-icon">
-        <h3 class="text-white w-full">nmit@nmit.edu.mn</h3>
+        <div class="text-white">nmit@nmit.edu.mn</div>
       </div>
       <div class="bottom-item">
         <img class="bottom-img" src="{% static 'images/facebook-icon.png' %}" alt="facebook-icon">
-        <h3 class="text-white w-full">Шинэ Монгол Технологийн Дээд Сургууль</h3>
+        <div class="text-white">Шинэ Монгол Технологийн Дээд Сургууль</div>
       </div>
     </div>
   </bottom>

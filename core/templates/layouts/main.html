@@ -31,6 +31,9 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/toaster.css' %}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    {% if '/survey/load/' in request.path %}
+    <link rel="stylesheet" href="{% static 'css/ai-loader.css' %}">
+    {% endif %}
   </head>
 </head>
 <body>
