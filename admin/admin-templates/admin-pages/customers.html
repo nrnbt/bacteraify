@@ -48,9 +48,9 @@
                     </td>
                     <td class="align-middle text-center text-sm">
                       {% if user.is_active %}
-                        <span class="badge badge-sm bg-gradient-success">active</span>
+                        <span class="badge badge-sm bg-gradient-success">Идэвхтэй</span>
                       {% else %}
-                       <span class="badge badge-sm bg-gradient-error">inactive</span>
+                       <span class="badge badge-sm bg-gradient-danger">Идэвхгүй</span>
                       {% endif %}
                     </td>
                     <td class="align-middle text-center">
@@ -63,7 +63,7 @@
                     </td>
                   </tr>
                 {% empty %}
-                    <li>No users found.</li>
+                <div class="row w-100 justify-content-center"> Хэрэглэгч олдсонгүй.</div>
                 {% endfor %}
               </tbody>
             </table>

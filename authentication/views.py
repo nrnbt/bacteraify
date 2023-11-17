@@ -8,17 +8,21 @@ from django.contrib.auth.models import User
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.shortcuts import render, redirect
+from authentication.forms import EmailLoginForm
 import hashlib
+import logging
+
+logger = logging.getLogger(__name__)
 
 def user_login(request):
   try:
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        print(form)
+        form = EmailLoginForm(request, data=request.POST)
+        
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = authenticate(email=username, password=password)
+            user = authenticate(username=username, password=password)
             if user is not None and not user.is_superuser:
                 login(request, user)
                 return redirect('home')
@@ -26,11 +30,13 @@ def user_login(request):
                 messages.error(request, 'Error: Authentication failed!')
                 return render(request, 'pages/login.html')
         else :
+            logger.error(form.errors)
             messages.error(request, 'Error: Authentication failed!')
             return render(request, 'pages/login.html', { 'form': form })
     else: 
         return render(request, 'pages/login.html')
   except Exception as e:
+    logger.error(e)
     messages.error(request, 'Error: Something went wrong!')
     return render(request, 'pages/login.html')
 
@@ -53,7 +59,9 @@ def password_reset_confirm(request, uidb64=None, token=None, email=None):
             if request.method == 'POST':
                 form = SetPasswordForm(user, request.POST)
                 if form.is_valid():
-                    form.save()
+                    user = form.save(commit=False)
+                    user.is_active = True
+                    user.save()  
                     messages.success(request, 'Your password has been set successfully!')
                     return redirect('login')
                 else:

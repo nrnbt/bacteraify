@@ -1,8 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
-from django import forms
-from django.contrib.auth import authenticate, get_user_model
 
 class AdminPrivilege(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -25,7 +23,7 @@ class AdminPrivilege(BaseUserManager):
 class UserAuth(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=100, blank=True, unique=True)
     email = models.EmailField(unique=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     corporateId = models.CharField(max_length=7, blank=True)
     corporateName = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
