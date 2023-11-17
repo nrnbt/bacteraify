@@ -1,186 +1,181 @@
+{% extends 'layouts/main.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-  {% include 'components/head.html' %}
-  <body>
-    {% include 'components/navbar.html' %}
-    <main class="main">
-      <div class="bnr-container">
-        <div class="relative h-full w-1/2">
-          <img src="{% static 'images/home-bnr.png' %}" alt="home-bnr" class="object-contain w-full">
-          <div class="absolute flex flex-col top-0 h-full justify-evenly bnr-txt">
-            <div class="grid">
-              <h1>Орчин үеийн хурдан.</h1>
-              <h1>Хамгийн нарийвчлалтай.</h1>
-              <h1>Найдвартай эмчилгээ.</h1>
-            </div>
-
-            <div class="grid text-gray">
-              <h2>Хамгийн нарийвчлалтай.</h2>
-              <h2>Аймар гое лаг систем шүү.</h2>
-            </div>
-
-            <a href="/more" class="flex w-fit gap-10 items-center">
-              <img src="{% static 'images/play-icon.png' %}" alt="play-icon" class="more-icon">
-              <h2>Илүү дэлгэрэнгүй</h2>
-            </a>
+{% block user-content %}
+    <div class="bnr-container">
+      <div class="relative h-full w-1/2">
+        <img src="{% static 'images/home-bnr.png' %}" alt="home-bnr" class="object-contain w-full">
+        <div class="absolute flex flex-col top-0 h-full justify-evenly bnr-txt">
+          <div class="grid">
+            <h1>Орчин үеийн хурдан.</h1>
+            <h1>Хамгийн нарийвчлалтай.</h1>
+            <h1>Найдвартай эмчилгээ.</h1>
           </div>
-        </div>
-        <div id="main-bnr-carousel" class="carousel slide h-full w-1/2">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <img src="{% static 'images/home-carousel-bnr.png' %}" class="d-block w-100" alt="home-carousel-bnr">
-            </div>
+
+          <div class="grid text-gray">
+            <h2>Хамгийн нарийвчлалтай.</h2>
+            <h2>Аймар гое лаг систем шүү.</h2>
           </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
+
+          <a href="/more" class="flex w-fit gap-10 items-center">
+            <img src="{% static 'images/play-icon.png' %}" alt="play-icon" class="more-icon">
+            <h2>Илүү дэлгэрэнгүй</h2>
+          </a>
         </div>
       </div>
+      <div id="main-bnr-carousel" class="carousel slide h-full w-1/2">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="{% static 'images/home-carousel-bnr.png' %}" class="d-block w-100" alt="home-carousel-bnr">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
 
-      <script>
-        window.onload = function() {
-          const parents = document.querySelectorAll('.info');
+    <script>
+      window.onload = function() {
+        const parents = document.querySelectorAll('.info');
 
-          function adjustParentHeight(parent) {
-            var child = parent.querySelector('.info-item');
-            if (child) {
-                parent.style.height = child.offsetHeight + 'px';
-            }
+        function adjustParentHeight(parent) {
+          var child = parent.querySelector('.info-item');
+          if (child) {
+              parent.style.height = child.offsetHeight + 'px';
           }
-      
-          parents.forEach(function(parent) {
-            adjustParentHeight(parent);
+        }
     
-            // Adjust height on window resize
-            window.onresize = function() {
-                adjustParentHeight(parent);
-            };
-          });
-        };
-     </script>
+        parents.forEach(function(parent) {
+          adjustParentHeight(parent);
+  
+          // Adjust height on window resize
+          window.onresize = function() {
+              adjustParentHeight(parent);
+          };
+        });
+      };
+    </script>
 
-      <div class="info-container">
-        <div class="info">
-          <div class="info-item">
-            <div class="info-icon">
-              <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
-            </div>
-            <div class="text-lg text-white">Инновацлаг</div>
-            <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
+    <div class="info-container">
+      <div class="info">
+        <div class="info-item">
+          <div class="info-icon">
+            <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
           </div>
-        </div>
-        <div class="info">
-          <div class="info-item">
-            <div class="info-icon">
-              <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
-            </div>
-            <div class="text-lg text-white">Инновацлаг</div>
-            <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
-          </div>
-        </div>
-        <div class="info">
-          <div class="info-item">
-            <div class="info-icon">
-              <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
-            </div>
-            <div class="text-lg text-white">Инновацлаг</div>
-            <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
-          </div>
-        </div>
-        <div class="info">
-          <div class="info-item">
-            <div class="info-icon">
-              <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
-            </div>
-            <div class="text-lg text-white">Инновацлаг</div>
-            <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
-          </div>
+          <div class="text-lg text-white">Инновацлаг</div>
+          <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
         </div>
       </div>
-
-      <div class="tech-wrapper">
-        <div class="tech-text">
-          <h1>Раман спектроскопи</h1>
-          <div class="flex justify-center items-center" >
-            <h2 class="text-gray">
-              Аймар гое лаг систем шүү йыбйбй аг систем шүүаг систем шүүаг систем шүүаг систем шүүаг систем шүүаг систем шүүаг систем шүүаг сис
-            </h2>
+      <div class="info">
+        <div class="info-item">
+          <div class="info-icon">
+            <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
           </div>
+          <div class="text-lg text-white">Инновацлаг</div>
+          <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
         </div>
-        <img class="tech-img" src="{% static 'images/spectro.png' %}" alt="spectro">
       </div>
-      
-    </main>
-
-    <div class="main">
-      <div class="text-wrapper">
-        <h1>Раман спектроскопийн хэрэглээ</h1>
+      <div class="info">
+        <div class="info-item">
+          <div class="info-icon">
+            <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
+          </div>
+          <div class="text-lg text-white">Инновацлаг</div>
+          <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
+        </div>
       </div>
-      <div class="scroll-container">
-        <div class="scroll-element">
-          <img class="scroll-img" src="{% static 'images/slide1.png' %}" alt="Slide 1">
-          <img class="scroll-img" src="{% static 'images/slide2.png' %}" alt="Slide 2">
-          <img class="scroll-img" src="{% static 'images/slide3.png' %}" alt="Slide 3">
-          <img class="scroll-img" src="{% static 'images/slide4.png' %}" alt="Slide 4">
-          <img class="scroll-img" src="{% static 'images/slide5.png' %}" alt="Slide 5">
-          <img class="scroll-img" src="{% static 'images/slide6.png' %}" alt="Slide 6">
-          
-          <img class="scroll-img" src="{% static 'images/slide1.png' %}" alt="Slide 1">
-          <img class="scroll-img" src="{% static 'images/slide2.png' %}" alt="Slide 2">
-          <img class="scroll-img" src="{% static 'images/slide3.png' %}" alt="Slide 3">
-          <img class="scroll-img" src="{% static 'images/slide4.png' %}" alt="Slide 4">
-          <img class="scroll-img" src="{% static 'images/slide5.png' %}" alt="Slide 5">
-          <img class="scroll-img" src="{% static 'images/slide6.png' %}" alt="Slide 6">
+      <div class="info">
+        <div class="info-item">
+          <div class="info-icon">
+            <img class="icon w-fit h-full" src="{% static 'images/info-icon.png' %}" alt="info-icon">
+          </div>
+          <div class="text-lg text-white">Инновацлаг</div>
+          <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div>
         </div>
       </div>
     </div>
 
-    <main class="main pb-5">
-      <div class="text-wrapper">
-        <h1>Бидний тухай</h1>
-      </div>
-      <div class="bnr-container">
-        <div class="bottom-bnr-item">
-          <img class="w-full object-fill" src="{% static 'images/about-us.png' %}" alt="about-us">
-        </div>
-        <div class="about-us-text-wrapper">
-          <div class="about-us-text text-white">
-            <h2>Бидний тухай</h2>
-          </div>
-          <div class="about-us-desc text-white">
-            <h3>Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургууль </h3>
-          </div>
+    <div class="tech-wrapper">
+      <div class="tech-text">
+        <h1>Раман спектроскопи</h1>
+        <div class="flex justify-center items-center" >
+          <h2 class="text-gray">
+            Аймар гое лаг систем шүү йыбйбй аг систем шүүаг систем шүүаг систем шүүаг систем шүүаг систем шүүаг систем шүүаг систем шүүаг сис
+          </h2>
         </div>
       </div>
-    </main>
+      <img class="tech-img" src="{% static 'images/spectro.png' %}" alt="spectro">
+    </div>
+    
+  </main>
 
-    <bottom>
-      <div class="bottom-container">
-        <div class="bottom-item">
-          <img class="bottom-img" src="{% static 'images/phone-icon.png' %}" alt="phone-icon">
-          <h3 class="text-white w-full">(+976) 99887766</h3>
+  <div class="main">
+    <div class="text-wrapper">
+      <h1>Раман спектроскопийн хэрэглээ</h1>
+    </div>
+    <div class="scroll-container">
+      <div class="scroll-element">
+        <img class="scroll-img" src="{% static 'images/slide1.png' %}" alt="Slide 1">
+        <img class="scroll-img" src="{% static 'images/slide2.png' %}" alt="Slide 2">
+        <img class="scroll-img" src="{% static 'images/slide3.png' %}" alt="Slide 3">
+        <img class="scroll-img" src="{% static 'images/slide4.png' %}" alt="Slide 4">
+        <img class="scroll-img" src="{% static 'images/slide5.png' %}" alt="Slide 5">
+        <img class="scroll-img" src="{% static 'images/slide6.png' %}" alt="Slide 6">
+        
+        <img class="scroll-img" src="{% static 'images/slide1.png' %}" alt="Slide 1">
+        <img class="scroll-img" src="{% static 'images/slide2.png' %}" alt="Slide 2">
+        <img class="scroll-img" src="{% static 'images/slide3.png' %}" alt="Slide 3">
+        <img class="scroll-img" src="{% static 'images/slide4.png' %}" alt="Slide 4">
+        <img class="scroll-img" src="{% static 'images/slide5.png' %}" alt="Slide 5">
+        <img class="scroll-img" src="{% static 'images/slide6.png' %}" alt="Slide 6">
+      </div>
+    </div>
+  </div>
+
+  <main class="main pb-5">
+    <div class="text-wrapper">
+      <h1>Бидний тухай</h1>
+    </div>
+    <div class="bnr-container">
+      <div class="bottom-bnr-item">
+        <img class="w-full object-fill" src="{% static 'images/about-us.png' %}" alt="about-us">
+      </div>
+      <div class="about-us-text-wrapper">
+        <div class="about-us-text text-white">
+          <h2>Бидний тухай</h2>
         </div>
-        <div class="bottom-item">
-          <img class="bottom-img" src="{% static 'images/location-icon.png' %}" alt="location-icon">
-          <h3 class="text-white w-full">Баянзүрх дүүрэг, Шинэ Монгол Технологийн дээд сургууль</h3>
-        </div>
-        <div class="bottom-item">
-          <img class="bottom-img" src="{% static 'images/email-icon.png' %}" alt="email-icon">
-          <h3 class="text-white w-full">nmit@nmit.edu.mn</h3>
-        </div>
-        <div class="bottom-item">
-          <img class="bottom-img" src="{% static 'images/facebook-icon.png' %}" alt="facebook-icon">
-          <h3 class="text-white w-full">Шинэ Монгол Технологийн Дээд Сургууль</h3>
+        <div class="about-us-desc text-white">
+          <h3>Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургууль </h3>
         </div>
       </div>
-    </bottom>
+    </div>
+  </main>
 
-  </body>
-</html>
+  <bottom>
+    <div class="bottom-container">
+      <div class="bottom-item">
+        <img class="bottom-img" src="{% static 'images/phone-icon.png' %}" alt="phone-icon">
+        <h3 class="text-white w-full">(+976) 99887766</h3>
+      </div>
+      <div class="bottom-item">
+        <img class="bottom-img" src="{% static 'images/location-icon.png' %}" alt="location-icon">
+        <h3 class="text-white w-full">Баянзүрх дүүрэг, Шинэ Монгол Технологийн дээд сургууль</h3>
+      </div>
+      <div class="bottom-item">
+        <img class="bottom-img" src="{% static 'images/email-icon.png' %}" alt="email-icon">
+        <h3 class="text-white w-full">nmit@nmit.edu.mn</h3>
+      </div>
+      <div class="bottom-item">
+        <img class="bottom-img" src="{% static 'images/facebook-icon.png' %}" alt="facebook-icon">
+        <h3 class="text-white w-full">Шинэ Монгол Технологийн Дээд Сургууль</h3>
+      </div>
+    </div>
+  </bottom>
+
+{% endblock user-content %}

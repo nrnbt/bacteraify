@@ -539,3 +539,29 @@ bottom {
 .pr-5 {
   padding-right: 20px !important;
 }
+
+.table-container {
+  width: 100%;
+  border-radius: 25px;
+}
+
+.table-head-primary {
+  background: #003376;
+}
+
+.mx-5 {
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+}
+
+.mx-10 {
+  margin-left: 20px !important;
+  margin-right: 20px !important;
+}
+
+.empty-img {
+  max-height: 250px;
+  height: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
