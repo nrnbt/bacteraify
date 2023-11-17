@@ -33,8 +33,12 @@ def user_login(request):
             logger.error(form.errors)
             messages.error(request, 'Error: Authentication failed!')
             return render(request, 'pages/login.html', { 'form': form })
-    else: 
-        return render(request, 'pages/login.html')
+    else:
+        if request.user.is_authenticated:
+            return redirect('home')
+        else:
+            return render(request, 'pages/login.html')
+
   except Exception as e:
     logger.error(e)
     messages.error(request, 'Error: Something went wrong!')

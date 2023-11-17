@@ -16,6 +16,10 @@ Before you get started, make sure you have the following installed:
    git clone git@github.com:nrnbt/bacteraify.git
    cd bacteraify
    pip install -r requirements.txt
+   
+2. Start MySQL server
+
+   configure mysql env
 
 ## Use Virtual Env
 1. use "pip install virtualenv" for install virtual env of python
@@ -24,7 +28,7 @@ Before you get started, make sure you have the following installed:
 
 ## To enable consumer
 1. Start redis server
-2. Use "daphne bacteraify.asgi:application --port 8001" command to start asgi on port 8001
+2. Use "daphne core.asgi:application --port 8001" command to start asgi on port 8001
 
 ## Start project
 Use "python manage.py runserver" command for start project

@@ -37,6 +37,9 @@ urlpatterns = [
     path('survey/load/', login_required(core_views.load_model), name='load-model'),
     path('survey/result/', login_required(core_views.survey_result), name='survey-result'),
 
+    path('surveys/', login_required(core_views.surveys), name='surveys'),
+    path('download/', login_required(core_views.download_survey), name='download-survey'),
+
     path('admin/', admin_views.index, name='admin-index'),
     path('admin/login/', admin_views.AdminLoginView.as_view(), name='admin-login'),
     path('admin/logout/', admin_views.admin_logout, name='admin-logout'),

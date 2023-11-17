@@ -108,7 +108,6 @@ def customer(request, id=None):
     if id is not None:
         user = get_user_model().objects.get(id=id)
         if user is not None:
-            print(user)
             context= {
                 'user': user,
                 'segment': 'Customer'
