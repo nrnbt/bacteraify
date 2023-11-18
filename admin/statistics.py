@@ -32,13 +32,21 @@ def new_users_monthly():
     return new_users_mothly_count
 
 def surveys_monthly(userId=None):
-    
-    survey_stats = Survey.objects \
-        .filter(created_at__year=current_year, userId=userId) \
-        .annotate(year=ExtractYear('created_at'), month=ExtractMonth('created_at')) \
-        .values('year', 'month') \
-        .annotate(total_row_number=Sum('rowNumber'), count=Count('id')) \
-        .order_by('year', 'month')
+
+    if userId is None:
+        survey_stats = Survey.objects \
+            .filter(created_at__year=current_year) \
+            .annotate(year=ExtractYear('created_at'), month=ExtractMonth('created_at')) \
+            .values('year', 'month') \
+            .annotate(total_row_number=Sum('rowNumber'), count=Count('id')) \
+            .order_by('year', 'month')
+    else:
+        survey_stats = Survey.objects \
+            .filter(created_at__year=current_year, userId=userId) \
+            .annotate(year=ExtractYear('created_at'), month=ExtractMonth('created_at')) \
+            .values('year', 'month') \
+            .annotate(total_row_number=Sum('rowNumber'), count=Count('id')) \
+            .order_by('year', 'month')
     
     monthly_row_count = [0] * 12
     monthly_survey_count = [0] * 12

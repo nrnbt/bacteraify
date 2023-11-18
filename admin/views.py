@@ -26,9 +26,6 @@ def index(request):
         return redirect('admin-dashboard')
     else:
         return redirect('admin-login')
-    
-def billing(request):
-    return render(request, 'admin-pages/billing.html', { 'segment': 'billing' })
 
 class AdminLoginView(LoginView):
     template_name = 'account/login.html'
@@ -130,11 +127,12 @@ def register_customer(request):
                         fail_silently=False,
                     )
                     return redirect('admin-customers')
-                else: 
+                else:
                     messages.error(request, 'Error: User not registered')
                     return render(request, 'admin-pages/register-customer.html', {'form': form})
                 
         except Exception as e:
+            logger.error(e)
             messages.error(request, e)
             return render(request, 'admin-pages/register-customer.html', {'form': form})
             
