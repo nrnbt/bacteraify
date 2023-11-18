@@ -1,0 +1,106 @@
+{% load static %}
+
+<style>
+    .pie-chart-text {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #000;
+    }
+</style>
+
+<div class="bg-gradient-dark border-radius-lg py-3 pe-1 mb-3">
+  <div class="chart">
+    <canvas id="pieChart"></canvas>
+  </div>
+</div>
+
+{% block scripts %}
+<script src="{% static 'js/plugins/chartjs.min.js' %}"></script>
+<script>
+    getCSSStyle = (className) => {
+        var element = document.createElement('div');
+        element.className = className;
+        document.body.appendChild(element);
+        var style = window.getComputedStyle(element);
+        var styleObject = {
+            fontFamily: style.fontFamily,
+            fontSize: style.fontSize,
+            fontColor: style.color
+        };
+        document.body.removeChild(element);
+        return styleObject;
+    }
+
+    var chartTextStyle = getCSSStyle('pie-chart-text');
+
+    var ctx = document.getElementById('pieChart').getContext('2d');
+    var merged_suvrey_result = {{ merged_suvrey_result|safe }}
+
+    var labels = Object.keys(merged_suvrey_result);
+    var data = Object.values(merged_suvrey_result).map((value) => {
+        return parseFloat(value);
+    });
+    colors = [
+        'rgba(83, 169, 112, 0.2)',
+        'rgba(27, 174, 131, 0.2)',
+        'rgba(200, 95, 136, 0.2)',
+        'rgba(230, 83, 183, 0.2)',
+        'rgba(68, 18, 116, 0.2)',
+        'rgba(53, 1, 98, 0.2)',
+        'rgba(57, 76, 23, 0.2)',
+        'rgba(1, 212, 84, 0.2)',
+        'rgba(74, 120, 93, 0.2)',
+        'rgba(165, 74, 177, 0.2)',
+        'rgba(225, 153, 236, 0.2)',
+        'rgba(202, 153, 246, 0.2)',
+        'rgba(210, 17, 149, 0.2)',
+        'rgba(132, 11, 131, 0.2)',
+        'rgba(123, 163, 59, 0.2)',
+        'rgba(226, 112, 15, 0.2)',
+        'rgba(135, 241, 131, 0.2)',
+        'rgba(254, 200, 22, 0.2)',
+        'rgba(75, 90, 148, 0.2)',
+        'rgba(122, 234, 64, 0.2)',
+        'rgba(128, 169, 181, 0.2)',
+        'rgba(92, 218, 238, 0.2)',
+        'rgba(248, 64, 155, 0.2)',
+        'rgba(117, 245, 28, 0.2)',
+        'rgba(51, 187, 7, 0.2)',
+        'rgba(45, 73, 173, 0.2)',
+        'rgba(59, 217, 7, 0.2)',
+        'rgba(108, 58, 101, 0.2)',
+        'rgba(123, 186, 130, 0.2)',
+        'rgba(34, 79, 30, 0.2)'
+    ]
+
+    var pieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '# of Votes',
+                data: data,
+                backgroundColor: colors,
+                borderColor: colors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white'
+                    }
+                },
+                tooltip: {
+                    titleColor: 'white',
+                    bodyColor: 'white'
+                }
+            }
+        }
+    });
+
+</script>
+{% endblock scripts %}

@@ -1,0 +1,59 @@
+{% load static %}
+{% if surveys %}
+  <script type="text/javascript">
+    downloadFile = (path) => {
+      window.location.href = path
+    }
+  </script>
+  <table class="table table-striped w-full">
+    <thead>
+      <tr>
+        <th scope="col" class="bg-primary text-white text-center">#</th>
+        <th scope="col" class="bg-primary text-white text-center">Сорьцын тоо</th>
+        <th scope="col" class="bg-primary text-white text-center">Байршуулсан файл</th>
+        <th scope="col" class="bg-primary text-white text-center">Шинэжилгээний хариу</th>
+        <th scope="col" class="bg-primary text-white text-center">Үүсгэсэн огноо</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for survey in surveys %}
+          <tr>
+            <th class="text-center text-dark" scope="row">{{ forloop.counter }}</th>
+            <td class="text-center text-dark">{{ survey.rowNumber }}</td>
+            <td class="text-center text-dark">
+              {% if survey.surveyFileName %}
+                <button class="btn btn-link mb-0 px-0 ms-4">
+                  <a class="text-dark" href="#" onclick="downloadFile('{% url 'download-survey' %}?survey={{ survey.surveyFileName|urlencode }}')">
+                    <i class="fas fa-file-csv text-lg me-1"></i>CSV
+                  </a>
+                </button>
+                <!-- <a href="#" onclick="downloadFile('{% url 'download-survey' %}?survey={{ survey.surveyFileName|urlencode }}')">татах</a> -->
+              {% else %}
+                <div>=</div>
+              {% endif %}
+            </td>
+            <td class="text-center text-dark">
+              {% if survey.resultFileName %}
+                <button class="btn btn-link mb-0 px-0 ms-4">
+                  <a class="text-dark"  href="#" onclick="downloadFile('{% url 'download-survey' %}?result={{ survey.resultFileName|urlencode }}')">
+                    <i class="fas fa-file-csv text-lg me-1"></i>CSV
+                  </a>
+                </button>
+                <!-- <a href="#" onclick="downloadFile('{% url 'download-survey' %}?result={{ survey.resultFileName|urlencode }}')">татах</a> -->
+              {% else %}
+                <div>=</div>
+              {% endif %}
+            </td>
+            <td class="text-center text-dark">{{ survey.created_at }}</td>
+          </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="flex flex-col w-full justify-center">
+    <img class="empty-img" src="{% static 'images/icon-images/empty.png' %}" alt="empty">
+    <div class="text-center">
+      <h2>Шинэжилгээ хоосон байна</h2>
+    </div>
+  </div>
+{% endif %}
