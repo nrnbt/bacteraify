@@ -1,20 +1,25 @@
-from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
 from admin_soft.forms import LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from django.contrib.auth import logout, get_user_model
-from django.views import View
 from authentication.forms import UserRegisterForm
-from django.contrib.auth.tokens import default_token_generator
-import os
 from django.core.mail import send_mail
-from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.urls import reverse
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login
+from bacter_identification.models import Survey
 from django.contrib import messages
 import hashlib
+import logging
+import os
+from django.db.models import Count, Sum
+from django.db.models.functions import ExtractYear, ExtractMonth
+from django.utils import timezone
+from admin.statistics import get_all_survey_number, get_all_user_number, new_users_monthly, surveys_monthly, result_by_customer
+
+logger = logging.getLogger(__name__)
+current_year = timezone.now().year
 
 def index(request):
     if request.user.is_authenticated:
@@ -25,12 +30,6 @@ def index(request):
 def billing(request):
     return render(request, 'admin-pages/billing.html', { 'segment': 'billing' })
 
-def tables(request):
-    return render(request, 'admin-pages/tables.html', { 'segment': 'tables' })
-
-def profile(request):
-    return render(request, 'admin-pages/profile.html', { 'segment': 'profile' })
-
 class AdminLoginView(LoginView):
     template_name = 'account/login.html'
     form_class = LoginForm
@@ -40,9 +39,64 @@ class AdminLoginView(LoginView):
             return redirect('admin-dashboard')
         else:
             return super().get(request, *args, **kwargs)
+        
+def admin_login(request):
+    try:
+        if request.method == 'POST':
+            form = LoginForm(request, data=request.POST)
+            
+            if form.is_valid():
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                user = authenticate(username=username, password=password)
+                if user is not None and user.is_superuser:
+                    login(request, user)
+                    return redirect('admin-dashboard')
+                else: 
+                    messages.error(request, 'Error: Authentication failed!')
+                    return render(request, 'account/login.html',  { 'form': form })
+            else :
+                logger.error(form.errors)
+                messages.error(request, 'Error: Authentication failed!')
+                return render(request, 'account/login.html', { 'form': form })
+        else:
+            if request.user.is_authenticated:
+                return redirect('home')
+            else:
+                return render(request, 'account/login.html', { 'form': LoginForm() })
+    except Exception as e:
+        messages.error(request, e)
+        return render(request, 'account/login.html')
+    
+def admin_logout(request):
+    logout(request)
+    return redirect('admin-login')
 
 def dashboard(request):
-    return render(request, 'admin-pages/index.html', { 'segment': 'Dashboard' })
+    surveys = Survey.objects.all()
+    statistics = [
+        {
+            'name': 'Нийт Хэрэглэгч',
+            'number' : get_all_user_number(),
+            'icon': 'ni-world'
+
+        },
+        {
+            'name': 'Нийт Шинэжилгээ',
+            'number' : get_all_survey_number(),
+            'icon': 'ni-money-coins'
+        }
+    ]
+    monthly_row_count, monthly_survey_count = surveys_monthly()
+    context= {
+        'statistics_total': statistics,
+        'segment': 'Dashboard',
+        'surveys': surveys,
+        'monthly_row_count': monthly_row_count,
+        'monthly_survey_count': monthly_survey_count,
+        'monthly_new_users': new_users_monthly(),
+    }
+    return render(request, 'admin-pages/index.html', context)
 
 def customers(request):
     users = get_user_model().objects.filter(is_superuser=0)
@@ -51,10 +105,6 @@ def customers(request):
         'segment': 'Customers'
     }
     return render(request, 'admin-pages/customers.html', context)
-
-def admin_logout(request):
-    logout(request)
-    return redirect('admin-login')
 
 def register_customer(request):
     if request.method == 'POST':
@@ -104,13 +154,29 @@ class UserPasswordChangeView(PasswordChangeView):
   template_name = 'account/password_change.html'
   form_class = UserPasswordChangeForm
 
+def PasswordResetCompleteView(request):
+    return render(request, 'account/password_reset_complete.html')
+
+def PasswordResetDoneView(request):
+    return render(request, 'account/password_reset_done.html')
+
+def PasswordChangeDoneView(request):
+    return render(request, 'account/password_change_done.html')
+
 def customer(request, id=None):
     if id is not None:
         user = get_user_model().objects.get(id=id)
+        surveys = Survey.objects.filter(userId=user.id)
+
         if user is not None:
+            monthly_row_count, monthly_survey_count = surveys_monthly(user.id)
             context= {
                 'user': user,
-                'segment': 'Customer'
+                'segment': 'Customer',
+                'surveys': surveys,
+                'monthly_row_count': monthly_row_count,
+                'monthly_survey_count': monthly_survey_count,
+                'merged_suvrey_result': result_by_customer(user.id),
             }
             return render(request, 'admin-pages/customer.html', context)
         else:
@@ -119,5 +185,3 @@ def customer(request, id=None):
     else:
         messages.error(request, 'Error: id not found')
         return redirect('admin-customers')
-
-    
