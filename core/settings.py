@@ -61,8 +61,8 @@ WEB_ENDPOINT = os.environ.get('WEB_ENDPOINT', '127.0.0.1')
 REDIS_CHANNEL_LAYER_PORT = os.environ.get('REDIS_CHANNEL_LAYER_PORT', '6379')
 MY_SQL_PORT = os.environ.get('MY_SQL_PORT', '3306')
 MY_SQL_DB = os.environ.get('MY_SQL_DB', 'bacteraify')
-MY_SQL_USER = os.environ.get('MY_SQL_USER', '')
-MY_SQL_PASS = os.environ.get('MY_SQL_PASS', '')
+MY_SQL_USER = os.environ.get('MY_SQL_USER', 'root')
+MY_SQL_PASS = os.environ.get('MY_SQL_PASS', 'arvis123')
 
 CHANNEL_LAYERS = {
     'default': {
