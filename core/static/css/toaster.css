@@ -2,7 +2,6 @@
   visibility: hidden; /* Initially hidden */
   min-width: 250px;
   margin-left: -125px;
-  background-color: red;
   color: white;
   text-align: center;
   border-radius: 2px;
@@ -11,6 +10,19 @@
   z-index: 1;
   left: 50%;
   bottom: 30px;
+}
+
+.error {
+  background-color: red;
+  height: 100%;
+  width: 100%;
+  font-size: 17px;
+}
+
+.info {
+  background-color: blue;
+  height: 100%;
+  width: 100%;
   font-size: 17px;
 }
 

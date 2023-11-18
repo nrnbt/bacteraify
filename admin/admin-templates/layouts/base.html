@@ -11,7 +11,7 @@
     <!-- Favicon -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
 
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->
@@ -29,13 +29,13 @@
 
 </head>
 
-<body class="g-sidenav-show bg-gray-100">
+<body class="g-sidenav-show bg-gray-100" style="height: 100vh; width: 100vw;">
 
     {% if user.is_authenticated %}
       {% include "includes/sidebar.html" %}
     {% endif %}
 
-    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg h-100">
         {% include "includes/navigation.html" %} 
         {% block content %}{% endblock content %}
     </main>

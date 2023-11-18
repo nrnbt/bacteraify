@@ -1,14 +1,9 @@
+{% extends 'layouts/main.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
+{% block user-content %}
 
-{% include 'components/head.html' %}
-
-<body>
-
-  {% include 'components/navbar.html' %}
-  <h1>Түгээмэл асуултууд</h1>
+  <h1 >Түгээмэл асуултууд</h1>
 
   <div>
 
@@ -58,7 +53,4 @@
   </div>
 
 
-
-</body>
-
-</html> 
+{% endblock user-content %}

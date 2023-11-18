@@ -1,28 +1,31 @@
-from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
 from admin_soft.forms import LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from django.contrib.auth import logout, get_user_model
-from django.views import View
-from authentication.forms import UserAuthCreationForm
-from django.contrib.auth.tokens import default_token_generator
-import os 
+from authentication.forms import UserRegisterForm
 from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.urls import reverse
+from django.contrib.auth import authenticate, login
+from bacter_identification.models import Survey
+from django.contrib import messages
+import hashlib
+import logging
+import os
+from django.db.models import Count, Sum
+from django.db.models.functions import ExtractYear, ExtractMonth
+from django.utils import timezone
+from admin.statistics import get_all_survey_number, get_all_user_number, new_users_monthly, surveys_monthly, result_by_customer
+
+logger = logging.getLogger(__name__)
+current_year = timezone.now().year
 
 def index(request):
     if request.user.is_authenticated:
         return redirect('admin-dashboard')
     else:
         return redirect('admin-login')
-    
-def billing(request):
-    return render(request, 'admin-pages/billing.html', { 'segment': 'billing' })
-
-def tables(request):
-    return render(request, 'admin-pages/tables.html', { 'segment': 'tables' })
-
-def profile(request):
-    return render(request, 'admin-pages/profile.html', { 'segment': 'profile' })
 
 class AdminLoginView(LoginView):
     template_name = 'account/login.html'
@@ -33,62 +36,108 @@ class AdminLoginView(LoginView):
             return redirect('admin-dashboard')
         else:
             return super().get(request, *args, **kwargs)
-    # def form_valid(self, form):
-    #     return redirect('admin-dashboard')
-
-
-# def login(request):
-#     if request.method == 'Post':
-#         return render(request, 'admin-pages/login.html')
-#     else:
-#         return render(request, 'admin-pages/login.html')
+        
+def admin_login(request):
+    try:
+        if request.method == 'POST':
+            form = LoginForm(request, data=request.POST)
+            
+            if form.is_valid():
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                user = authenticate(username=username, password=password)
+                if user is not None and user.is_superuser:
+                    login(request, user)
+                    return redirect('admin-dashboard')
+                else: 
+                    messages.error(request, 'Error: Authentication failed!')
+                    return render(request, 'account/login.html',  { 'form': form })
+            else :
+                logger.error(form.errors)
+                messages.error(request, 'Error: Authentication failed!')
+                return render(request, 'account/login.html', { 'form': form })
+        else:
+            if request.user.is_authenticated:
+                return redirect('home')
+            else:
+                return render(request, 'account/login.html', { 'form': LoginForm() })
+    except Exception as e:
+        messages.error(request, e)
+        return render(request, 'account/login.html')
     
-# def pass_reset(request):
-#     if request.method == 'Post':
-#         return render(request, 'admin-pages/pass_reset.html')
-#     else:
-#         return render(request, 'admin-pages/pass_reset.html')
+def admin_logout(request):
+    logout(request)
+    return redirect('admin-login')
 
 def dashboard(request):
-    return render(request, 'admin-pages/index.html', { 'segment': 'Dashboard' })
+    surveys = Survey.objects.all()
+    statistics = [
+        {
+            'name': 'Нийт Хэрэглэгч',
+            'number' : get_all_user_number(),
+            'icon': 'ni-world'
+
+        },
+        {
+            'name': 'Нийт Шинэжилгээ',
+            'number' : get_all_survey_number(),
+            'icon': 'ni-money-coins'
+        }
+    ]
+    monthly_row_count, monthly_survey_count = surveys_monthly()
+    context= {
+        'statistics_total': statistics,
+        'segment': 'Dashboard',
+        'surveys': surveys,
+        'monthly_row_count': monthly_row_count,
+        'monthly_survey_count': monthly_survey_count,
+        'monthly_new_users': new_users_monthly(),
+    }
+    return render(request, 'admin-pages/index.html', context)
 
 def customers(request):
-    users = get_user_model().objects.all()
+    users = get_user_model().objects.filter(is_superuser=0)
     context = {
         'users': users,
         'segment': 'Customers'
     }
     return render(request, 'admin-pages/customers.html', context)
 
-def admin_logout(request):
-    logout(request)
-    return redirect('admin-login')
-
 def register_customer(request):
     if request.method == 'POST':
-        form = UserAuthCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            # send_mail(
-            #      'Set Your Password',
-            #     f'Please set your password using this token: {token}',
-            #     'from@example.com',
-            #     [user.email],
-            #     fail_silently=False,
-            # )
-                # request = HttpRequest()
-                # request.META['SERVER_NAME'] = os.environ.get('SERVER_NAME', 'bacteraify.com')
-                # request.META['SERVER_PORT'] = os.environ.get('SERVER_PORT', '8000')
-                # reset_form.save(
-                #     request=request,
-                #     use_https=True,
-                #     email_template_name='registration/password_reset_email.html',
-                #     subject_template_name='registration/password_reset_subject.txt'
-                # )
+        try:
+            form = UserRegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
 
-            return redirect('success_url')
+                recipient_email = form.cleaned_data['email']
+                users = get_user_model().objects.get(email=recipient_email)
+
+                if users is not None:
+                    token = hashlib.sha256(recipient_email.encode() + str(users.id).encode()).hexdigest()
+                    uid = urlsafe_base64_encode(force_bytes(users.id))
+                    password_reset_url = request.build_absolute_uri(
+                        reverse('set-password', kwargs={'uidb64': uid, 'token': token, 'email': recipient_email})
+                    )
+                    send_mail(
+                        'Нууц үг тохируулах',
+                        f'Follow this link to reset your password: {password_reset_url}',
+                        os.environ.get('EMAIL_HOST_USER', 'bacteraify'),
+                        [recipient_email],
+                        fail_silently=False,
+                    )
+                    return redirect('admin-customers')
+                else:
+                    messages.error(request, 'Error: User not registered')
+                    return render(request, 'admin-pages/register-customer.html', {'form': form})
+                
+        except Exception as e:
+            logger.error(e)
+            messages.error(request, e)
+            return render(request, 'admin-pages/register-customer.html', {'form': form})
+            
     else:
-        form = UserAuthCreationForm()
+        form = UserRegisterForm()
     return render(request, 'admin-pages/register-customer.html', {'form': form})
 
 class UserPasswordResetView(PasswordResetView):
@@ -102,3 +151,35 @@ class UserPasswordResetConfirmView(PasswordResetConfirmView):
 class UserPasswordChangeView(PasswordChangeView):
   template_name = 'account/password_change.html'
   form_class = UserPasswordChangeForm
+
+def PasswordResetCompleteView(request):
+    return render(request, 'account/password_reset_complete.html')
+
+def PasswordResetDoneView(request):
+    return render(request, 'account/password_reset_done.html')
+
+def PasswordChangeDoneView(request):
+    return render(request, 'account/password_change_done.html')
+
+def customer(request, id=None):
+    if id is not None:
+        user = get_user_model().objects.get(id=id)
+        surveys = Survey.objects.filter(userId=user.id)
+
+        if user is not None:
+            monthly_row_count, monthly_survey_count = surveys_monthly(user.id)
+            context= {
+                'user': user,
+                'segment': 'Customer',
+                'surveys': surveys,
+                'monthly_row_count': monthly_row_count,
+                'monthly_survey_count': monthly_survey_count,
+                'merged_suvrey_result': result_by_customer(user.id),
+            }
+            return render(request, 'admin-pages/customer.html', context)
+        else:
+            messages.error(request, 'Error: Customer not found')
+            return redirect('admin-customers')
+    else:
+        messages.error(request, 'Error: id not found')
+        return redirect('admin-customers')

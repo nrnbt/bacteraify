@@ -12,17 +12,23 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os 
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 def load_env_variables(env_file=".env"):
-    with open(env_file) as file:
-        for line in file:
-            if line.startswith('#') or not line.strip():
-                continue
-            key, value = line.strip().split('=', 1)
-            os.environ[key] = value
+    try:
+        with open(env_file) as file:
+            for line in file:
+                if line.startswith('#') or not line.strip():
+                    continue
+                key, value = line.strip().split('=', 1)
+                os.environ[key] = value
+    except Exception as e:
+        logger.warning(e)
 
 load_env_variables()
 
@@ -50,9 +56,12 @@ INSTALLED_APPS = [
     'authentication',
     'admin_soft.apps.AdminSoftDashboardConfig',
     # 'admin'
+    'bacter_identification'
 ]
 
 AUTH_USER_MODEL = 'authentication.UserAuth'
+AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']
+
 LOGIN_URL = '/login/'
 
 ASGI_APPLICATION = 'core.asgi.application'

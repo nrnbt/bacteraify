@@ -1,12 +1,7 @@
+{% extends 'layouts/main.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-{% include 'components/head.html' %}
-
-<body>
-  {% include 'components/navbar.html' %}
-  <main class="main">
+{% block user-content %}
     <div class="bnr-container">
       <div class="relative h-full w-1/2">
         <img src="{% static 'images/home-bnr.png' %}" alt="home-bnr" class="object-contain w-full">
@@ -18,9 +13,9 @@
           </div>
 
           <!-- <div class="grid text-gray">
-              <h2>Хамгийн нарийвчлалтай.</h2>
-              <h2>Аймар гое лаг систем шүү.</h2>
-            </div> -->
+            <h2>Хамгийн нарийвчлалтай.</h2>
+            <h2>Аймар гое лаг систем шүү.</h2>
+          </div> -->
 
           <a href="/more" class="flex w-fit gap-10 items-center">
             <img src="{% static 'images/play-icon.png' %}" alt="play-icon" class="more-icon">
@@ -46,22 +41,22 @@
     </div>
 
     <script>
-      window.onload = function () {
+      window.onload = function() {
         const parents = document.querySelectorAll('.info');
 
         function adjustParentHeight(parent) {
           var child = parent.querySelector('.info-item');
           if (child) {
-            parent.style.height = child.offsetHeight + 'px';
+              parent.style.height = child.offsetHeight + 'px';
           }
         }
-
-        parents.forEach(function (parent) {
+    
+        parents.forEach(function(parent) {
           adjustParentHeight(parent);
-
+  
           // Adjust height on window resize
-          window.onresize = function () {
-            adjustParentHeight(parent);
+          window.onresize = function() {
+              adjustParentHeight(parent);
           };
         });
       };
@@ -70,55 +65,50 @@
     <div class="info-container">
       <div class="info">
         <div class="info-item">
-          <div class="info-icon">
+          <div class="info-icon p-2">
             <img class="icon w-fit h-full" src="{% static 'images/info-icon/earth.png' %}" alt="info-icon">
           </div>
-          <div class="text-lg text-white">Хиймэл оюун ухаан</div>
-          <!-- <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div> -->
+          <div class="text-lg text-white text-center">Хиймэл оюун ухаан</div>
         </div>
       </div>
       <div class="info">
         <div class="info-item">
-          <div class="info-icon">
+          <div class="info-icon p-3">
             <img class="icon w-fit h-full" src="{% static 'images/info-icon/graph.png' %}" alt="info-icon">
           </div>
-          <div class="text-lg text-white">Өндөр Нарийвчлал</div>
-          <!-- <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div> -->
-        </div>
-      </div>
-      <div class="info">
-        <div class="info-item ">
-          <div class="info-icon">
-            <img class="icon w-fit h-full" src="{% static 'images/info-icon/tugrug.png' %}" alt="info-icon">
-          </div>
-          <div class="text-lg text-white ">Хямд үнэ</div>
-          <!-- <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div> -->
+          <div class="text-lg text-white text-center">Өндөр нарийвчлал</div>
         </div>
       </div>
       <div class="info">
         <div class="info-item">
-          <div class="info-icon">
+          <div class="info-icon p-3">
+            <img class="icon w-fit h-full" src="{% static 'images/info-icon/tugrug.png' %}" alt="info-icon">
+          </div>
+          <div class="text-lg text-white text-center">Хямд үнэ</div>
+        </div>
+      </div>
+      <div class="info">
+        <div class="info-item">
+          <div class="info-icon p-3">
             <img class="icon w-fit h-full" src="{% static 'images/info-icon/check.png' %}" alt="info-icon">
           </div>
-          <div class="text-lg text-white">Зохистой эмчилгээ</div>
-          <!-- <div class="text-lg text-white text-center">Инновацлаг Инновацлаг Инновацлаг Инновацлаг</div> -->
+          <div class="text-lg text-white text-center">Зохистой эмчилгээ</div>
         </div>
       </div>
     </div>
 
     <div class="tech-wrapper">
-      <div class="tech-text">
-        <h1>Раман спектроскопи</h1>
+      <div class="tech-text px-2">
+        <h1 class="font-bold">Раман спектроскопи</h1>
         <div class="flex justify-center items-center">
-          <h2 class="text-gray">
-            Раман спектроскопи багаж нь Япон болон Тайвань улсад 5000-75000$ -н үнэтэй үйлдвэрлэгддэг ба (өвчтнөөс авсан
-            арчдас) дээжийг SERS чип ашиглан лазерийн тусгалаар спектр өгөгдөл гаргаж авдаг багаж юм.
+          <h2 class="px-2">
+            Раман спектроскопи багаж нь Япон болон Тайвань улсад 5000-75000$ -н үнэтэй үйлдвэрлэгддэг ба (өвчтнөөс авсан арчдас) дээжийг SERS чип ашиглан лазерийн тусгалаар спектр өгөгдөл гаргаж авдаг багаж юм.  
           </h2>
         </div>
       </div>
       <img class="tech-img" src="{% static 'images/spectro.png' %}" alt="spectro">
     </div>
-
+    
   </main>
 
   <div class="main">
@@ -133,7 +123,7 @@
         <img class="scroll-img" src="{% static 'images/slide4.png' %}" alt="Slide 4">
         <img class="scroll-img" src="{% static 'images/slide5.png' %}" alt="Slide 5">
         <img class="scroll-img" src="{% static 'images/slide6.png' %}" alt="Slide 6">
-
+        
         <img class="scroll-img" src="{% static 'images/slide1.png' %}" alt="Slide 1">
         <img class="scroll-img" src="{% static 'images/slide2.png' %}" alt="Slide 2">
         <img class="scroll-img" src="{% static 'images/slide3.png' %}" alt="Slide 3">
@@ -156,9 +146,8 @@
         <div class="about-us-text text-white">
           <h2>Бидний тухай</h2>
         </div>
-        <div class="about-us-desc text-white">
-          <h3>Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургуулийн Програм хангамжийн инженер, Химийн инженер,
-            Механикийн инженерийн ангийн төгсөх курсийн оюутнуудаас бүрдсэн ба 6 хүний бүрэлдхүүнтэй. </h3>
+        <div class="about-us-desc">
+          <h3 class="text-white text-start">Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургуулийн Програм хангамжийн инженер, Химийн инженер, Механикийн инженерийн ангийн  төгсөх курсийн оюутнуудаас бүрдсэн ба 6 хүний бүрэлдхүүнтэй. </h3>
         </div>
       </div>
     </div>
@@ -166,30 +155,23 @@
 
   <bottom>
     <div class="bottom-container">
-      <div class="bottom-item">
+      <a href="tel:+97699887766" class="bottom-item" target="_blank">
         <img class="bottom-img" src="{% static 'images/phone-icon.png' %}" alt="phone-icon">
-        <h3 class="text-white w-full">(+976) 75777799</h3>
-      </div>
-      <div class="bottom-item">
+        <div class="text-white">(+976) 9917 2098</div>
+      </a>
+      <a href="https://www.google.com/maps?q=47.91170640838734,106.93874083409169" class="bottom-item" target="_blank">
         <img class="bottom-img" src="{% static 'images/location-icon.png' %}" alt="location-icon">
-        <a
-          href="https://www.google.com/maps/place/%D0%A8%D0%B8%D0%BD%D1%8D+%D0%9C%D0%BE%D0%BD%D0%B3%D0%BE%D0%BB+%D0%A2%D0%B5%D1%85%D0%BD%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D0%B9%D0%BD+%D0%94%D1%8D%D1%8D%D0%B4+%D0%A1%D1%83%D1%80%D0%B3%D1%83%D1%83%D0%BB%D1%8C/@47.9116309,106.9361981,17z/data=!4m14!1m7!3m6!1s0x5d96931f4cfb0b65:0x547313518121e59d!2z0KjQuNC90Y0g0JzQvtC90LPQvtC7INCi0LXRhdC90L7Qu9C-0LPQuNC50L0g0JTRjdGN0LQg0KHRg9GA0LPRg9GD0LvRjA!8m2!3d47.9116273!4d106.938773!16s%2Fg%2F11fn5zftdb!3m5!1s0x5d96931f4cfb0b65:0x547313518121e59d!8m2!3d47.9116273!4d106.938773!16s%2Fg%2F11fn5zftdb?entry=ttu">
-          <h3 class="text-white w-full">45-р Байр, Манлай Баатар Дамдинсүрэнгийн Гудамж 45, Улаанбаатар 13372</h3>
-        </a>
-      </div>
-      <div class="bottom-item">
+        <div class="text-white">45-р Байр, Манлай Баатар Дамдинсүрэнгийн Гудамж, Улаанбаатар 13372</div>
+      </a>
+      <a href="mailto:nmit@nmit.edu.mn" class="bottom-item" target="_blank">
         <img class="bottom-img" src="{% static 'images/email-icon.png' %}" alt="email-icon">
-        <h3 class="text-white w-full">info@nmit.edu.mn</h3>
-      </div>
-      <div class="bottom-item">
+        <div class="text-white">nmit@nmit.edu.mn</div>
+      </a>
+      <a href="https://www.facebook.com/nmit.edu.mn" class="bottom-item" target="_blank">
         <img class="bottom-img" src="{% static 'images/facebook-icon.png' %}" alt="facebook-icon">
-        <a href="https://www.facebook.com/nmit.edu.mn">
-          <h3 class="text-white w-full">Шинэ Монгол Технологийн Дээд Сургууль</h3>
-        </a>
-      </div>
+        <div class="text-white">Шинэ Монгол Технологийн Дээд Сургууль</div>
+      </a>
     </div>
   </bottom>
 
-</body>
-
-</html>
+{% endblock user-content %}

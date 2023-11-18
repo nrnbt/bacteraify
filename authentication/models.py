@@ -21,9 +21,9 @@ class AdminPrivilege(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class UserAuth(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=100, blank=True, unique=True)
+    username = models.CharField(max_length=100, blank=True, null=True)
     email = models.EmailField(unique=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     corporateId = models.CharField(max_length=7, blank=True)
     corporateName = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(default=timezone.now)

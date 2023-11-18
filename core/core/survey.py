@@ -10,7 +10,10 @@ from tensorflow.keras.models import load_model
 import threading
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from bacter_identification.models import Survey
+import logging
 
+logger = logging.getLogger(__name__)
 model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
 upload_file_path = os.path.dirname(os.path.dirname(__file__))
 
@@ -141,27 +144,42 @@ def process_result_data(prediction):
         if percentage > 0.0001:
             bacteria_name = STRAINS[class_label]
             result.update({ f'{bacteria_name} (Class {class_label})': f'{percentage:.4f}%' })
-    print('---------------------------- result_data ----------------------------\n', result, '\n')
+    logger.info('---------------------------- result_data ----------------------------\n', result, '\n')
     return result
 
-def predict(data):
+def predict(data, survey_file_name):
   try:
     def task():
         model = load_model(model_file_path)
-        print('------------------------------ model ------------------------------\n', model, '\n')
+        logger.info('------------------------------ model ------------------------------\n', model, '\n')
         y_pred = model.predict(data)
-        print('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
+        logger.info('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
         file_name = save_data_to_file(pd.DataFrame(y_pred), 'survey-results')
+
+        update_record(survey_file_name, result_file_name=file_name)
+
         notify_survey_result({ "file_name": file_name })
     thread = threading.Thread(target=task)
     thread.start()
     return 'Prediction started'
-    # print('------------------------------ data ------------------------------\n', data, '\n')
-    # model = load_model(model_file_path)
-    # print('------------------------------ model ------------------------------\n', model, '\n')
-    # y_pred = model.predict(data)
-    # print('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
-    # return ''
+  
   except Exception as e:
-    print(f"Error loading or predicting with the model: {e}")
+    logger.error(e)
     return None
+  
+
+def save_record(user_id, user_email, file_name, data_len):
+    survey_record = Survey(
+        userId = user_id,
+        userEmail = user_email,
+        surveyFileName = file_name,
+        rowNumber = data_len,
+        type = 'created'
+    )
+    survey_record.save()
+
+def update_record(survey_file_name, result_file_name):
+    survey = Survey.objects.get(surveyFileName=survey_file_name)
+    survey.resultFileName = result_file_name
+    survey.type = 'predicted'
+    survey.save()

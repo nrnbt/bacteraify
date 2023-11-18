@@ -13,7 +13,7 @@
               <h6>Хэрэглэгчдийн хүснэгт</h6>
             </div>
             <button class="btn btn-primary text-sm w-auto">
-              <a href="{% url 'admin-register-customer' %}" class="text-dark">Шинэ хэрэглэгч бүртгэх +</a>
+              <a href="{% url 'admin-register-customer' %}" class="text-white">Шинэ хэрэглэгч бүртгэх +</a>
             </button>
           </div>
         </div>
@@ -35,8 +35,9 @@
                     <td>
                       <div class="d-flex px-2 py-1">
                         <div class="d-flex flex-column justify-content-center">
-                          <h6 class="mb-0 text-sm">{{ user.email }}</h6>
-                          <!-- <p class="text-xs text-secondary mb-0">{{ user.email }}</p> -->
+                          <a href="{% url 'admin-customer' id=user.id %}">
+                            <h6 class="mb-0 text-sm">{{ user.email }}</h6>
+                          </a>
                         </div>
                       </div>
                     </td>
@@ -46,22 +47,22 @@
                     </td>
                     <td class="align-middle text-center text-sm">
                       {% if user.is_active %}
-                        <span class="badge badge-sm bg-gradient-success">active</span>
+                        <span class="badge badge-sm bg-gradient-success">Идэвхтэй</span>
                       {% else %}
-                       <span class="badge badge-sm bg-gradient-error">inactive</span>
+                       <span class="badge badge-sm bg-gradient-danger">Идэвхгүй</span>
                       {% endif %}
                     </td>
                     <td class="align-middle text-center">
                       <span class="text-secondary text-xs font-weight-bold">{{ user.created_at }}</span>
                     </td>
-                    <td class="align-middle">
+                    <!-- <td class="align-middle">
                       <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                         Edit
                       </a>
-                    </td>
+                    </td> -->
                   </tr>
                 {% empty %}
-                    <li>No users found.</li>
+                <div class="row w-100 justify-content-center"> Хэрэглэгч олдсонгүй.</div>
                 {% endfor %}
               </tbody>
             </table>

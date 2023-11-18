@@ -8,7 +8,7 @@
 .scroll-element {
   display: flex;
   width: fit-content;
-  animation: slide 10s linear infinite;
+  animation: slide 20s linear infinite;
   height: 100%;
 }
 
