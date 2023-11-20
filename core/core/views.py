@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from core.core import survey as core_model
+from core.core import utils as core_model
 from django.shortcuts import redirect
 import plotly.express as px
 import plotly.offline as po
@@ -10,6 +10,7 @@ import logging
 from django.http import HttpResponse, Http404
 import pandas as pd
 from io import StringIO
+from core.core.utils import colors
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +70,8 @@ def survey_result(request):
 
         context = {
             'plot_html': plot_html,
-            'result_data': result_data
+            'result_data': result_data,
+            'colors': colors
         }
 
         return render(request, 'pages/survey.html', context)

@@ -1,0 +1,60 @@
+
+<canvas id="result-chart" width="400" height="200"></canvas>
+
+{% block scripts %}
+<script>
+  var result_data = {{ result_data|safe }}
+  var colors = {{ colors|safe }}
+
+  var labels = Object.keys(result_data)
+  var values = labels.map(label => parseFloat(result_data[label]))
+  var ctx = document.getElementById('result-chart').getContext('2d')
+
+  var barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            data: values,
+            backgroundColor: colors,
+            borderColor: colors,
+            borderWidth: 1
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        var label = context.dataset.label || '';
+
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed.x !== null) {
+                            label += context.parsed.x + '%';
+                        }
+                        return label;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                ticks: {
+                    callback: (value) => {
+                        return value + '%';  // Appends a percent sign to each tick label
+                    }
+                }
+            }
+        }
+    }
+});
+ 
+
+</script>
+{% endblock scripts %}

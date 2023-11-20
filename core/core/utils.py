@@ -17,6 +17,39 @@ logger = logging.getLogger(__name__)
 model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
 upload_file_path = os.path.dirname(os.path.dirname(__file__))
 
+colors = [
+    'rgba(83, 169, 112, 0.2)',
+    'rgba(27, 174, 131, 0.2)',
+    'rgba(200, 95, 136, 0.2)',
+    'rgba(230, 83, 183, 0.2)',
+    'rgba(68, 18, 116, 0.2)',
+    'rgba(53, 1, 98, 0.2)',
+    'rgba(57, 76, 23, 0.2)',
+    'rgba(1, 212, 84, 0.2)',
+    'rgba(74, 120, 93, 0.2)',
+    'rgba(165, 74, 177, 0.2)',
+    'rgba(225, 153, 236, 0.2)',
+    'rgba(202, 153, 246, 0.2)',
+    'rgba(210, 17, 149, 0.2)',
+    'rgba(132, 11, 131, 0.2)',
+    'rgba(123, 163, 59, 0.2)',
+    'rgba(226, 112, 15, 0.2)',
+    'rgba(135, 241, 131, 0.2)',
+    'rgba(254, 200, 22, 0.2)',
+    'rgba(75, 90, 148, 0.2)',
+    'rgba(122, 234, 64, 0.2)',
+    'rgba(128, 169, 181, 0.2)',
+    'rgba(92, 218, 238, 0.2)',
+    'rgba(248, 64, 155, 0.2)',
+    'rgba(117, 245, 28, 0.2)',
+    'rgba(51, 187, 7, 0.2)',
+    'rgba(45, 73, 173, 0.2)',
+    'rgba(59, 217, 7, 0.2)',
+    'rgba(108, 58, 101, 0.2)',
+    'rgba(123, 186, 130, 0.2)',
+    'rgba(34, 79, 30, 0.2)'
+]
+
 STRAINS = {
     0: "C. albicans",
     1: "C. glabrata",
@@ -141,11 +174,15 @@ def process_result_data(prediction):
     result = {}
     predicted_percentages = prediction * 100
     for class_label, percentage in zip(range(len(predicted_percentages[0])), predicted_percentages[0]):
-        if percentage > 0.0001:
+        if percentage > 0.1:
             bacteria_name = STRAINS[class_label]
-            result.update({ f'{bacteria_name} (Class {class_label})': f'{percentage:.4f}%' })
+            # result.update({ f'{bacteria_name} (Class {class_label})': f'{percentage:.4f}%' })
+            result.update({ f'{bacteria_name}': f'{percentage:.4f}%' })
     logger.info('---------------------------- result_data ----------------------------\n', result, '\n')
-    return result
+
+    sorted_bacteria_counts_desc = dict(sorted(result.items(), key=lambda item: float(item[1].rstrip('%')), reverse=True))
+
+    return sorted_bacteria_counts_desc
 
 def predict(data, survey_file_name):
   try:
