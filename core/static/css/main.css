@@ -116,12 +116,13 @@ bottom {
 }
 
 .bottom-container {
-  max-width: 100vw;
+  max-width: 1280px;
   width: 100%;
   display: flex;
   justify-content: space-between;
   gap: 30px;
   flex: 1;
+  overflow: hidden;
 }
 
 .bottom-item {

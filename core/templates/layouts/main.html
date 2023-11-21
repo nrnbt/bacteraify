@@ -35,6 +35,10 @@
     {% if '/survey/load/' in request.path %}
     <link rel="stylesheet" href="{% static 'css/ai-loader.css' %}">
     {% endif %}
+    {% if '/survey/result/' in request.path %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% endif %}
+
   </head>
 </head>
 <body>

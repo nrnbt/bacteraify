@@ -64,7 +64,7 @@
           <i class="fa-solid fa-check" style="color:#fff;"></i>
         {% endif %}
       </div>
-      <div class="step-title"> Өгөгдөл оруулах</div>
+      <div class="step-title">Сорьц оруулах</div>
     </div>
     <div class="step-line"></div>
     <div class="step {% if request.path == '/survey/' or request.path == '/survey/upload/' %} incomplete {% elif request.path == '/survey/load/' %} loading {% else %} completed {% endif %}">
@@ -76,7 +76,7 @@
           <i class="fa-solid fa-check" style="color:#fff;"></i>
         {% endif %}
       </div>
-      <div class="step-title">Бактери илрүүлэх</div>
+      <div class="step-title">Бактери таних</div>
     </div>
     <div class="step-line"></div>
     <div class="step {% if request.path == '/survey/' or request.path == '/survey/upload/' or request.path == '/survey/load/' %} incomplete {% elif request.path == '/survey/finish/' %} completed {% else %} active {% endif %}">
@@ -88,7 +88,7 @@
           <i class="fa-solid fa-check" style="color:#fff;"></i>
         {% endif %}
       </div>
-      <div class="step-title">Өгөгдөл татах</div>
+      <div class="step-title">Хариу авах</div>
     </div>
   </div>
   {% if request.path == '/survey/' or request.path == '/survey/upload/' %}
@@ -102,8 +102,8 @@
     <table class="table table-striped w-full">
       <thead>
         <tr>
-          <th scope="col" class="bg-primary text-white text-center">Bacter Label</th>
-          <th scope="col" class="bg-primary text-white text-center">Prediction Value</th>
+          <th scope="col" class="bg-primary text-white text-center">Бактери нэршил</th>
+          <th scope="col" class="bg-primary text-white text-center">Илэрсэн хувь</th>
         </tr>
       </thead>
       <tbody>
@@ -129,6 +129,9 @@
         татах
       </a>
     </button>
+    <div class="m-5">
+      {% include 'charts/bar-chart.html' %}
+    </div>
   </div>
   {% endif %}
 {% endblock user-content %}

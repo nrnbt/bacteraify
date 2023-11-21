@@ -3,13 +3,30 @@
 
 {% block content %}
 
-
 <div class="container-fluid py-4">
   <div class="row">
       <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary dark" type="submit">Register</button>
+        <tr>
+          <th><label for="id_email">Майл хаяг:</label></th>
+          <td>
+            <input type="email" name="email" maxlength="320" required id="id_email">
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_corporateId">Байгууллагын бүртгэлийн дугаар:</label></th>
+          <td>
+            <input type="text" name="corporateId" maxlength="7" required id="id_corporateId">
+          </td>
+        </tr>
+        <tr>
+          <th><label for="id_corporateName">Байгууллагын нэр:</label></th>
+          <td>
+            <input type="text" name="corporateName" maxlength="100" required id="id_corporateName">
+          </td>
+        </tr>
+        <button class="btn btn-primary dark mt-3" type="submit">Бүртгэх</button>
+        <span class="text-danger">{{ form.errors }}</span>
       </form>
   </div>
 </div>
