@@ -8,10 +8,14 @@ import hashlib
 from datetime import datetime
 from tensorflow.keras.models import load_model
 import threading
-from channels.layers import get_channel_layer
+# from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from bacter_identification.models import Survey
 import logging
+import re
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger(__name__)
 model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
@@ -82,6 +86,9 @@ STRAINS = {
     28: "Group C Strep.",
     29: "Group G Strep.",
 }
+
+def hash_user(regNo, phoneNo):
+    return hashlib.sha256((regNo + phoneNo).encode()).hexdigest()
 
 def save_file(file, directory_name):
     _, file_extension = os.path.splitext(file.name)
@@ -159,16 +166,26 @@ def generate_hashed_filename():
 
     return file_name
 
-def notify_survey_result(data):
-    channel_layer = get_channel_layer()
+# def notify_survey_result(data):
+#     channel_layer = get_channel_layer()
 
-    async_to_sync(channel_layer.group_send) (
-        'survey_group',
-        {
-            'type': 'notify_survey_result',
-            'data': data
-        }
-    )
+#     async_to_sync(channel_layer.group_send) (
+#         'survey_group',
+#         {
+#             'type': 'notify_survey_result',
+#             'data': data
+#         }
+#     )
+
+@require_POST
+@csrf_exempt  # This is for simplicity. In production, use CSRF protection.
+def notify_survey_result(request):
+    try:
+        file_name = request.POST.get('file_name')
+        return JsonResponse({"message": "Notification sent successfully", "file_name": file_name})
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
+
 
 def process_result_data(prediction):
     result = {}
@@ -193,7 +210,7 @@ def predict(data, survey_file_name):
         logger.info('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
         file_name = save_data_to_file(pd.DataFrame(y_pred), 'survey-results')
 
-        update_record(survey_file_name, result_file_name=file_name)
+        update_survey(survey_file_name, result_file_name=file_name)
 
         notify_survey_result({ "file_name": file_name })
     thread = threading.Thread(target=task)
@@ -204,19 +221,29 @@ def predict(data, survey_file_name):
     logger.error(e)
     return None
   
+def survey_result_available(survey_file_name):
+    survey = Survey.objects.get(
+        surveyFileName=survey_file_name
+    )
+    return survey.resultFileName
+  
 
-def save_record(user_id, user_email, file_name, data_len):
+def save_survey(user_id, user_email, file_name, data_len, userHash):
     survey_record = Survey(
         userId = user_id,
         userEmail = user_email,
         surveyFileName = file_name,
         rowNumber = data_len,
-        type = 'created'
+        type = 'created',
+        userHash = userHash
     )
     survey_record.save()
 
-def update_record(survey_file_name, result_file_name):
+def update_survey(survey_file_name, result_file_name):
     survey = Survey.objects.get(surveyFileName=survey_file_name)
     survey.resultFileName = result_file_name
     survey.type = 'predicted'
     survey.save()
+
+def filter_survey_by_hash(hash):
+    return Survey.objects.filter(userHash=hash)

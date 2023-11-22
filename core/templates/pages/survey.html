@@ -3,7 +3,7 @@
 
 {% block user-content %}
   {% if request.path == '/survey/load/' %}
-  <script>
+  <!-- <script>
     document.addEventListener('DOMContentLoaded', (event) => {
       const toaster = document.querySelector('.toaster')
   
@@ -51,6 +51,31 @@
         showError()
       }
     })
+  </script> -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    checkForResult = () => {
+        $.ajax({
+            url: '/survey/check-result/{{ survey_file_name }}',
+            success: (response) => {
+              const resultFileName = response.result_file_name
+                if (resultFileName) {
+                    clearInterval(pollingInterval);
+
+                    const currentUrl = window.location.href
+                    const baseUrl = currentUrl.split('/survey/')[0]
+                    const newUrl = baseUrl + '/survey/result/?file_name=' + resultFileName
+                    window.location.href = newUrl
+                }
+            },
+            error: (error) => {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    var pollingInterval = setInterval(checkForResult, 5000);
+
   </script>
   {% endif %}
 

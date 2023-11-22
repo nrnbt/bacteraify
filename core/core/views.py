@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from core.core import utils as core_model
+from core.core import utils
 from django.shortcuts import redirect
 import plotly.express as px
 import plotly.offline as po
@@ -10,7 +10,9 @@ import logging
 from django.http import HttpResponse, Http404
 import pandas as pd
 from io import StringIO
-from core.core.utils import colors
+from core.core.utils import colors, hash_user, survey_result_available
+from core.forms import SurveyForm, SurveySearchForm
+from django.http import JsonResponse
 
 logger = logging.getLogger(__name__)
 
@@ -26,44 +28,59 @@ def faq(request):
 def upload_survey(request):
     try:
         if request.method == 'POST':
-            uploaded_file = request.FILES['survey-file']
-            file_name = core_model.save_file(uploaded_file, 'survey-files')
-            data = core_model.get_file(file_name, 'survey-files')
-            if file_name:
+            form = SurveyForm(request.POST, request.FILES)
+            if form.is_valid():
+                phone_no = form.cleaned_data['phone_no']
+                reg_no = form.cleaned_data['reg_no']
+                file = form.cleaned_data['file']
 
-                core_model.save_record(user_id=request.user.id, user_email= request.user.email, file_name=file_name, data_len=len(data))
+                file_name = utils.save_file(file, 'survey-files')
+                data = utils.get_file(file_name, 'survey-files')
+                
+                if file_name:
+                    utils.save_survey(
+                        user_id=request.user.id, 
+                        user_email= request.user.email,
+                        file_name=file_name, 
+                        data_len=len(data),
+                        userHash=hash_user(reg_no, phone_no)
+                    )
 
-                redirect_url = '/survey/load/?file_name={}'.format(file_name)
-                return redirect(redirect_url)
-            else: 
-                return render(request, 'pages/survey.html')
+                    return redirect('/survey/load/?file_name={}'.format(file_name))
+                else:
+                    messages.error(request, 'Error: Something went wrong!', {'form': form})
+                    return render(request, 'pages/survey.html')
+            else:
+                for field, errors in form.errors.items():
+                    messages.error(request, errors)
+                    return render(request, 'pages/survey.html',  {'form': form})
         else:
             return render(request, 'pages/survey.html')
     except Exception as e:
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
-    return render(request, 'pages/survey.html')
+        return render(request, 'pages/survey.html', {'form': form if form else SurveyForm()})
 
 def load_model(request):
     try:
         file_name = request.GET.get('file_name')
-        data = core_model.get_file(file_name, 'survey-files')
-        core_model.predict(data, survey_file_name=file_name)
-
-        context = {
-            'SOCKET_PORT': os.environ.get('SOCKET_PORT', '8001'),
-        }
-
-        return render(request, 'pages/survey.html', context)
+        if survey_result_available(file_name):
+            return render(request, 'pages/survey.html', { 'survey_file_name': file_name })
+        else:
+            data = utils.get_file(file_name, 'survey-files')
+            utils.predict(data, survey_file_name=file_name)
+            return render(request, 'pages/survey.html', { 'survey_file_name': file_name })
+       
     except Exception as e:
+        logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
     return render(request, 'pages/survey.html')
 
 def survey_result(request):
     try:
         file_name = request.GET.get('file_name')
-        data = core_model.get_file(file_name, 'survey-results')
-        result_data = core_model.process_result_data(data.values)
+        data = utils.get_file(file_name, 'survey-results')
+        result_data = utils.process_result_data(data.values)
         
         fig = px.line(data)
         plot_html = po.plot(fig, output_type='div')
@@ -107,8 +124,8 @@ def download_survey(request):
     
     try:
         if result is not None:
-            data = core_model.get_file(result, 'survey-results')
-            result_data = core_model.process_result_data(data.values)
+            data = utils.get_file(result, 'survey-results')
+            result_data = utils.process_result_data(data.values)
             df = pd.DataFrame(list(result_data.items()), columns=['Bacteria', 'Percentage'])
             output = StringIO()
             df.to_csv(output, index=False)
@@ -127,3 +144,39 @@ def download_survey(request):
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
         return render(request, 'pages/surveys.html')
+
+def check_survey_result(request, file_name=None):
+    if file_name is not None:
+        result = survey_result_available(file_name)
+        if result is not None:
+            return JsonResponse({"result_file_name": result})
+        else:
+            return JsonResponse({"error": 'result not found'})
+    else:
+        return JsonResponse({"error": 'survey not found'})
+    
+def search_survey(request):
+    form = SurveySearchForm()
+    try:
+        if request.method == 'POST':
+            form = SurveySearchForm(request.POST)
+            if form.is_valid():
+                phone_no = form.cleaned_data['phone_no']
+                reg_no = form.cleaned_data['reg_no']
+                user_hash = hash_user(reg_no, phone_no)
+                surveys = utils.filter_survey_by_hash(user_hash)
+                if len(surveys) > 0:
+                    return render(request, 'pages/search_survey.html', {'form': form, 'surveys': surveys})
+                else:
+                    messages.error(request, 'Error: Survey not found', {'form': form})
+                    return render(request, 'pages/search_survey.html')
+            else:
+                for field, errors in form.errors.items():
+                    messages.error(request, errors)
+                    return render(request, 'pages/search_survey.html',  {'form': form})
+        else:
+            return render(request, 'pages/search_survey.html', {'form': form})
+    except Exception as e:
+        logger.error(e)
+        messages.error(request, 'Error: Something went wrong!')
+        return render(request, 'pages/search_survey.html', {'form': form if form else SurveySearchForm()})

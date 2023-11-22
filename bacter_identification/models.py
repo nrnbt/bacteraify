@@ -4,6 +4,7 @@ from django.utils import timezone
 class Survey(models.Model):
     userId = models.IntegerField()
     userEmail = models.EmailField()
+    userHash = models.CharField(max_length=255, default=None)
     surveyFileName = models.CharField(max_length=255)
     resultFileName = models.CharField(max_length=255)
     rowNumber = models.IntegerField()

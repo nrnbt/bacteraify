@@ -35,9 +35,11 @@ urlpatterns = [
     path('survey/', login_required(core_views.survey), name='survey'),
     path('survey/upload/', login_required(core_views.upload_survey), name='upload-survey'),
     path('survey/load/', login_required(core_views.load_model), name='load-model'),
+    path('survey/check-result/<file_name>/', login_required(core_views.check_survey_result), name = "check-survey-result"),
     path('survey/result/', login_required(core_views.survey_result), name='survey-result'),
 
     path('surveys/', login_required(core_views.surveys), name='surveys'),
+    path('search-survey/', login_required(core_views.search_survey), name='search-survey'),
     path('download/', login_required(core_views.download_survey), name='download-survey'),
 
     path('admin/', admin_views.index, name='admin-index'),
