@@ -1,91 +1,29 @@
 import os
-from django.http import HttpResponse
 import pandas as pd
 from docx import Document
 import PyPDF2
-import numpy as np
 import hashlib
 from datetime import datetime
 from tensorflow.keras.models import load_model
 import threading
 # from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-from bacter_identification.models import Survey
+# from asgiref.sync import async_to_sync
 import logging
-import re
-from django.http import JsonResponse
+# import re
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+from core.core.constants import model_file_path, STRAINS, upload_file_path
+from core.core.survey import update_survey
+
+from io import BytesIO, StringIO
+import base64
+import matplotlib.pyplot as plt
+
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 logger = logging.getLogger(__name__)
-model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
-upload_file_path = os.path.dirname(os.path.dirname(__file__))
-
-colors = [
-    'rgba(83, 169, 112, 0.2)',
-    'rgba(27, 174, 131, 0.2)',
-    'rgba(200, 95, 136, 0.2)',
-    'rgba(230, 83, 183, 0.2)',
-    'rgba(68, 18, 116, 0.2)',
-    'rgba(53, 1, 98, 0.2)',
-    'rgba(57, 76, 23, 0.2)',
-    'rgba(1, 212, 84, 0.2)',
-    'rgba(74, 120, 93, 0.2)',
-    'rgba(165, 74, 177, 0.2)',
-    'rgba(225, 153, 236, 0.2)',
-    'rgba(202, 153, 246, 0.2)',
-    'rgba(210, 17, 149, 0.2)',
-    'rgba(132, 11, 131, 0.2)',
-    'rgba(123, 163, 59, 0.2)',
-    'rgba(226, 112, 15, 0.2)',
-    'rgba(135, 241, 131, 0.2)',
-    'rgba(254, 200, 22, 0.2)',
-    'rgba(75, 90, 148, 0.2)',
-    'rgba(122, 234, 64, 0.2)',
-    'rgba(128, 169, 181, 0.2)',
-    'rgba(92, 218, 238, 0.2)',
-    'rgba(248, 64, 155, 0.2)',
-    'rgba(117, 245, 28, 0.2)',
-    'rgba(51, 187, 7, 0.2)',
-    'rgba(45, 73, 173, 0.2)',
-    'rgba(59, 217, 7, 0.2)',
-    'rgba(108, 58, 101, 0.2)',
-    'rgba(123, 186, 130, 0.2)',
-    'rgba(34, 79, 30, 0.2)'
-]
-
-STRAINS = {
-    0: "C. albicans",
-    1: "C. glabrata",
-    2: "K. aerogenes",
-    3: "E. coli 1",
-    4: "E. coli 2",
-    5: "E. faecium",
-    6: "E. faecalis 1",
-    7: "E. faecalis 2",
-    8: "E. cloacae",
-    9: "K. pneumoniae 1",
-    10: "K. pneumoniae 2",
-    11: "P. mirabilis",
-    12: "P. aeruginosa 1",
-    13: "P. aeruginosa 2",
-    14: "MSSA 1",
-    15: "MSSA 3",
-    16: "MRSA 1 (isogenic)",
-    17: "MRSA 2",
-    18: "MSSA 2",
-    19: "S. enterica",
-    20: "S. epidermidis",
-    21: "S. lugdunensis",
-    22: "S. marcescens",
-    23: "S. pneumoniae 2",
-    24: "S. pneumoniae 1",
-    25: "S. sanguinis",
-    26: "Group A Strep.",
-    27: "Group B Strep.",
-    28: "Group C Strep.",
-    29: "Group G Strep.",
-}
 
 def hash_user(regNo, phoneNo):
     return hashlib.sha256((regNo + phoneNo).encode()).hexdigest()
@@ -95,6 +33,12 @@ def save_file(file, directory_name):
     file_name = generate_hashed_filename()
     file_path = os.path.join(upload_file_path, directory_name , file_name + file_extension)
     data = read_file(file)
+    data.dropna(inplace=True)
+    data.reset_index(drop=True, inplace=True)
+    
+    if not all(col.isdigit() for col in data.columns):
+        headers = [f'{i+1}' for i in range(len(data.columns))]
+
     data.to_csv(file_path, index=False)
     return file_name
 
@@ -111,6 +55,11 @@ def get_file(file_name, directory):
         return result
     else:
         return 'File not found'
+    
+def get_file_contents(fileName, dir):
+    file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), dir, fileName + '.csv')
+    with open(file_path, 'r') as file:
+        return file.read()
     
 def read_file(file):
     _, file_extension = os.path.splitext(file.name)
@@ -159,11 +108,8 @@ def read_word(file):
 
 def generate_hashed_filename():
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
-
     hashed_timestamp = hashlib.sha256(timestamp.encode()).hexdigest()
-
     file_name = f"{hashed_timestamp}"
-
     return file_name
 
 # def notify_survey_result(data):
@@ -220,30 +166,32 @@ def predict(data, survey_file_name):
   except Exception as e:
     logger.error(e)
     return None
-  
-def survey_result_available(survey_file_name):
-    survey = Survey.objects.get(
-        surveyFileName=survey_file_name
-    )
-    return survey.resultFileName
-  
 
-def save_survey(user_id, user_email, file_name, data_len, userHash):
-    survey_record = Survey(
-        userId = user_id,
-        userEmail = user_email,
-        surveyFileName = file_name,
-        rowNumber = data_len,
-        type = 'created',
-        userHash = userHash
-    )
-    survey_record.save()
+def diff_graphic(title, y_data, x_data):
+    fig, ax = plt.subplots(figsize=(10, 3))
 
-def update_survey(survey_file_name, result_file_name):
-    survey = Survey.objects.get(surveyFileName=survey_file_name)
-    survey.resultFileName = result_file_name
-    survey.type = 'predicted'
-    survey.save()
+    ax.plot(y_data, label='бодит')
 
-def filter_survey_by_hash(hash):
-    return Survey.objects.filter(userHash=hash)
+    ax.plot(x_data, label='Таамагласан')
+
+    ax.set_xlabel('Долгионы урт (нм)')
+    ax.set_ylabel('Раманы Эрчим')
+    ax.set_title(title)
+    ax.legend()
+
+    plt.tight_layout()
+
+    with BytesIO() as buffer:
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
+        image_png = buffer.getvalue()
+
+        graphic = base64.b64encode(image_png)
+        graphic = graphic.decode('utf-8')
+
+        return graphic
+    
+def rendered_html(template_src, context_dict={}):
+    template = get_template(template_src)
+    html = template.render(context_dict)
+    return html

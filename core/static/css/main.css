@@ -578,3 +578,15 @@ bottom {
 .text-start {
   text-align: start;
 }
+
+.left-4 {
+  left: 10px;
+}
+
+.bottom-0 {
+  bottom: 0;
+}
+
+.top-0 {
+  top: 0;
+}

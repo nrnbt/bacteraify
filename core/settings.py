@@ -63,7 +63,7 @@ AUTH_USER_MODEL = 'authentication.UserAuth'
 AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']
 
 LOGIN_URL = '/login/'
-
+BASE_URL = os.environ.get('BASE_URL', 'http://127.0.0.1:8000')
 # ASGI_APPLICATION = 'core.asgi.application'
 
 WEB_ENDPOINT = os.environ.get('WEB_ENDPOINT', '127.0.0.1')
@@ -159,7 +159,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Singapore'
 
 USE_I18N = True
 
