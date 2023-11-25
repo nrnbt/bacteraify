@@ -3,7 +3,7 @@
 
 {% block user-content %}
   {% if request.path == '/survey/load/' %}
-  <script>
+  <!-- <script>
     document.addEventListener('DOMContentLoaded', (event) => {
       const toaster = document.querySelector('.toaster')
   
@@ -51,6 +51,31 @@
         showError()
       }
     })
+  </script> -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    checkForResult = () => {
+        $.ajax({
+            url: '/survey/check-result/{{ survey_file_name }}',
+            success: (response) => {
+              const resultFileName = response.result_file_name
+                if (resultFileName) {
+                    clearInterval(pollingInterval);
+
+                    const currentUrl = window.location.href
+                    const baseUrl = currentUrl.split('/survey/')[0]
+                    const newUrl = baseUrl + '/survey/result/?file_name=' + resultFileName
+                    window.location.href = newUrl
+                }
+            },
+            error: (error) => {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    var pollingInterval = setInterval(checkForResult, 5000);
+
   </script>
   {% endif %}
 
@@ -64,7 +89,7 @@
           <i class="fa-solid fa-check" style="color:#fff;"></i>
         {% endif %}
       </div>
-      <div class="step-title"> Өгөгдөл оруулах</div>
+      <div class="step-title">Сорьц оруулах</div>
     </div>
     <div class="step-line"></div>
     <div class="step {% if request.path == '/survey/' or request.path == '/survey/upload/' %} incomplete {% elif request.path == '/survey/load/' %} loading {% else %} completed {% endif %}">
@@ -76,7 +101,7 @@
           <i class="fa-solid fa-check" style="color:#fff;"></i>
         {% endif %}
       </div>
-      <div class="step-title">Бактери илрүүлэх</div>
+      <div class="step-title">Бактери таних</div>
     </div>
     <div class="step-line"></div>
     <div class="step {% if request.path == '/survey/' or request.path == '/survey/upload/' or request.path == '/survey/load/' %} incomplete {% elif request.path == '/survey/finish/' %} completed {% else %} active {% endif %}">
@@ -88,7 +113,7 @@
           <i class="fa-solid fa-check" style="color:#fff;"></i>
         {% endif %}
       </div>
-      <div class="step-title">Өгөгдөл татах</div>
+      <div class="step-title">Хариу авах</div>
     </div>
   </div>
   {% if request.path == '/survey/' or request.path == '/survey/upload/' %}
@@ -102,8 +127,8 @@
     <table class="table table-striped w-full">
       <thead>
         <tr>
-          <th scope="col" class="bg-primary text-white text-center">Bacter Label</th>
-          <th scope="col" class="bg-primary text-white text-center">Prediction Value</th>
+          <th scope="col" class="bg-primary text-white text-center">Бактери нэршил</th>
+          <th scope="col" class="bg-primary text-white text-center">Илэрсэн хувь</th>
         </tr>
       </thead>
       <tbody>
@@ -116,19 +141,87 @@
       </tbody>
     </table>
     <button class="btn button bg-primary" type="submit">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    
       <script type="text/javascript">
-        downloadFile = (path) => {
-          window.location.href = path
+        var survey_number = ""
+        downloadPdf = (resultFileName) => {
+          var url = `{% url 'download-survey' %}?result=${resultFileName}`
+          
+          fetch(url)
+            .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network error')
+              }
+              return response.json()
+            })
+            .then(data => {
+                survey_number = data.survey_number
+                generatePDF(data.resp_data)
+            })
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error)
+            })
+        }
+    
+        formatDate = (date) => {
+          var year = date.getFullYear();
+          var month = ('0' + (date.getMonth() + 1)).slice(-2);
+          var day = ('0' + date.getDate()).slice(-2);
+          var hours = ('0' + date.getHours()).slice(-2);
+          var minutes = ('0' + date.getMinutes()).slice(-2);
+          var seconds = ('0' + date.getSeconds()).slice(-2);
+    
+          return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+    
+    
+        generatePDF = (htmlContent) => {
+          const hiddenContainer = document.getElementById('hiddenContainer')
+          hiddenContainer.innerHTML = htmlContent
+    
+          var downloaded_at = document.getElementById('downloaded_at')
+          var formattedDate = formatDate(new Date())
+          downloaded_at.innerHTML =  "<strong>ХЭВЛЭСЭН ОГНОО:</strong> " + formattedDate
+    
+          const jsPDF = window.jspdf.jsPDF
+    
+          const hiddenContent = document.getElementById('hiddenContainer')
+          hiddenContent.style.display = 'block'
+          const pdf = new jsPDF({
+            format: 'a4',
+            orientation: 'portrait' 
+          })
+    
+          html2canvas(hiddenContent,{
+            scale: Math.min(2480 / hiddenContent.offsetWidth, 3508 / hiddenContent.offsetHeight)
+          }).then((hiddenCanvas) => {
+            const hiddenImgData = hiddenCanvas.toDataURL('image/png')
+    
+            const pdfWidth = pdf.internal.pageSize.getWidth()
+            const pdfHeight = pdf.internal.pageSize.getHeight()
+            const imgProps = pdf.getImageProperties(hiddenImgData)
+            const pdfImageWidth = pdfWidth
+            const pdfImageHeight = (imgProps.height * pdfImageWidth) / imgProps.width
+    
+            pdf.addImage(hiddenImgData, 'PNG', 10, 10, pdfImageWidth - 20, pdfImageHeight - 20)
+    
+            pdf.save(survey_number + ".pdf")
+          })
         }
       </script>
-      <a 
+      <a
         class="h-full w-full text-white font-semibold" 
-        href="#"
-        onclick="downloadFile('{% url 'download-survey' %}?result={{ request.GET.file_name|urlencode }}')"
-      >
-        татах
+        href="#" 
+        onclick="downloadPdf('{{ request.GET.file_name|urlencode }}')">
+        <i class="fas fa-file-pdf text-lg me-1"></i>PDF татах
       </a>
     </button>
+    <div class="m-5">
+      {% include 'charts/bar-chart.html' %}
+    </div>
   </div>
+  <div id="hiddenContainer" style="max-width: 1280px; width: 100%"></div>
   {% endif %}
 {% endblock user-content %}

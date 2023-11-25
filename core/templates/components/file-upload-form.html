@@ -3,47 +3,106 @@
 <form 
   id="survey-form" 
   method="post" 
-  class="w-full flex justify-center m-5" 
+  class="uploader-form" 
   action="{% url 'upload-survey' %}" 
   enctype="multipart/form-data"
+  role="form" 
 >
   {% csrf_token %}
-  <div class="uploader-wrapper">
-    <h2>Upload</h2>
-    <div class="uploader-dropper">
-      <div class="flex h-half w-full justify-center p-4">
-        <img src="{% static 'images/icon-images/upload-icon.png' %}" alt="upload-icon">
+    <div class="uploader-wrapper" id="uploader-wrapper">
+      <h2>Сорьцын файл оруулах</h2>
+      <div class="uploader-dropper">
+        <div class="flex h-half w-full justify-center p-4">
+          <img src="{% static 'images/icon-images/upload-icon.png' %}" alt="upload-icon">
+        </div>
+        <div class="flex flex-col justify-evenly h-half">
+          <div class="flex w-full justify-center">
+            <div class="uploader-text">Файлуудыг чирэх, буулгах эсвэл&nbsp;</div>
+            <label for="id_file" class="uploader-text browse">
+              <input 
+                type="file" 
+                id="id_file"
+                name="file"
+                hidden 
+                accept=".txt, .pdf, .xlc, .csv, .word"
+              >
+              Сонгох
+            </label>
+          </div>
+          <div class="uploader-desc">
+            файлын төрөл: Txt, Pdf, Xlc, Csv, Word
+          </div>
+        </div>
       </div>
-      <div class="flex flex-col justify-evenly h-half">
-        <div class="flex w-full justify-center">
-          <div class="uploader-text">Drag & drop files or&nbsp;</div>
-          <label for="upload-survey-input" class="uploader-text browse">
-            <input 
-              type="file" 
-              id="upload-survey-input"
-              name="survey-file"
-              hidden 
-              accept=".txt, .pdf, .xlc, .csv, .word"
-              onchange="document.getElementById('survey-form').submit()"
-            >
-            Browse
-          </label>
-        </div>
-        <div class="uploader-desc">
-          Supported formats: Txt, Pdf, Xlc, Csv, Word
-        </div>
+      <label for="id_file" class="uploader-button flex items-center">
+        <input 
+          type="file" 
+          id="id_file"
+          name="file"
+          hidden
+          accept=".txt, .pdf, .xlc, .csv, .word"
+        >
+        <div class="uploader-button-text">Файл оруулах</div>
+      </label>
+    </div>
+  </div>
+
+
+  <div class="uploader-inputs">
+    <div>
+      <div id="upload-confirmation" style="display:none;">
+        <th><label>Сорьцын файл:</label></th>
+        <th><input class="form-control" type="text" id="filename-display" readonly></th>
       </div>
     </div>
-    <label for="upload-survey-input" class="uploader-button flex items-center">
-      <input 
-        type="file" 
-        id="upload-survey-input" 
-        name="survey-file"
-        hidden
-        accept=".txt, .pdf, .xlc, .csv, .word"
-        onchange="document.getElementById('survey-form').submit()"
-      >
-      <div class="uploader-button-text">Upload Files</div>
-    </label>
+    <div>
+      <th><label for="reg_no">Регистрийн дугаар:</label></th>
+      <td>
+        <input
+          class="form-control" 
+          id="id_reg_no"
+          name="reg_no"
+          type="text"
+          value="{{ form.reg_no.value|default_if_none:'' }}"
+          placeholder="Регистрийн дугаар" 
+          required
+        >
+      </td>
+    </div>
+    <div>
+      <th><label for="id_phone_no">Утасны дугаар:</label></th>
+      <td>
+        <input
+          class="form-control" 
+          id="id_phone_no"
+          name="phone_no"
+          type="number"
+          value="{{ form.phone_no.value|default_if_none:'' }}"
+          placeholder="Утасны дугаар"
+          required
+        >
+      </td>
+    </div>
+  </div>
+  <button
+    type="submit"
+    class="submit-button flex items-center"
+  >
+    <div class="uploader-button-text">Сорьц Шинжлэх</div>
   </div>
 </form>
+
+<script>
+  try {
+    document.getElementById('id_file').addEventListener('change', function() {
+      if (this.files.length > 0) {
+        var fileName = this.files[0].name;
+        document.getElementById('filename-display').value = fileName;
+        document.getElementById('uploader-wrapper').style.display = 'none';
+        document.getElementById('upload-confirmation').style.display = 'block';
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
+</script>

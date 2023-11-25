@@ -1,0 +1,57 @@
+{% extends 'layouts/main.html' %}
+{% load static %}
+
+{% block user-content %}
+<div class="flex flex-col w-full justify-center gap-20">
+  <form 
+    id="search_survey_form_id"
+    method="post" 
+    class="search-survey-form flex gap-20 justify-center"
+    action="{% url 'search-survey' %}" 
+    role="form"
+  >
+    {% csrf_token %}
+      <div>
+        <th><label for="reg_no">Регистрийн дугаар:</label></th>
+        <td>
+          <input
+            class="form-control" 
+            id="id_reg_no"
+            name="reg_no"
+            type="text"
+            value="{{ form.reg_no.value|default_if_none:'' }}"
+            placeholder="Регистрийн дугаар" 
+            required
+          >
+        </td>
+      </div>
+      <div>
+        <th><label for="id_phone_no">Утасны дугаар:</label></th>
+        <td>
+          <input
+            class="form-control" 
+            id="id_phone_no"
+            name="phone_no"
+            type="number"
+            value="{{ form.phone_no.value|default_if_none:'' }}"
+            placeholder="Утасны дугаар"
+            required
+          >
+        </td>
+      </div>
+    <div class="flex flex-col justify-end">
+      <button
+        type="submit"
+        class="btn btn-primary submit-button flex items-center"
+      >
+      Шинжилгээ хайх
+    </button>
+    </div>
+  </form>
+
+  <div class="table-container px-10 rounded-full">
+    {% include 'components/surveys-table.html' %}
+  </div>
+</div>
+
+{% endblock user-content %}

@@ -63,24 +63,24 @@ AUTH_USER_MODEL = 'authentication.UserAuth'
 AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']
 
 LOGIN_URL = '/login/'
-
-ASGI_APPLICATION = 'core.asgi.application'
+BASE_URL = os.environ.get('BASE_URL', 'http://127.0.0.1:8000')
+# ASGI_APPLICATION = 'core.asgi.application'
 
 WEB_ENDPOINT = os.environ.get('WEB_ENDPOINT', '127.0.0.1')
-REDIS_CHANNEL_LAYER_PORT = os.environ.get('REDIS_CHANNEL_LAYER_PORT', '6379')
+# REDIS_CHANNEL_LAYER_PORT = os.environ.get('REDIS_CHANNEL_LAYER_PORT', '6379')
 MY_SQL_PORT = os.environ.get('MY_SQL_PORT', '3306')
 MY_SQL_DB = os.environ.get('MY_SQL_DB', 'bacteraify')
-MY_SQL_USER = os.environ.get('MY_SQL_USER', 'root')
-MY_SQL_PASS = os.environ.get('MY_SQL_PASS', 'arvis123')
+MY_SQL_USER = os.environ.get('MY_SQL_USER', '')
+MY_SQL_PASS = os.environ.get('MY_SQL_PASS', '')
 
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [(WEB_ENDPOINT, REDIS_CHANNEL_LAYER_PORT)],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [(WEB_ENDPOINT, REDIS_CHANNEL_LAYER_PORT)],
+#         },
+#     },
+# }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.your-email-provider.com')
@@ -159,7 +159,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Singapore'
 
 USE_I18N = True
 

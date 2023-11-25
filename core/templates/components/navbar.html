@@ -35,7 +35,8 @@
       </button>
       <div class="dropdown-content">
         <h3 class="border-b">{{ user.email }}</h3>
-        <a class="border-b" href="{% url 'surveys' %}">Шинжилгээнүүд</a>
+        <a class="border-b" href="{% url 'surveys' %}">Шинжилгээний түүх</a>
+        <a class="border-b" href="{% url 'search-survey' %}">Шинжилгээ хайх</a>
         <a href="{% url 'logout' %}">Гарах</a>
       </div>
     </div>

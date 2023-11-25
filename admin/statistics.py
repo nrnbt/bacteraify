@@ -1,4 +1,4 @@
-from core.core import survey as core_model
+from core.core import utils as core_model
 from bacter_identification.models import Survey
 from django.contrib.auth import get_user_model
 from django.utils import timezone

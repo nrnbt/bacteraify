@@ -1,15 +1,21 @@
 from django.shortcuts import render
-from core.core import survey as core_model
 from django.shortcuts import redirect
-import plotly.express as px
-import plotly.offline as po
 import os
 from django.contrib import messages
-from bacter_identification.models import Survey
+from bacter_identification.models import Survey, Bacteria
 import logging
-from django.http import HttpResponse, Http404
+from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
 from io import StringIO
+from core.core.utils import hash_user, save_file, get_file, predict, process_result_data, get_file_contents, diff_graphic, rendered_html
+from core.core.survey import save_survey, survey_result_available, filter_survey_by_hash
+from core.core.constants import colors
+from core.forms import SurveyForm, SurveySearchForm
+import json
+import numpy as np
+from datetime import datetime
+import base64
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -28,51 +34,63 @@ def more(request):
 def upload_survey(request):
     try:
         if request.method == 'POST':
-            uploaded_file = request.FILES['survey-file']
-            file_name = core_model.save_file(uploaded_file, 'survey-files')
-            data = core_model.get_file(file_name, 'survey-files')
-            if file_name:
+            form = SurveyForm(request.POST, request.FILES)
+            if form.is_valid():
+                phone_no = form.cleaned_data['phone_no']
+                reg_no = form.cleaned_data['reg_no'].upper()
+                file = form.cleaned_data['file']
 
-                core_model.save_record(user_id=request.user.id, user_email= request.user.email, file_name=file_name, data_len=len(data))
+                file_name = save_file(file, 'survey-files')
+                data = get_file(file_name, 'survey-files')
+                
+                if file_name:
+                    save_survey(
+                        user_id=request.user.id, 
+                        user_email= request.user.email,
+                        file_name=file_name, 
+                        data_len=len(data),
+                        userHash=hash_user(reg_no, phone_no)
+                    )
 
-                redirect_url = '/survey/load/?file_name={}'.format(file_name)
-                return redirect(redirect_url)
-            else: 
-                return render(request, 'pages/survey.html')
+                    return redirect('/survey/load/?file_name={}'.format(file_name))
+                else:
+                    messages.error(request, 'Error: Something went wrong!', {'form': form})
+                    return render(request, 'pages/survey.html')
+            else:
+                for field, errors in form.errors.items():
+                    messages.error(request, errors)
+                    return render(request, 'pages/survey.html',  {'form': form})
         else:
             return render(request, 'pages/survey.html')
     except Exception as e:
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
-    return render(request, 'pages/survey.html')
+        return render(request, 'pages/survey.html', {'form': form if form else SurveyForm()})
 
 def load_model(request):
     try:
         file_name = request.GET.get('file_name')
-        data = core_model.get_file(file_name, 'survey-files')
-        core_model.predict(data, survey_file_name=file_name)
-
-        context = {
-            'SOCKET_PORT': os.environ.get('SOCKET_PORT', '8001'),
-        }
-
-        return render(request, 'pages/survey.html', context)
+        if survey_result_available(file_name):
+            return render(request, 'pages/survey.html', { 'survey_file_name': file_name })
+        else:
+            data = get_file(file_name, 'survey-files')
+            predict(data, survey_file_name=file_name)
+            return render(request, 'pages/survey.html', { 'survey_file_name': file_name })
+       
     except Exception as e:
+        logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
     return render(request, 'pages/survey.html')
 
 def survey_result(request):
     try:
         file_name = request.GET.get('file_name')
-        data = core_model.get_file(file_name, 'survey-results')
-        result_data = core_model.process_result_data(data.values)
+        data = get_file(file_name, 'survey-results')
+        result_data = process_result_data(data.values)
         
-        fig = px.line(data)
-        plot_html = po.plot(fig, output_type='div')
-
         context = {
-            'plot_html': plot_html,
-            'result_data': result_data
+            'result_data': result_data,
+            'colors': colors
         }
 
         return render(request, 'pages/survey.html', context)
@@ -96,29 +114,71 @@ def download_survey(request):
     survey = request.GET.get('survey')
     result = request.GET.get('result')
 
-    def get_file_contents(fileName, dir):
+    def get_csv_file_contents(fileName, dir):
         file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), dir, fileName + '.csv')
         with open(file_path, 'rb') as file:
             return file.read()
-
-    def send_file(file_contents, file_name):
+        
+    def send_csv(file_contents, file_name):
         response = HttpResponse(file_contents, content_type='application/force-download')
         response['Content-Disposition'] = f'attachment; filename="{file_name}"'
         return response
-    
+
+    def get_predicted_graphic(df, surveyFileName):
+        graphics = []
+
+        x_data = get_file_contents(surveyFileName,'survey-files')
+        for predicted_bacteria in df['Bacteria']:
+            y_data = Bacteria.objects.get(label=predicted_bacteria)
+            spectrum_list  = json.loads(y_data.spectrum)
+            y_data_array = np.array(spectrum_list)
+
+            x_data_io = StringIO(x_data)
+            x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
+            bacteria_img = {
+                'bacteria': predicted_bacteria,
+                'img_data':  diff_graphic(predicted_bacteria, y_data_array, x_data_array)
+            }
+            graphics.append(bacteria_img)
+
+        return graphics
+
     try:
         if result is not None:
-            data = core_model.get_file(result, 'survey-results')
-            result_data = core_model.process_result_data(data.values)
+            data = get_file(result, 'survey-results')
+            result_data = process_result_data(data.values)
             df = pd.DataFrame(list(result_data.items()), columns=['Bacteria', 'Percentage'])
-            output = StringIO()
-            df.to_csv(output, index=False)
-            csv_string = output.getvalue()
-            return send_file(csv_string, result + '.csv')
+
+            survey = Survey.objects.get(resultFileName=result)
+
+            parsed_date = datetime.strptime(str(survey.created_at), '%Y-%m-%d %H:%M:%S.%f%z')
+            formatted_date = parsed_date.strftime('%Y-%m-%d %H:%M:%S')
+
+
+            def encode_image_to_base64(image_relative_path):
+                image_path = os.path.join(settings.BASE_DIR, 'core/static', image_relative_path)
+                with open(image_path, "rb") as image_file:
+                    encoded_string = base64.b64encode(image_file.read())
+                    return encoded_string.decode('utf-8')
+
+            context = {
+                'created_at': formatted_date,
+                'logo_img_data': encode_image_to_base64('images/brand-logo.png'),
+                'number': survey.number,
+                'result_data': result_data,
+                'bacteria_images': get_predicted_graphic(df,survey.surveyFileName),
+                'BASE_URL': os.environ.get('BASE_URL', 'http://127.0.0.1:8000')
+            }
+            
+            resp_data = rendered_html('pages/survey-result-pdf.html', context)
+            res = json.dumps({
+                'resp_data': resp_data, 'survey_number': survey.number 
+            })
+            return HttpResponse(res, content_type="application/json")
         
         elif survey is not None:
-            file_contents = get_file_contents(survey, 'survey-files')
-            return send_file(file_contents, survey + '.csv')
+            file_contents = get_csv_file_contents(survey, 'survey-files')
+            return send_csv(file_contents, survey + '.csv')
         
         else:
             messages.error(request, 'Error: Something went wrong!')
@@ -128,5 +188,3 @@ def download_survey(request):
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
         return render(request, 'pages/surveys.html')
-    
-
