@@ -2,26 +2,19 @@
 {% load static %}
 
 {% block user-content %}
-    <div class="absolute h-full w-full top-0 bottom-0">
-        <div class="center">
-            <h1>Login</h1>
-            <form class="inp" action="{% url 'login' %}" method="post">
-                {% csrf_token %}
-                <input 
-                    class="input items-center" 
-                    id="id_username"
-                    name="username"
-                    type="email"
-                    value="{{ form.username.value|default_if_none:'' }}"
-                    placeholder="нэвтрэх нэр/майл хаяг" 
-                    required
-                >
-                <i class="far fa-envelope"></i>
-                <input class="input" id="id_password" name="password" type="password" placeholder="********" required>
-                <i class="fas fa-lock"></i>
-                <input class="input" type="submit" value="Нэвтрэх">
-            </form>
-        </div>
+<div class="absolite">
+    <div class="position">
+        <h1>Login</h1>
+        <form class="inp" action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <input class="input items-center" id="id_username" name="username" type="email"
+                value="{{ form.username.value|default_if_none:'' }}" placeholder="нэвтрэх нэр/майл хаяг" required>
+            <i class="far fa-envelope"></i>
+            <input class="input" id="id_password" name="password" type="password" placeholder="********" required>
+            <i class="fas fa-lock"></i>
+            <input class="input" type="submit" value="Нэвтрэх">
+        </form>
     </div>
+</div>
 
 {% endblock user-content %}

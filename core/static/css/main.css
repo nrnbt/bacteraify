@@ -271,7 +271,7 @@ bottom {
 }
 
 .top-0 {
-  top: 0px;
+  top: 10px;
 }
 
 .left-0 {
@@ -577,4 +577,10 @@ bottom {
 
 .text-start {
   text-align: start;
+}
+
+
+
+.color-bck{
+  background: aqua;
 }

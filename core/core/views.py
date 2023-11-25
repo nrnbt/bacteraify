@@ -22,6 +22,9 @@ def survey(request):
 def faq(request):
     return render(request, 'pages/faq.html')
 
+def more(request):
+    return render(request, 'pages/more.html')
+
 def upload_survey(request):
     try:
         if request.method == 'POST':
@@ -125,3 +128,5 @@ def download_survey(request):
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
         return render(request, 'pages/surveys.html')
+    
+
