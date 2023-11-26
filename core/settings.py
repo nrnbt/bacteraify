@@ -131,7 +131,10 @@ DATABASES = {
         'USER': MY_SQL_USER,
         'PASSWORD': MY_SQL_PASS,
         'HOST': WEB_ENDPOINT,
-        'PORT': MY_SQL_PORT
+        'PORT': MY_SQL_PORT,
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
 
