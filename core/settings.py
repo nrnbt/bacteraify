@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os 
 import logging
+import dj_database_url
 
 logger = logging.getLogger(__name__)
 
@@ -134,6 +135,11 @@ DATABASES = {
     }
 }
 
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
+del DATABASES['default']['OPTIONS']['sslmode']
+DATABASES['default']['OPTIONS']['ssl'] =  {'ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -170,12 +176,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR / "core" / "static"),
-    os.path.join(BASE_DIR / "admin" / "static")
+    BASE_DIR / "core" / "static",
+    BASE_DIR / "admin" / "static"
 ]
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR / "core" / "static")
+STATIC_ROOT = BASE_DIR / "core" / "staticfiles"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "core" / "media"
