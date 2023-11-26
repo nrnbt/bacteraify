@@ -114,6 +114,8 @@ def download_survey(request):
     survey = request.GET.get('survey')
     result = request.GET.get('result')
 
+    print(survey, result)
+
     def get_csv_file_contents(fileName, dir):
         file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), dir, fileName + '.csv')
         with open(file_path, 'rb') as file:
@@ -160,7 +162,7 @@ def download_survey(request):
                 with open(image_path, "rb") as image_file:
                     encoded_string = base64.b64encode(image_file.read())
                     return encoded_string.decode('utf-8')
-
+            print(survey)
             context = {
                 'created_at': formatted_date,
                 'logo_img_data': encode_image_to_base64('images/brand-logo.png'),
@@ -169,7 +171,6 @@ def download_survey(request):
                 'bacteria_images': get_predicted_graphic(df,survey.surveyFileName),
                 'BASE_URL': os.environ.get('BASE_URL', 'http://127.0.0.1:8000')
             }
-            
             resp_data = rendered_html('pages/survey-result-pdf.html', context)
             res = json.dumps({
                 'resp_data': resp_data, 'survey_number': survey.number 
@@ -188,3 +189,39 @@ def download_survey(request):
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
         return render(request, 'pages/surveys.html')
+
+def check_survey_result(request, file_name=None):
+    if file_name is not None:
+        result = survey_result_available(file_name)
+        if result is not None:
+            return JsonResponse({"result_file_name": result})
+        else:
+            return JsonResponse({"error": 'result not found'})
+    else:
+        return JsonResponse({"error": 'survey not found'})
+    
+def search_survey(request):
+    form = SurveySearchForm()
+    try:
+        if request.method == 'POST':
+            form = SurveySearchForm(request.POST)
+            if form.is_valid():
+                phone_no = form.cleaned_data['phone_no']
+                reg_no = form.cleaned_data['reg_no']
+                user_hash = hash_user(reg_no, phone_no)
+                surveys = filter_survey_by_hash(user_hash)
+                if len(surveys) > 0:
+                    return render(request, 'pages/search_survey.html', {'form': form, 'surveys': surveys})
+                else:
+                    messages.error(request, 'Error: Survey not found', {'form': form})
+                    return render(request, 'pages/search_survey.html')
+            else:
+                for field, errors in form.errors.items():
+                    messages.error(request, errors)
+                    return render(request, 'pages/search_survey.html',  {'form': form})
+        else:
+            return render(request, 'pages/search_survey.html', {'form': form})
+    except Exception as e:
+        logger.error(e)
+        messages.error(request, 'Error: Something went wrong!')
+        return render(request, 'pages/search_survey.html', {'form': form if form else SurveySearchForm()})
