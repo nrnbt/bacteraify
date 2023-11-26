@@ -57,7 +57,8 @@ INSTALLED_APPS = [
     'authentication',
     'admin_soft.apps.AdminSoftDashboardConfig',
     # 'admin'
-    'bacter_identification'
+    'bacter_identification',
+    'whitenoise.runserver_nostatic',
 ]
 
 AUTH_USER_MODEL = 'authentication.UserAuth'
@@ -98,6 +99,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -191,6 +193,7 @@ STATICFILES_DIRS = [
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "core" / "staticfiles"
+STATICFILES_STORAGE="whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "core" / "media"
