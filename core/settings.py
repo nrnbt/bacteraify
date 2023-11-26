@@ -142,13 +142,13 @@ DATABASES = {
 # del DATABASES['default']['OPTIONS']['sslmode']
 # DATABASES['default']['OPTIONS']['ssl'] =  {'ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
 
-if 'OPTIONS' not in DATABASES['default']:
-    DATABASES['default']['OPTIONS'] = {}
+# if 'OPTIONS' not in DATABASES['default']:
+#     DATABASES['default']['OPTIONS'] = {}
 
-DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
+# DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
 
-if 'sslmode' in DATABASES['default']['OPTIONS']:
-    del DATABASES['default']['OPTIONS']['sslmode']
+# if 'sslmode' in DATABASES['default']['OPTIONS']:
+#     del DATABASES['default']['OPTIONS']['sslmode']
 
 # DATABASES['default']['OPTIONS']['ssl'] = {'ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
 
