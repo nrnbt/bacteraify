@@ -18,7 +18,10 @@ from core.core.survey import update_survey
 
 from io import BytesIO
 import base64
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 
 from django.template.loader import get_template
 
@@ -158,7 +161,7 @@ def predict(data, survey_file_name):
 
         update_survey(survey_file_name, result_file_name=file_name)
 
-        notify_survey_result({ "file_name": file_name })
+        # notify_survey_result({ "file_name": file_name })
     thread = threading.Thread(target=task)
     thread.start()
     return 'Prediction started'
@@ -183,6 +186,7 @@ def diff_graphic(title, y_data, x_data):
 
     with BytesIO() as buffer:
         plt.savefig(buffer, format='png')
+        plt.close(fig)
         buffer.seek(0)
         image_png = buffer.getvalue()
 
