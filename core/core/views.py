@@ -114,8 +114,6 @@ def download_survey(request):
     survey = request.GET.get('survey')
     result = request.GET.get('result')
 
-    print(survey, result)
-
     def get_csv_file_contents(fileName, dir):
         file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), dir, fileName + '.csv')
         with open(file_path, 'rb') as file:
@@ -162,7 +160,7 @@ def download_survey(request):
                 with open(image_path, "rb") as image_file:
                     encoded_string = base64.b64encode(image_file.read())
                     return encoded_string.decode('utf-8')
-            print(survey)
+
             context = {
                 'created_at': formatted_date,
                 'logo_img_data': encode_image_to_base64('images/brand-logo.png'),
