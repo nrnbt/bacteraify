@@ -29,5 +29,8 @@
       "src": "/(.*)",
       "dest": "bacterafiy/wsgi.py"
     }
+  ],
+  "rewrites": [
+    {"source": "/(.*)", "destination": "/"}
   ]
 }
