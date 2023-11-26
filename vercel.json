@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "bacteraify/wsgi.py",
+      "src": "/core/wsgi.py",
       "use": "@vercel/python",
       "config": {
         "maxLambdaSize": "15mb",
@@ -27,7 +27,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "bacterafiy/wsgi.py"
+      "dest": "/core/wsgi.py"
     }
   ]
 }
