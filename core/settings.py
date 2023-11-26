@@ -73,7 +73,7 @@ MY_SQL_PORT = os.environ.get('MY_SQL_PORT', '3306')
 MY_SQL_DB = os.environ.get('MY_SQL_DB', 'bacteraify')
 MY_SQL_USER = os.environ.get('MY_SQL_USER', '')
 MY_SQL_PASS = os.environ.get('MY_SQL_PASS', '')
-
+MY_SQL_HOST= os.environ.get('MY_SQL_HOST', '')
 # CHANNEL_LAYERS = {
 #     'default': {
 #         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -130,16 +130,25 @@ DATABASES = {
         'NAME': MY_SQL_DB,
         'USER': MY_SQL_USER,
         'PASSWORD': MY_SQL_PASS,
-        'HOST': WEB_ENDPOINT,
+        'HOST': MY_SQL_HOST,
         'PORT': MY_SQL_PORT
     }
 }
 
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
-del DATABASES['default']['OPTIONS']['sslmode']
-DATABASES['default']['OPTIONS']['ssl'] =  {'ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
+# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
+# del DATABASES['default']['OPTIONS']['sslmode']
+# DATABASES['default']['OPTIONS']['ssl'] =  {'ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
 
+if 'OPTIONS' not in DATABASES['default']:
+    DATABASES['default']['OPTIONS'] = {}
+
+DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
+
+if 'sslmode' in DATABASES['default']['OPTIONS']:
+    del DATABASES['default']['OPTIONS']['sslmode']
+
+# DATABASES['default']['OPTIONS']['ssl'] = {'ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
