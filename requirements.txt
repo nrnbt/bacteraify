@@ -9,3 +9,4 @@ matplotlib==3.8.2
 dj_database_url==2.1.0
 pymysql==1.1.0
 psycopg2-binary==2.9.9
+gunicorn==21.2.0
