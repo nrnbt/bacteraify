@@ -16,12 +16,14 @@ from django.views.decorators.csrf import csrf_exempt
 from core.core.constants import model_file_path, STRAINS, upload_file_path
 from core.core.survey import update_survey
 
-from io import BytesIO, StringIO
+from io import BytesIO
 import base64
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
+
 from django.template.loader import get_template
-from xhtml2pdf import pisa
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +39,8 @@ def save_file(file, directory_name):
     data.reset_index(drop=True, inplace=True)
     
     if not all(col.isdigit() for col in data.columns):
-        headers = [f'{i+1}' for i in range(len(data.columns))]
+        headers = [f'{i+1}' for i in range(len(data.columns))] 
+        # clean file data
 
     data.to_csv(file_path, index=False)
     return file_name
@@ -158,7 +161,7 @@ def predict(data, survey_file_name):
 
         update_survey(survey_file_name, result_file_name=file_name)
 
-        notify_survey_result({ "file_name": file_name })
+        # notify_survey_result({ "file_name": file_name })
     thread = threading.Thread(target=task)
     thread.start()
     return 'Prediction started'
@@ -183,6 +186,7 @@ def diff_graphic(title, y_data, x_data):
 
     with BytesIO() as buffer:
         plt.savefig(buffer, format='png')
+        plt.close(fig)
         buffer.seek(0)
         image_png = buffer.getvalue()
 

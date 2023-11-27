@@ -13,7 +13,7 @@ Scripts/
 Include/
 
 #models
-core/models
+# core/models
 cnn_model
 
 #user data files

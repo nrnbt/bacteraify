@@ -8,6 +8,7 @@ Before you get started, make sure you have the following installed:
 
 - Python 3.10.8
 - `virtualenv` (if not already installed)
+- python -m venv venv
 
 ## Getting Started
 
