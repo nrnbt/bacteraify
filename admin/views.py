@@ -13,8 +13,6 @@ from django.contrib import messages
 import hashlib
 import logging
 import os
-from django.db.models import Count, Sum
-from django.db.models.functions import ExtractYear, ExtractMonth
 from django.utils import timezone
 from admin.statistics import get_all_survey_number, get_all_user_number, new_users_monthly, surveys_monthly, result_by_customer
 
@@ -41,7 +39,6 @@ def admin_login(request):
     try:
         if request.method == 'POST':
             form = LoginForm(request, data=request.POST)
-            
             if form.is_valid():
                 username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password')
@@ -63,7 +60,8 @@ def admin_login(request):
                 return render(request, 'account/login.html', { 'form': LoginForm() })
     except Exception as e:
         messages.error(request, e)
-        return render(request, 'account/login.html')
+        logger.error(e)
+        return render(request, 'account/login.html', { 'form': LoginForm() })
     
 def admin_logout(request):
     logout(request)

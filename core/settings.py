@@ -40,9 +40,9 @@ load_env_variables()
 SECRET_KEY = 'django-insecure-%7j^iwbsz(l7#=job4a7oc*!4om8oj82^gr-_-#qz47t5p6kmy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', False)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -57,7 +57,9 @@ INSTALLED_APPS = [
     'authentication',
     'admin_soft.apps.AdminSoftDashboardConfig',
     # 'admin'
-    'bacter_identification'
+    'bacter_identification',
+    'whitenoise.runserver_nostatic',
+    'storages'
 ]
 
 AUTH_USER_MODEL = 'authentication.UserAuth'
@@ -73,7 +75,7 @@ MY_SQL_PORT = os.environ.get('MY_SQL_PORT', '3306')
 MY_SQL_DB = os.environ.get('MY_SQL_DB', 'bacteraify')
 MY_SQL_USER = os.environ.get('MY_SQL_USER', '')
 MY_SQL_PASS = os.environ.get('MY_SQL_PASS', '')
-
+MY_SQL_HOST= os.environ.get('MY_SQL_HOST', '')
 # CHANNEL_LAYERS = {
 #     'default': {
 #         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -98,6 +100,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -130,16 +133,10 @@ DATABASES = {
         'NAME': MY_SQL_DB,
         'USER': MY_SQL_USER,
         'PASSWORD': MY_SQL_PASS,
-        'HOST': WEB_ENDPOINT,
+        'HOST': MY_SQL_HOST,
         'PORT': MY_SQL_PORT
     }
 }
-
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-DATABASES['default']['OPTIONS']['charset'] = 'utf8mb4'
-del DATABASES['default']['OPTIONS']['sslmode']
-DATABASES['default']['OPTIONS']['ssl'] =  {'ca': os.environ.get('MYSQL_ATTR_SSL_CA')}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -171,16 +168,35 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATICFILES_DIRS = [
-    BASE_DIR / "core" / "static",
-    BASE_DIR / "admin" / "static"
-]
+USE_S3=os.environ.get('USE_S3', False)
 
-STATIC_URL = "/static/"
+if USE_S3:
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', '')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', '')
+    AWS_S3_REGION_NAME = 'us-east-1'
+    AWS_S3_SIGNATURE_NAME = 's3v4'
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
+    # AWS_DEFAULT_ACL = 'public-read'
+    # AWS_S3_VERITY = True
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    AWS_LOCATION = 'static'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+else:
+    STATIC_URL = "/static/"
+    STATICFILES_DIRS = [
+        BASE_DIR / "core" / "static",
+        BASE_DIR / "admin" / "static"
+    ]
+
 STATIC_ROOT = BASE_DIR / "core" / "staticfiles"
 
 MEDIA_URL = "media/"

@@ -34,7 +34,7 @@ def user_login(request):
             messages.error(request, 'Error: Authentication failed!')
             return render(request, 'pages/login.html', { 'form': form })
     else:
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and not user.is_superuser:
             return redirect('home')
         else:
             return render(request, 'pages/login.html')

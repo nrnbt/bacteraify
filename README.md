@@ -33,3 +33,8 @@ Before you get started, make sure you have the following installed:
 
 ## Start project
 Use "python manage.py runserver" command for start project
+
+## Static files
+   run "python manage.py collectstatic --noinput"
+   if USE_S3 is true on env it will use aws s3 bucket
+   else static files will load from local
