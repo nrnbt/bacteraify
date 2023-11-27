@@ -25,8 +25,9 @@ def read_file_from_s3(key):
             aws_secret_access_key=aws_secret_access_key,
         )
         response = s3_client.get_object(Bucket=aws_bucket_name, Key=key)
-        with open(model_file_path, 'wb') as file:
-            file.write(response['Body'].read())
-        return ''
+        file = response['Body'].readt()
+        # with open(model_file_path, 'wb') as file:
+            # file.write(file)
+        return file
     except Exception as e:
         logger.error(e)

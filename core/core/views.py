@@ -150,10 +150,8 @@ def download_survey(request):
             df = pd.DataFrame(list(result_data.items()), columns=['Bacteria', 'Percentage'])
 
             survey = Survey.objects.get(resultFileName=result)
-
             parsed_date = datetime.strptime(str(survey.created_at), '%Y-%m-%d %H:%M:%S.%f%z')
             formatted_date = parsed_date.strftime('%Y-%m-%d %H:%M:%S')
-
 
             def encode_image_to_base64(image_relative_path):
                 image_path = os.path.join(settings.BASE_DIR, 'core/static', image_relative_path)
