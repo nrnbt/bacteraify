@@ -21,6 +21,7 @@ import base64
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from core.core.s3_utils import read_file_from_s3
 
 
 from django.template.loader import get_template
@@ -154,6 +155,7 @@ def predict(data, survey_file_name):
   try:
     def task():
         model = load_model(model_file_path)
+        # model = read_file_from_s3('model/cnn_model.h5')
         logger.info('------------------------------ model ------------------------------\n', model, '\n')
         y_pred = model.predict(data)
         logger.info('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
