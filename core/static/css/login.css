@@ -29,7 +29,7 @@ form i {
     position: absolute;
     font-size: 18px;
     color: gray;
-    margin: 15px 0 0 -370px;
+    margin: 15px 0 0;
 }
 
 i.fa-lock {
