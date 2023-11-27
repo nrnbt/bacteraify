@@ -154,7 +154,10 @@ def process_result_data(prediction):
 def predict(data, survey_file_name):
   try:
     def task():
-        model = load_model(model_file_path)
+        model_data = read_file_from_s3('model/cnn_model.h5')
+        model_stream = BytesIO(model_data)
+        model = load_model(model_stream)
+        # model = load_model(model_file_path)
         # model = read_file_from_s3('model/cnn_model.h5')
         logger.info('------------------------------ model ------------------------------\n', model, '\n')
         y_pred = model.predict(data)
