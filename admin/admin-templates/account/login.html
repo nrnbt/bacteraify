@@ -22,12 +22,12 @@
             </div>
             <div class="card-body">
               <form role="form" method="post" action="#">
+                {% csrf_token %}
                 {% if form.non_field_errors %}
                   {% for error in form.non_field_errors %}
                     <span class="text-danger">{{ error }}</span>
                   {% endfor %}
                 {% endif %}
-                {% csrf_token %}
                 {% for field in form %}
                   <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                   <div class="mb-3">
