@@ -23,6 +23,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from core.core.s3_utils import read_file_from_s3
 
+
 from django.template.loader import get_template
 
 logger = logging.getLogger(__name__)

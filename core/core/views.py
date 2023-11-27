@@ -160,7 +160,6 @@ def download_survey(request):
                 with open(image_path, "rb") as image_file:
                     encoded_string = base64.b64encode(image_file.read())
                     return encoded_string.decode('utf-8')
-
             context = {
                 'created_at': formatted_date,
                 'logo_img_data': encode_image_to_base64('images/brand-logo.png'),
