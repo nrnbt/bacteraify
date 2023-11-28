@@ -42,7 +42,6 @@
         align-items: center;
         justify-content: center;
         text-align: center;
-        margin-top: 200px;
     }
 
     form i {
@@ -56,6 +55,10 @@
         margin-top: 15px;
     }
 
+    .main-screen {
+        position: absolute;
+        top: 30%;
+    }
 
     @media (max-width: 570px) {
         form i {
@@ -69,27 +72,30 @@
             margin-top: 15px;
         }
 
-        .flex-d {
-            margin-top: 100px;
+        .main-screen {
+            position: absolute;
+            top: 40%;
         }
+
     }
 </style>
 
-
-<form action="{% url 'login' %}" class="flex-d" method="post">
-    {% csrf_token %}
-    <h1>Bacteraify -д нэвтрэх</h1>
-    <div class="input-container">
-        <input class="input-field" id="id_username" name="username" type="email"
-            value="{{ form.username.value|default_if_none:'' }}" placeholder="нэвтрэх нэр/майл хаяг" required>
-        <i class="far fa-envelope"></i>
-    </div>
-    <div class="input-container">
-        <input class="input-field" id="id_password" name="password" type="password" placeholder="********" required>
-        <i class="fas fa-lock"></i>
-    </div>
-    <button class="button-submit" type="submit">Нэвтрэх</button>
-</form>
+<div class="main-screen">
+    <form action="{% url 'login' %}" class="flex-d" method="post">
+        {% csrf_token %}
+        <h1>Bacteraify -д нэвтрэх</h1>
+        <div class="input-container">
+            <input class="input-field" id="id_username" name="username" type="email"
+                value="{{ form.username.value|default_if_none:'' }}" placeholder="нэвтрэх нэр/майл хаяг" required>
+            <i class="far fa-envelope"></i>
+        </div>
+        <div class="input-container">
+            <input class="input-field" id="id_password" name="password" type="password" placeholder="********" required>
+            <i class="fas fa-lock"></i>
+        </div>
+        <button class="button-submit" type="submit">Нэвтрэх</button>
+    </form>
+</div>
 
 
 {% endblock user-content %}
