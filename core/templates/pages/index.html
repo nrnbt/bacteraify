@@ -200,6 +200,9 @@
       var clickedInsidePopup = Array.from(popupElements).some(popup => popup.contains(event.target));
       if (!clickedInsidePopup) {
         popupContainer.style.display = "none";
+        popupElements.forEach((p) => {
+          p.style.display = 'none'
+        })
       }
     }
     popupContainer.addEventListener('click', handleClickOutside);
