@@ -1,3 +1,4 @@
+source venv/bin/activate
 #!/bin/bash
 # Path to your build script
 ./build.sh
