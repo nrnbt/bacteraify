@@ -2,54 +2,38 @@
 {% load static %}
 
 {% block user-content %}
-<div class="bnr-container">
-  <div class="relative h-full w-1/2">
-    <img src="{% static 'images/home-bnr.png' %}" alt="home-bnr" class="object-contain w-full">
-    <div class="absolute flex flex-col top-0 h-full justify-evenly bnr-txt">
-      <div class="grid">
-        <h1>Бодит үр дүн.</h1>
-        <h1>Өндөр нарийвчлал.</h1>
-        <h1>Богино хугацаа.</h1>
+<div class="d-flex">
+  <div class="row">
+      <div class="position-relative col-md-6 col-12" style="padding-left: 0 !important; padding-right: 0 !important;">
+        <img src="{% static 'images/bnr-1.png' %}" class="w-100 h-100 object-fit-cover">
+        <div class="position-absolute top-0 bottom-0 left-0 right-0 container-fluid">
+          <div class="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+            <h1 class="text-center">Бодит үр дүн.</h1>
+            <h1 class="text-center">Өндөр нарийвчлал.</h1>
+            <h1 class="text-center">Богино хугацаа.</h1>
+          </div>
+        </div>
       </div>
-<!-- 
-      <a href="/more" class="flex w-fit gap-10 items-center">
-        <img src="{% static 'images/play-icon.png' %}" alt="play-icon" class="more-icon">
-        <h2>Дэлгэрэнгүй бичлэг</h2>
-      </a> -->
-    </div>
-  </div>
-  <div id="main-bnr-carousel" class="carousel slide h-full w-1/2">
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{% static 'images/home-carousel-bnr.png' %}" class="d-block w-100" alt="home-carousel-bnr">
+      <div class="col-md-6 col-12" style="padding-left: 0 !important; padding-right: 0 !important;">
+        <img src="{% static 'images/bnr-2.png' %}" class="w-100 h-100 object-fit-cover">
       </div>
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
   </div>
 </div>
 
 <script>
   window.onload = function () {
     const parents = document.querySelectorAll('.info');
+    var child = parents[0].querySelector('.info-item');
+    const firstChildHeight = child.offsetHeight
 
     function adjustParentHeight(parent) {
       var child = parent.querySelector('.info-item');
       if (child) {
-        parent.style.height = child.offsetHeight + 'px';
+        parent.style.height = firstChildHeight + 'px';
       }
     }
-
     parents.forEach(function (parent) {
       adjustParentHeight(parent);
-
-      // Adjust height on window resize
       window.onresize = function () {
         adjustParentHeight(parent);
       };
@@ -113,78 +97,78 @@
   </div>
   <div class="scroll-container">
     <div class="scroll-element">
-      <img class="scroll-image" src="{% static 'images/slide1.jpg' %}" alt="Slide 1">
-      <img class="scroll-image" src="{% static 'images/slide2.jpg' %}" alt="Slide 2">
-      <img class="scroll-image" src="{% static 'images/slide3.jpg' %}" alt="Slide 3">
-      <img class="scroll-image" src="{% static 'images/slide4.jpg' %}" alt="Slide 4">
-      <img class="scroll-image" src="{% static 'images/slide5.jpg' %}" alt="Slide 5">
-      <img class="scroll-image" src="{% static 'images/slide6.jpg' %}" alt="Slide 6">
-      <img class="scroll-image" src="{% static 'images/slide7.jpg' %}" alt="Slide 7">
-      <img class="scroll-image" src="{% static 'images/slide8.jpg' %}" alt="Slide 8">
+      <img class="scroll-image" src="{% static 'images/slide1.jpg' %}" alt="-1">
+      <img class="scroll-image" src="{% static 'images/slide2.jpg' %}" alt="-2">
+      <img class="scroll-image" src="{% static 'images/slide3.jpg' %}" alt="-3">
+      <img class="scroll-image" src="{% static 'images/slide4.jpg' %}" alt="-4">
+      <img class="scroll-image" src="{% static 'images/slide5.jpg' %}" alt="-5">
+      <img class="scroll-image" src="{% static 'images/slide6.jpg' %}" alt="-6">
+      <img class="scroll-image" src="{% static 'images/slide7.jpg' %}" alt="-7">
+      <img class="scroll-image" src="{% static 'images/slide8.jpg' %}" alt="-8">
 
-      <img class="scroll-image" src="{% static 'images/slide1.jpg' %}" alt="Slide 1">
-      <img class="scroll-image" src="{% static 'images/slide2.jpg' %}" alt="Slide 2">
-      <img class="scroll-image" src="{% static 'images/slide3.jpg' %}" alt="Slide 3">
-      <img class="scroll-image" src="{% static 'images/slide4.jpg' %}" alt="Slide 4">
-      <img class="scroll-image" src="{% static 'images/slide5.jpg' %}" alt="Slide 5">
-      <img class="scroll-image" src="{% static 'images/slide6.jpg' %}" alt="Slide 6">
-      <img class="scroll-image" src="{% static 'images/slide7.jpg' %}" alt="Slide 7">
-      <img class="scroll-image" src="{% static 'images/slide8.jpg' %}" alt="Slide 8">
+      <img class="scroll-image" src="{% static 'images/slide1.jpg' %}" alt="-1">
+      <img class="scroll-image" src="{% static 'images/slide2.jpg' %}" alt="-2">
+      <img class="scroll-image" src="{% static 'images/slide3.jpg' %}" alt="-3">
+      <img class="scroll-image" src="{% static 'images/slide4.jpg' %}" alt="-4">
+      <img class="scroll-image" src="{% static 'images/slide5.jpg' %}" alt="-5">
+      <img class="scroll-image" src="{% static 'images/slide6.jpg' %}" alt="-6">
+      <img class="scroll-image" src="{% static 'images/slide7.jpg' %}" alt="-7">
+      <img class="scroll-image" src="{% static 'images/slide8.jpg' %}" alt="-8">
     </div>
   </div>
-  <div class="popup-container">
+  <div class="popup-container" >
     
-    <div class="popup-element popup-center">
-      <span>&times;</span>
+    <div class="popup-element popup-element-1 popup-center" style="display: none;">
+      <span class="close-btn">&times;</span>
       <h2>Химийн бодисыг тодорхойлох</h2>
-      <img class="popup-image" src="{% static 'images/slide1.jpg' %}" alt="Slide 1">
+      <img class="popup-image" src="{% static 'images/slide1.jpg' %}" alt="1">
       <h3>Раман спектроскопи нь химийн салбарт молекулуудыг тодорхойлох, химийн холбоо, молекул доторх холбоог судлахад
         ашиглагддаг.</h3>
     </div>
-    <div class="popup-element popup-center">
-      <span>&times;</span>
+    <div class="popup-element popup-element-2 popup-center" style="display: none;">
+      <span class="close-btn">&times;</span>
       <h2>Материалын шинж чанар</h2>
-      <img class="popup-image" src="{% static 'images/slide2.jpg' %}" alt="Slide 2">
+      <img class="popup-image" src="{% static 'images/slide2.jpg' %}" alt="2">
       <h3>Физикт Раман спектроскопийг материалын шинж чанарыг тодорхойлох, температурыг хэмжих, дээжийн
         талстографийн чиглэлийг олоход ашиглагддаг.</h3>
     </div>
-    <div class="popup-element popup-center">
-      <span>&times;</span>
+    <div class="popup-element popup-element-3 popup-center" style="display: none;">
+      <span class="close-btn">&times;</span>
       <h2>Биоанагаах</h2>
       <img class="popup-image" src="{% static 'images/slide3.jpg' %}" alt="Slide 3">
       <h3>Раман спектроскопи нь биоанагаахын судалгаа, биомолекулыг тодорхойлох, эсийн бүтцийг судлах, хорт хавдар зэрэг
         өвчнийг илрүүлэх, амьд эс доторх эмийн харилцан үйлчлэлийг хянахад ашиглагддаг.</h3>
     </div>
-    <div class="popup-element popup-center">
-      <span>&times;</span>
+    <div class="popup-element popup-element-4 popup-center" style="display: none;">
+      <span class="close-btn">&times;</span>
       <h2>Байгаль орчин</h2>
       <img class="popup-image" src="{% static 'images/slide4.jpg' %}" alt="Slide 4">
       <h3>Раман спектроскопи нь байгаль орчныг бохирдуулагч бодисыг тодорхойлох, усны чанарыг хянах, хөрс, агаар, усан
         дахь бохирдлыг судлахад ашиглагддаг.</h3>
     </div>
-    <div class="popup-element popup-center">
-      <span>&times;</span>
+    <div class="popup-element popup-element-5 popup-center" style="display: none;">
+      <span class="close-btn">&times;</span>
       <h2>Урлаг, соёл</h2>
       <img class="popup-image" src="{% static 'images/slide5.jpg' %}" alt="Slide 5">
       <h3>Раман спектроскопи нь урлаг, соёлын олдвор, бүтээлийн объектуудын пигментүүдийг тодорхойлох, түүхийн
         олдворуудад шинжилгээ хийх, насжилтыг тодорхойлоход ашиглагддаг.</h3>
     </div>
-    <div class="popup-element popup-center">
-      <span>&times;</span>
+    <div class="popup-element popup-element-6 popup-center" style="display: none;">
+      <span class="close-btn">&times;</span>
       <h2>Эмийн шинжилгээ</h2>
       <img class="popup-image" src="{% static 'images/slide6.jpg' %}" alt="Slide 6">
       <h3>Раман спектроскопи нь эмийн найрлагыг тодорхойлох, шинжилгээ хийх, эмийн харилцан үйлчлэлийг хянахад
         ашиглагддаг.</h3>
     </div>
-    <div class="popup-element popup-center">
-      <span>&times;</span>
+    <div class="popup-element popup-element-7 popup-center" style="display: none;">
+      <span class="close-btn">&times;</span>
       <h2>Шүүх шинжилгээ</h2>
       <img class="popup-image" src="{% static 'images/slide7.jpg' %}" alt="Slide 7">
       <h3>Раман спектроскопи нь ул мөр нотлох баримтыг илрүүлэх, хэргийн газраас олдсон нотлох баримтыг шинжлэхэд
         ашиглагддаг.</h3>
     </div>
-    <div class="popup-element popup-center">
-      <span>&times;</span>
+    <div class="popup-element popup-element-8 popup-center" style="display: none;">
+      <span class="close-btn">&times;</span>
       <h2>Холын зайнаас биет илрүүлэх</h2>
       <img class="popup-image" src="{% static 'images/slide8.jpg' %}" alt="Slide 8">
       <h3>Раман спектроскопи нь лазер туяа ашиглан тэсрэх бодисыг аюулгүй зайнаас илрүүлэх хэрэгсэл болгон ашиглагддаг.
@@ -198,27 +182,29 @@
   document.addEventListener('DOMContentLoaded', function () {
     const images = document.querySelectorAll('.scroll-image');
     const popupContainer = document.querySelector('.popup-container');
-    const popupElement = document.querySelectorAll('.popup-element');
-
-
     images.forEach(function (image) {
       image.addEventListener('click', function () {
+        const popupElement = document.querySelector('.popup-element' + image.alt);
+        popupElement.style.display = 'block'
         popupContainer.style.display = 'block';
       });
     });
-
-    const closeButton = document.querySelector('.popup-container .popup-element span');
-    if (closeButton) {
-      closeButton.addEventListener('click', function () {
-        popupContainer.style.display = 'none';
-      });
+    var closeButtons = document.querySelectorAll('.close-btn');
+    closeButtons.forEach(function(button) {
+      button.onclick = function() {
+        popupContainer.style.display = "none";
+      };
+    });
+    function handleClickOutside(event) {
+      var popupElements = document.querySelectorAll('[class^="popup-element"]');
+      var clickedInsidePopup = Array.from(popupElements).some(popup => popup.contains(event.target));
+      if (!clickedInsidePopup) {
+        popupContainer.style.display = "none";
+      }
     }
+    popupContainer.addEventListener('click', handleClickOutside);
   });
 </script>
-
-
-
-
 
 <main class="main pb-5">
   <div class="text-wrapper">
@@ -226,7 +212,7 @@
   </div>
   <div class="bnr-container">
     <div class="bottom-bnr-item">
-      <img class="w-full object-fill" src="{% static 'images/about_us.jpg' %}" alt="about-us">
+      <img class="w-full object-fill" src="{% static 'images/about_us.png' %}" alt="about-us">
     </div>
     <div class="about-us-text-wrapper">
       <div class="about-us-text text-white">
@@ -240,25 +226,5 @@
     </div>
   </div>
 </main>
-<bottom>
-  <div class="bottom-container">
-    <a href="tel:+97699887766" class="bottom-item" target="_blank">
-      <img class="bottom-img" src="{% static 'images/phone-icon.png' %}" alt="phone-icon">
-      <div class="text-white">(+976) 99887766</div>
-    </a>
-    <a href="https://www.google.com/maps?q=47.91170640838734,106.93874083409169" class="bottom-item" target="_blank">
-      <img class="bottom-img" src="{% static 'images/location-icon.png' %}" alt="location-icon">
-      <div class="text-white">Баянзүрх дүүрэг, Шинэ Монгол Технологийн дээд сургууль</div>
-    </a>
-    <a href="mailto:nmit@nmit.edu.mn" class="bottom-item" target="_blank">
-      <img class="bottom-img" src="{% static 'images/email-icon.png' %}" alt="email-icon">
-      <div class="text-white">nmit@nmit.edu.mn</div>
-    </a>
-    <a href="https://www.facebook.com/nmit.edu.mn" class="bottom-item" target="_blank">
-      <img class="bottom-img" src="{% static 'images/facebook-icon.png' %}" alt="facebook-icon">
-      <div class="text-white">Шинэ Монгол Технологийн Дээд Сургууль</div>
-    </a>
-  </div>
-</bottom>
 
 {% endblock user-content %}
