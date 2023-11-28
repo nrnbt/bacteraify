@@ -1,101 +1,23 @@
 {% extends 'layouts/main.html' %}
 {% load static %}
 
-
 {% block user-content %}
-<style>
-    form h1 {
-        color: #009CDE;
-        margin-bottom: 25px;
-        font-weight: bolder;
-    }
-
-    .input-container {
-        display: flex;
-        width: 100%;
-        margin-bottom: 15px;
-    }
-
-    .button-submit {
-        background-color: #009CDE;
-        color: white;
-        border: none;
-        cursor: pointer;
-        width: 100%;
-        border-radius: 8px;
-        height: 40px;
-    }
-
-    .input-field {
-        width: 100%;
-        padding: 10px;
-        outline: none;
-        padding-left: 40px;
-        border-radius: 8px;
-        border-color: #009CDE;
-        border-width: 1px;
-    }
-
-    .flex-d {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-    }
-
-    form i {
-        position: relative;
-        font-size: 18px;
-        color: gray;
-        margin: 15px 0 0 -320px;
-    }
-
-    i.fa-lock {
-        margin-top: 15px;
-    }
-
-    .main-screen {
-        position: absolute;
-        top: 30%;
-    }
-
-    @media (max-width: 570px) {
-        form i {
-            position: relative;
-            font-size: 18px;
-            color: gray;
-            margin: 15px 0 0 -180px;
-        }
-
-        i.fa-lock {
-            margin-top: 15px;
-        }
-
-        .main-screen {
-            position: absolute;
-            top: 40%;
-        }
-
-    }
-</style>
-
-<div class="main-screen">
-    <form action="{% url 'login' %}" class="flex-d" method="post">
+    <form action="{% url 'login' %}" class="flex-d login-form" method="post">
         {% csrf_token %}
         <h1>Bacteraify -д нэвтрэх</h1>
         <div class="input-container">
             <input class="input-field" id="id_username" name="username" type="email"
                 value="{{ form.username.value|default_if_none:'' }}" placeholder="нэвтрэх нэр/майл хаяг" required>
-            <i class="far fa-envelope"></i>
+            <div class="icon-container">
+                <i class="far fa-envelope"></i>
+            </div>
         </div>
         <div class="input-container">
             <input class="input-field" id="id_password" name="password" type="password" placeholder="********" required>
-            <i class="fas fa-lock"></i>
+            <div class="icon-container">
+                <i class="fas fa-lock"></i>
+            </div>
         </div>
         <button class="button-submit" type="submit">Нэвтрэх</button>
     </form>
-</div>
-
-
 {% endblock user-content %}
