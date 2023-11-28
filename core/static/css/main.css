@@ -64,6 +64,7 @@ a {
   gap: 40px;
   padding-bottom: 40px;
   padding-top: 40px;
+  min-height: calc(100vh - 81px - 120px);
 }
 
 .tech-wrapper {
@@ -120,9 +121,11 @@ bottom {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  gap: 30px;
+  gap: 20px;
   flex: 1;
   overflow: hidden;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .bottom-item {
@@ -146,6 +149,43 @@ bottom {
   width: 100%;
 }
 
+
+@media (max-width: 790px) {
+  .bottom-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  bottom {
+    background-color: #33364D;
+    width: 100vw;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .bottom-item {
+    gap: 10px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bottom-img {
+    height: 20px;
+    width: 20px;
+    object-fit: contain;
+  }
+
+  .footer-text {
+    text-align: start;
+  }
+}
+
 @media (max-width: 570px) {
   h1 {
     font-size: 18px;
@@ -158,9 +198,7 @@ bottom {
   }
   
   h3 {
-    font-size: 12px;
-    font-weight: 400;
-    margin-bottom: 0px;
+    font-size: 12px !important;
   }
 
   .bnr-txt {
@@ -227,14 +265,10 @@ bottom {
     padding-right: 20px;
   }
 
-  bottom {
-    background-color: #33364D;
-    width: 100vw;
-    height: fit-content;
-    display: flex;
-    justify-content: center;
+  .text-lg {
+    font-size: 14px;
   }
-  
+
   .bottom-container {
     max-width: 356px;
     width: 100%;
@@ -245,10 +279,19 @@ bottom {
     padding: 20px;
   }
   
+  bottom {
+    background-color: #33364D;
+    width: 100vw;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+  }
+  
   .bottom-item {
     gap: 10px;
     width: 100%;
     align-items: center;
+    justify-content: start;
   }
 
   .bottom-img {
@@ -257,8 +300,8 @@ bottom {
     object-fit: contain;
   }
 
-  .text-lg {
-    font-size: 14px;
+  .footer-text {
+    text-align: start;
   }
 }
 

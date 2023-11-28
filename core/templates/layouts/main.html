@@ -26,6 +26,9 @@
     {% if request.path == '/faq/' %}
     <link rel="stylesheet" href="{% static 'css/faq.css' %}">
     {% endif %}
+    {% if '/login/' in request.path %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    {% endif %}
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/toaster.css' %}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -42,6 +45,7 @@
   <main class="main">
   {% block user-content %}{% endblock user-content %}
   </main>
+  {% include 'components/footer.html' %}
 
 </body>
 </html>
