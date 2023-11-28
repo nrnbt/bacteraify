@@ -54,7 +54,7 @@ def admin_login(request):
                 messages.error(request, 'Error: Authentication failed!')
                 return render(request, 'account/login.html', { 'form': form })
         else:
-            if request.user.is_authenticated:
+            if  request.user is not None and request.user.is_authenticated:
                 return redirect('home')
             else:
                 return render(request, 'account/login.html', { 'form': LoginForm() })
