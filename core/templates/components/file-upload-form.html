@@ -9,52 +9,56 @@
   role="form" 
 >
   {% csrf_token %}
-    <div class="uploader-wrapper" id="uploader-wrapper">
-      <h2>Сорьцын файл оруулах</h2>
-      <div class="uploader-dropper">
-        <div class="flex h-half w-full justify-center p-4">
-          <img src="{% static 'images/icon-images/upload-icon.png' %}" alt="upload-icon">
-        </div>
-        <div class="flex flex-col justify-evenly h-half">
-          <div class="flex w-full justify-center">
-            <div class="uploader-text">Файлуудыг чирэх, буулгах эсвэл&nbsp;</div>
+  <div class="uploader-wrapper" id="uploader-wrapper">
+    <h2 class="uploader-title">Сорьцын файл оруулах</h2>
+    <div class="uploader-dropper">
+      <div class="flex h-half w-full justify-center px-4 pt-4">
+        <img src="{% static 'images/icon-images/upload-icon.png' %}" alt="upload-icon">
+      </div>
+      <div class="flex flex-col justify-evenly h-half">
+        <div class="d-flex flex-wrap justify-content-center">
+          <div class="uploader-text">Файлуудыг чирэх, буулгах эсвэл&nbsp;
             <label for="id_file" class="uploader-text browse">
-              <input 
+              <input
                 type="file" 
                 id="id_file"
                 name="file"
                 hidden 
                 accept=".txt, .pdf, .xlc, .csv, .word"
               >
-              Сонгох
+              {% if not user.is_authenticated %}
+                <div style="color: gray;">Сонгох</div>
+              {% else %}
+                <div>Сонгох</div>
+              {% endif %}
             </label>
           </div>
-          <div class="uploader-desc">
-            файлын төрөл: Txt, Pdf, Xlc, Csv, Word
-          </div>
+        </div>
+        <div class="uploader-desc">
+          файлын төрөл: Txt, Pdf, Xlc, Csv, Word
+        </div>
+        <div id="upload-confirmation" style="display:none;">
+          <div id="filename-display" class="text-center"></div>
         </div>
       </div>
-      <label for="id_file" class="uploader-button flex items-center">
-        <input 
-          type="file" 
-          id="id_file"
-          name="file"
-          hidden
-          accept=".txt, .pdf, .xlc, .csv, .word"
-        >
-        <div class="uploader-button-text">Файл оруулах</div>
-      </label>
     </div>
+    <button
+      type="submit"
+      class="uploader-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}"
+      {% if not user.is_authenticated %}disabled{% endif %}
+    >
+      <input 
+        type="file" 
+        id="id_file"
+        name="file"
+        hidden
+        accept=".txt, .pdf, .xlc, .csv, .word"
+      >
+      <div class="uploader-button-text">Файл оруулах</div>
+    </button>
   </div>
 
-
   <div class="uploader-inputs">
-    <div>
-      <div id="upload-confirmation" style="display:none;">
-        <th><label>Сорьцын файл:</label></th>
-        <th><input class="form-control" type="text" id="filename-display" readonly></th>
-      </div>
-    </div>
     <div>
       <th><label for="reg_no">Регистрийн дугаар:</label></th>
       <td>
@@ -86,9 +90,25 @@
   </div>
   <button
     type="submit"
-    class="submit-button flex items-center"
+    class="submit-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}"
+    {% if not user.is_authenticated %}disabled{% endif %}
   >
     <div class="uploader-button-text">Сорьц Шинжлэх</div>
+  </button>
+  <div class="position-relative w-100 d-flex justify-content-center align-items-center">
+    <button
+      class="test-button flex items-center"
+    >
+      <a href="{% url 'test-load-model' %}" class="uploader-button-text">
+        Тест өгөгдөл оруулах
+      </a>
+    </button>
+    <div class="info-icon-wrapper">
+      <i class="info-icon fa fa-info-circle fa-2xl" aria-hidden="true"></i>
+      <div class="test-info" style="display: none;">
+        Тус тест өгөгдөл оруулах товчон дээр дарснаар бидний урьдчилсан бэлтгэсэн өгөгдлийн сангаас нэг спектрум өгөгдлийг санамсаргүйгээр сонгон хийх юм.
+      </div>
+    </div>
   </div>
 </form>
 
@@ -97,12 +117,27 @@
     document.getElementById('id_file').addEventListener('change', function() {
       if (this.files.length > 0) {
         var fileName = this.files[0].name;
-        document.getElementById('filename-display').value = fileName;
-        document.getElementById('uploader-wrapper').style.display = 'none';
+        document.getElementById('filename-display').innerText = 'Сорьцын файл: ' + fileName;
         document.getElementById('upload-confirmation').style.display = 'block';
       }
     });
   } catch (error) {
     console.error(error);
   }
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var infoIcon = document.querySelector('.info-icon');
+    var testInfo = document.querySelector('.test-info');
+
+    infoIcon.addEventListener('click', function() {
+      if (testInfo.style.display === 'none' || testInfo.style.display === '') {
+        testInfo.style.display = 'block';
+      } else {
+        testInfo.style.display = 'none';
+      }
+      infoIcon.classList.toggle('info-open');
+    });
+  });
 </script>
