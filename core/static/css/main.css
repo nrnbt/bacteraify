@@ -302,6 +302,10 @@ bottom {
   .footer-text {
     text-align: start;
   }
+
+  .search-survey-form {
+    flex-direction: column;
+  } 
 }
 
 .relative {
