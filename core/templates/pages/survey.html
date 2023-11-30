@@ -38,6 +38,8 @@
       } else {
         var url = `{% url 'download-survey' %}?result=${resultFileName}`
       }
+      btn = document.getElementById('loadingButton')
+      btn.classList.add('loading');
       fetch(url)
         .then(response => {
           if (!response.ok) {
@@ -49,7 +51,11 @@
             survey_number = data.survey_number
             generatePDF(data.resp_data)
         })
-        .catch(error => { console.error('There has been a problem with your fetch operation:', error)})
+        .catch(error => { 
+          btn = document.getElementById('loadingButton')
+          btn.classList.remove('loading');
+          console.error('There has been a problem with your fetch operation:', error)
+        })
     }
     formatDate = (date) => {
       var year = date.getFullYear();
@@ -83,6 +89,8 @@
         const pdfImageWidth = pdfWidth
         const pdfImageHeight = (imgProps.height * pdfImageWidth) / imgProps.width
         pdf.addImage(hiddenImgData, 'PNG', 10, 10, pdfImageWidth - 20, pdfImageHeight - 20)
+        btn = document.getElementById('loadingButton')
+        btn.classList.remove('loading');
         pdf.save(survey_number + ".pdf")
       })
     }
@@ -156,15 +164,15 @@
             {% endfor %}
           </tbody>
         </table>
-        <button class="btn button bg-primary" type="submit">
+        <button id="loadingButton" class="btn button bg-primary" type="submit" onclick="downloadPdf('{{ request.GET.file_name|urlencode }}')">
           <a
             class="h-full w-full text-white font-semibold" 
             href="#" 
-            onclick="downloadPdf('{{ request.GET.file_name|urlencode }}')">
+            >
             <i class="fas fa-file-pdf text-lg me-1"></i>PDF татах
           </a>
         </button>
-        <div class="m-5">
+        <div class="result-chart">
           {% include 'charts/bar-chart.html' %}
         </div>
       </div>
