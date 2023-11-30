@@ -22,7 +22,7 @@
     align-items: center;
     justify-content: space-between;
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 700;
     cursor: pointer;
 
 }
@@ -64,7 +64,7 @@
     grid-area: c;
 } */
 
-@media (max-width: 1300px) {
+@media (max-width: 650px) {
     h1 {
         font-size: 20px;
         margin-top: 20px;
@@ -77,13 +77,13 @@
 
     #accordion {
         margin: 20px auto;
-        /* width: 100%; */
         padding-left: 130px;
         padding-right: 100px;
     }
 
     #accordion li label {
-        font-size: 12px;
+        font-size: 15px;
+        font-weight: 700;
     }
 
     #accordion li label span {
@@ -91,7 +91,7 @@
     }
 
     #accordion .content {
-        line-height: 15px;
+        line-height: 20px;
         padding: 0 10px;
     }
 
@@ -107,7 +107,7 @@
         grid-area: unset;
     }
     .text{
-        font-size:x-small;
+        font-size: 15px;
     }
 }
 
@@ -128,16 +128,12 @@
         padding: 5%;
     }
 
-    #accordion li label {
-        font-size: 12px;
-    }
-
     #accordion li label span {
         font-size: 12px;
     }
 
     #accordion .content {
-        line-height: 15px;
+        line-height: 20px;
         padding: 0 10px;
     }
 
@@ -151,8 +147,5 @@
 
     .content1, .content2 {
         grid-area: unset;
-    }
-    .text{
-        font-size:x-small;
     }
 }
