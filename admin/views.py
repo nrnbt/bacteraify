@@ -77,7 +77,7 @@ def dashboard(request):
 
         },
         {
-            'name': 'Нийт Шинэжилгээ',
+            'name': 'Нийт Шинжилгээ',
             'number' : get_all_survey_number(),
             'icon': 'ni-money-coins'
         }
