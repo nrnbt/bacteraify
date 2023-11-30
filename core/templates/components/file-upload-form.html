@@ -19,14 +19,14 @@
         <div class="d-flex flex-wrap justify-content-center">
           <div class="uploader-text">Файлуудыг чирэх, буулгах эсвэл&nbsp;
             <label for="id_file" class="uploader-text browse">
-              <input
-                type="file" 
-                id="id_file"
-                name="file"
-                hidden 
-                accept=".txt, .pdf, .xlc, .csv, .word"
-              >
-              {% if not user.is_authenticated %}
+              {% if user.is_authenticated %}
+                <input
+                  type="file" 
+                  id="id_file"
+                  name="file"
+                  hidden 
+                  accept=".txt, .pdf, .xlc, .csv, .word"
+                >
                 <div style="color: gray;">Сонгох</div>
               {% else %}
                 <div>Сонгох</div>
@@ -42,20 +42,18 @@
         </div>
       </div>
     </div>
-    <button
-      type="submit"
-      class="uploader-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}"
-      {% if not user.is_authenticated %}disabled{% endif %}
-    >
-      <input 
-        type="file" 
-        id="id_file"
-        name="file"
-        hidden
-        accept=".txt, .pdf, .xlc, .csv, .word"
-      >
+    <label for="id_file" class="uploader-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}">
+      {% if user.is_authenticated %}
+        <input 
+          type="file" 
+          id="id_file"
+          name="file"
+          hidden
+          accept=".txt, .pdf, .xlc, .csv, .word"
+        >
+      {% endif %}
       <div class="uploader-button-text">Файл оруулах</div>
-    </button>
+    </label>
   </div>
 
   <div class="uploader-inputs">

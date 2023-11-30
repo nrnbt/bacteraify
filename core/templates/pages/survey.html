@@ -51,7 +51,7 @@
             survey_number = data.survey_number
             generatePDF(data.resp_data)
         })
-        .catch(error => { 
+        .catch(error => {
           btn = document.getElementById('loadingButton')
           btn.classList.remove('loading');
           console.error('There has been a problem with your fetch operation:', error)
