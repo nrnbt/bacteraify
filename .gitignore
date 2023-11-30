@@ -6,6 +6,8 @@ staticfiles/
 
 .env
 .env/
+.env.prod
+
 venv/
 pyvenv.cfg
 Lib/

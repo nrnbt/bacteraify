@@ -154,3 +154,12 @@
   <div class="jt-absolute jt-left-[93%] jt-top-[55%] jt-h-[7%] jt-aspect-square jt-bg-neo-200 jt-rounded-full">
   </div>
 </div>
+
+
+<script type="text/javascript">
+  if(window.location.href.includes('test/survey/load/')){
+    setTimeout(() => {
+        window.location.href = "{% url 'test-survey-result' index %}";
+    }, 2000);
+  }
+</script>

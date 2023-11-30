@@ -32,7 +32,7 @@ urlpatterns = [
     path('set-password/<uidb64>/<token>/<email>', auth_views.password_reset_confirm, name='set-password'),
     path('faq/', core_views.faq, name='faq'),
 
-    path('survey/', login_required(core_views.survey), name='survey'),
+    path('survey/', core_views.survey, name='survey'),
     path('survey/upload/', login_required(core_views.upload_survey), name='upload-survey'),
     path('survey/load/', login_required(core_views.load_model), name='load-model'),
     path('survey/check-result/<file_name>/', login_required(core_views.check_survey_result), name = "check-survey-result"),
@@ -41,6 +41,10 @@ urlpatterns = [
     path('surveys/', login_required(core_views.surveys), name='surveys'),
     path('search-survey/', login_required(core_views.search_survey), name='search-survey'),
     path('download/', login_required(core_views.download_survey), name='download-survey'),
+
+    path('test/survey/load/', core_views.test_load_model, name='test-load-model'),
+    path('test/survey/result/<str:index>', core_views.test_survey_result, name='test-survey-result'),
+    path('test/download/', core_views.download_test_survey, name='download-test-survey'),
 
     path('admin/', admin_views.index, name='admin-index'),
     path('admin/login/', admin_views.admin_login, name='admin-login'),

@@ -6,16 +6,16 @@ from bacter_identification.models import Survey, Bacteria
 import logging
 from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
-from io import StringIO
-from core.core.utils import hash_user, save_file, get_file, predict, process_result_data, get_file_contents, diff_graphic, rendered_html
+from io import StringIO, BytesIO
+from core.core.utils import hash_user, save_file, get_file, predict, process_result_data, get_file_contents, diff_graphic, rendered_html, get_test_file, get_test_x_data_file, encode_image_to_base64
 from core.core.survey import save_survey, survey_result_available, filter_survey_by_hash
 from core.core.constants import colors
 from core.forms import SurveyForm, SurveySearchForm
 import json
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 import base64
-from django.conf import settings
+import random
 
 logger = logging.getLogger(__name__)
 
@@ -153,11 +153,6 @@ def download_survey(request):
             parsed_date = datetime.strptime(str(survey.created_at), '%Y-%m-%d %H:%M:%S.%f%z')
             formatted_date = parsed_date.strftime('%Y-%m-%d %H:%M:%S')
 
-            def encode_image_to_base64(image_relative_path):
-                image_path = os.path.join(settings.BASE_DIR, 'core/static', image_relative_path)
-                with open(image_path, "rb") as image_file:
-                    encoded_string = base64.b64encode(image_file.read())
-                    return encoded_string.decode('utf-8')
             context = {
                 'created_at': formatted_date,
                 'logo_img_data': encode_image_to_base64('images/brand-logo.png'),
@@ -220,3 +215,74 @@ def search_survey(request):
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
         return render(request, 'pages/search_survey.html', {'form': form if form else SurveySearchForm()})
+    
+def test_load_model(request):
+    index = random.randint(1, 10)
+    context = {'index': index}
+    return render(request, 'pages/survey.html', context)
+
+def test_survey_result(request, index):
+    try:
+        data = get_test_file(index)
+        result_data = process_result_data(data.values)
+        context = {
+            'result_data': result_data,
+            'colors': colors,
+            'index': index
+        }
+        return render(request, 'pages/survey.html', context)
+       
+    except Exception as e:
+        logger.error(e)
+        messages.error(request, 'Error: Something went wrong!')
+    return render(request, 'pages/survey.html')
+
+
+def download_test_survey(request):
+    survey = request.GET.get('survey')
+    result = request.GET.get('result')
+
+    def get_predicted_graphic(df, surveyFileName):
+        graphics = []
+
+        x_data = get_test_x_data_file(surveyFileName)
+        for predicted_bacteria in df['Bacteria']:
+            y_data = Bacteria.objects.get(label=predicted_bacteria)
+            spectrum_list  = json.loads(y_data.spectrum)
+            y_data_array = np.array(spectrum_list)
+            x_data_io = StringIO(x_data)
+            x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
+            bacteria_img = {
+                'bacteria': predicted_bacteria,
+                'img_data':  diff_graphic(predicted_bacteria, y_data_array, x_data_array)
+            }
+            graphics.append(bacteria_img)
+        return graphics
+
+    try:
+        data = get_test_file(result)
+        result_data = process_result_data(data.values)
+        df = pd.DataFrame(list(result_data.items()), columns=['Bacteria', 'Percentage'])
+        three_seconds_earlier = datetime.now() - timedelta(seconds=3)
+        formatted_date = three_seconds_earlier.strftime('%Y-%m-%d %H:%M:%S')
+
+        number = 'test-result-' + result
+
+        context = {
+            'created_at': formatted_date,
+            'logo_img_data': encode_image_to_base64('images/brand-logo.png'),
+            'number': number,
+            'result_data': result_data,
+            'bacteria_images': get_predicted_graphic(df,result),
+            'BASE_URL': os.environ.get('BASE_URL', 'http://127.0.0.1:8000')
+        }
+        resp_data = rendered_html('pages/survey-result-pdf.html', context)
+        res = json.dumps({
+            'resp_data': resp_data, 'survey_number': number
+        })
+        return HttpResponse(res, content_type="application/json")
+      
+    except Exception as e:
+        logger.error(e)
+        messages.error(request, 'Error: Something went wrong!')
+        return render(request, 'pages/surveys.html')
