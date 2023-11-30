@@ -3,51 +3,62 @@
 
 {% block user-content %}
 
-  <h1 >Түгээмэл асуултууд</h1>
+<h1>Түгээмэл асуултууд</h1>
 
-    <div>
-      <ul id="accordion">
+<div>
+  <ul id="accordion">
 
-        <li>
-          <label for="first"> Хэрхэн ажилладаг вэ? <i class="fa fa-chevron-down"></i></label>
-          <input type="radio" name="accordion" id="first">
-          <div class="content">
-            <p class="text">Raman spectroscopy болон Biochip ашиглан нянгийн спектр өгөгдлийг гарган авах бөгөөд тус
-              өгөгдөл дээр
-              бидний сургасан модел ангилал хийх болно. Ингэснээр эмгэг үүсгэгч бактерийг өндөр нарийвчлалтайгаар
-              тодорхойлж зохих антибиотикийг санал болгох юм.
-            </p>
-          </div>
-        </li>
+    <li>
+      <label for="first"> Хэрхэн ажилладаг вэ?<i class="fa fa-chevron-down"></i></label>
+      <input type="radio" name="accordion" id="first">
+      <div class="content">
+        <p class="text">Raman spectroscopy болон Biochip ашиглан бактерийн спектр өгөгдлийг гарган авах бөгөөд тус
+          өгөгдөл дээр
+          бидний <strong>Хиймэл оюун ухаан</strong> шинжилгээ хийх болно. Ингэснээр эмгэг үүсгэгч бактерийг өндөр
+          нарийвчлалтайгаар
+          тодорхойлж зохих антибиотикийг санал болгох юм.
+        </p>
+      </div>
+    </li>
 
-        <li>
-          <label for="second"> Шинжилгээ хэрхэн өгөх вэ? <i class="fa fa-chevron-down"></i></label>
-          <input type="radio" name="accordion" id="second">
-          <div class="content">
-            <p class="text">dfs</p>
-          </div>
-        </li>
-
-
-        <li>
-          <label for="fourth"> Дийлэнх эмгэг үүсгэгч бактер <i class="fa fa-chevron-down"></i></label>
-          <input type="radio" name="accordion" id="fourth">
-          <div class="content">
-            <p class="text">Халдварт Өвчин Судлалын Үндэсний Төвөөс гаргасан тоо баримтаар Монгол улсад нийт 30 гаруй төрлийн эмгэг үүсгэгч бактер өвчлөл үүсгэж байна.</p>
-          </div>
-        </li>
-
-        <li>
-          <label for="fifth"> Мэдээлэл татах<i class="fa fa-chevron-down"></i></label>
-          <input type="radio" name="accordion" id="fifth">
-          <div class="content">
-            <p class="text">dfs</p>
-          </div>
-        </li>
+    <li>
+      <label for="second"> Шинжилгээ хэрхэн өгөх вэ?<i class="fa fa-chevron-down"></i></label>
+      <input type="radio" name="accordion" id="second">
+      <div class="content">
+        <p class="text">Хэрэглэгч та системд нэвтэрсний дараа <a href="/survey/"><strong>Шинжилгээ</strong></a> цэсийг
+          сонгон орч <strong>ФАЙЛ
+            ОРУУЛАХ</strong> хэсэгт Raman spectroscopy төхөөрөмжөөс гарсан бактерийн спектр өгөгдлийг TXT, PDF, XLC,
+          CSV,
+          WORD файлын өргөтгөлтэй оруулах ба <strong>Регистрийн дугаар, Утасны дугаар</strong> хэсэгт өвчтний мэдээллийг
+          оруулснаар танд 5 секундийн дотор үр дүнг харуулна.</p>
+      </div>
+    </li>
 
 
-      </ul>
-    </div>
+    <li>
+      <label for="fourth">Шинжилгээ хэрхэн хайх вэ?<i class="fa fa-chevron-down"></i></label>
+      <input type="radio" name="accordion" id="fourth">
+      <div class="content">
+        <p class="text">Хэрэглэгч та өөрийн профайл дээр дарснаар <a href="/search-survey/"><strong>Шинжилгээ
+              хайх</strong></a> цэс гарч ирэх ба
+          тухайн цэсний <strong>Регистрийн дугаар, Утасны дугаар</strong> хэсэгт өвчтний мэдээллийг оруулснаар өвчтний
+          шинжилгээний хариу гарч ирнэ.
+      </div>
+    </li>
+
+    <li>
+      <label for="fifth">Шинжилгээний хариу хэрхэн татах вэ?<i class="fa fa-chevron-down"></i></label>
+      <input type="radio" name="accordion" id="fifth">
+      <div class="content">
+        <p class="text">Хэрэглэгч та өөрийн профайл дээр дарснаар <a href="/surveys/"><strong>Шинжилгээний
+              түүх</strong></a> цэс гарч ирэх ба
+          тухайн цэснээс өөрийн хүссэн шинжилгээний хариуг pdf өргөтгөлтэйгөөр татах боломжтой.</p>
+      </div>
+    </li>
+
+
+  </ul>
+</div>
 
 
 {% endblock user-content %}
