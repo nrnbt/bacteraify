@@ -21,10 +21,10 @@ import base64
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from core.core.s3_utils import read_file_from_s3
-
-
+# from core.core.s3_utils import read_file_from_s3
+import random
 from django.template.loader import get_template
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -203,3 +203,23 @@ def rendered_html(template_src, context_dict={}):
     template = get_template(template_src)
     html = template.render(context_dict)
     return html
+
+def encode_image_to_base64(image_relative_path):
+    image_path = os.path.join(settings.BASE_DIR, 'core/static', image_relative_path)
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read())
+        return encoded_string.decode('utf-8')
+
+def get_test_x_data_file(index):
+    file_path = os.path.join(upload_file_path, 'test-survey' , str(index) + '.csv')
+    with open(file_path, 'r') as file:
+        return file.read()
+
+def get_test_file(index):
+    file_path = os.path.join(upload_file_path, 'test-survey-results' , str(index) + '.csv')
+
+    if os.path.isfile(file_path):
+        result = read_file(open(file_path, 'rb'))
+        return result
+    else:
+        return 'File not found'
