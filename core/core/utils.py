@@ -22,7 +22,6 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 # from core.core.s3_utils import read_file_from_s3
-import random
 from django.template.loader import get_template
 from django.conf import settings
 
