@@ -7,14 +7,13 @@ import logging
 from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
 from io import StringIO, BytesIO
-from core.core.utils import hash_user, save_file, get_file, predict, process_result_data, get_file_contents, diff_graphic, rendered_html, get_test_file, get_test_x_data_file, encode_image_to_base64
+from core.core.utils import hash_user, save_file, get_file, predict, process_result_data, get_file_contents, diff_graphic, rendered_html, get_test_file, get_test_x_data_file, encode_image_to_base64, single_graphic
 from core.core.survey import save_survey, survey_result_available, filter_survey_by_hash
-from core.core.constants import colors
+from core.core.constants import colors, STRAINS
 from core.forms import SurveyForm, SurveySearchForm
 import json
 import numpy as np
 from datetime import datetime, timedelta
-import base64
 import random
 
 logger = logging.getLogger(__name__)
@@ -23,7 +22,10 @@ def index(request):
     return render(request, 'pages/index.html')
 
 def survey(request):
-    return render(request, 'pages/survey.html')
+    context = {
+        'strains': [STRAINS[key] for key in STRAINS]
+    }
+    return render(request, 'pages/survey.html', context)
 
 def faq(request):
     return render(request, 'pages/faq.html')
@@ -217,9 +219,49 @@ def search_survey(request):
         return render(request, 'pages/search_survey.html', {'form': form if form else SurveySearchForm()})
     
 def test_load_model(request):
-    index = random.randint(1, 14)
+    index = request.GET.get('index')
     context = {'index': index}
     return render(request, 'pages/survey.html', context)
+
+def test_sample_result(request, index):
+    try:
+        bacteria = STRAINS[index]
+        x_data = get_test_x_data_file(index)
+        x_data_io = StringIO(x_data)
+        x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
+
+        y_data = Bacteria.objects.get(label=bacteria)
+        spectrum_list  = json.loads(y_data.spectrum)
+        y_data_array = np.array(spectrum_list)
+
+        graphic_img_data = diff_graphic(bacteria, y_data_array, x_data_array)
+        res = json.dumps({
+            'graphic_img_data': graphic_img_data
+        })
+        return HttpResponse(res, content_type="application/json")
+
+    except Exception as e:
+        logger.error(e)
+        messages.error(request, 'Error: Something went wrong!')
+        return render(request, 'pages/surveys.html')
+    
+def test_sample(request):
+    index = request.GET.get('index')
+    try:
+        bacterias = [STRAINS[key] for key in STRAINS]
+        bacteria = bacterias[int(index)]
+        y_data = Bacteria.objects.get(label=bacteria)
+        spectrum_list  = json.loads(y_data.spectrum)
+        y_data_array = np.array(spectrum_list)
+        graphic_img_data = single_graphic(bacteria, y_data_array)
+        res = json.dumps({
+            'graphic_img_data': graphic_img_data
+        })
+        return HttpResponse(res, content_type="application/json")
+    except Exception as e:
+        logger.error(e)
+        messages.error(request, 'Error: Something went wrong!')
+        return render(request, 'pages/survey.html')
 
 def test_survey_result(request, index):
     try:
@@ -239,9 +281,7 @@ def test_survey_result(request, index):
 
 
 def download_test_survey(request):
-    survey = request.GET.get('survey')
     result = request.GET.get('result')
-
     def get_predicted_graphic(df, surveyFileName):
         graphics = []
 
@@ -266,7 +306,7 @@ def download_test_survey(request):
         three_seconds_earlier = datetime.now() - timedelta(seconds=3)
         formatted_date = three_seconds_earlier.strftime('%Y-%m-%d %H:%M:%S')
 
-        number = 'test-result-' + result
+        number = 'Тест-Шинжилгээний-Хариу' + result
 
         context = {
             'created_at': formatted_date,

@@ -42,6 +42,7 @@ urlpatterns = [
     path('search-survey/', login_required(core_views.search_survey), name='search-survey'),
     path('download/', login_required(core_views.download_survey), name='download-survey'),
 
+    path('test/samples/', core_views.test_sample, name='test-sample'),
     path('test/survey/load/', core_views.test_load_model, name='test-load-model'),
     path('test/survey/result/<str:index>', core_views.test_survey_result, name='test-survey-result'),
     path('test/download/', core_views.download_test_survey, name='download-test-survey'),

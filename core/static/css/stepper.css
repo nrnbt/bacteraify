@@ -138,16 +138,18 @@
   margin: 50px;
 }
 
+@media (max-width: 900px) {
+  .step-wrapper {
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 796px) {
   .step-line {
     height: 4px;
     width: 100%;
     background-color: #4C4C4C;
     margin-top: 50px;
-  }
-
-  .step-wrapper {
-    flex-direction: column;
   }
 
   .stepper-wrapper {
@@ -173,7 +175,7 @@
 
   .stepper-row-text-wrapper {
     position: absolute;
-    top: 110px;
+    top: 95px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -246,7 +248,7 @@
   color: white;
   background-color: blue;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
 }
 

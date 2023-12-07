@@ -198,6 +198,29 @@ def diff_graphic(title, y_data, x_data):
 
         return graphic
     
+def single_graphic(title, y_data):
+    fig, ax = plt.subplots(figsize=(10, 3))
+
+    ax.plot(y_data, label='бодит')
+
+    ax.set_xlabel('Долгионы урт (нм)')
+    ax.set_ylabel('Раманы Эрчим')
+    ax.set_title(title)
+    ax.legend()
+
+    plt.tight_layout()
+
+    with BytesIO() as buffer:
+        plt.savefig(buffer, format='png')
+        plt.close(fig)
+        buffer.seek(0)
+        image_png = buffer.getvalue()
+
+        graphic = base64.b64encode(image_png)
+        graphic = graphic.decode('utf-8')
+
+        return graphic
+    
 def rendered_html(template_src, context_dict={}):
     template = get_template(template_src)
     html = template.render(context_dict)
@@ -210,12 +233,12 @@ def encode_image_to_base64(image_relative_path):
         return encoded_string.decode('utf-8')
 
 def get_test_x_data_file(index):
-    file_path = os.path.join(upload_file_path, 'test-survey' , str(index) + '.csv')
+    file_path = os.path.join(upload_file_path, 'test-survey' , str(index) + '_x.csv')
     with open(file_path, 'r') as file:
         return file.read()
 
 def get_test_file(index):
-    file_path = os.path.join(upload_file_path, 'test-survey-results' , str(index) + '.csv')
+    file_path = os.path.join(upload_file_path, 'test-survey-results' , str(index) + '_y.csv')
 
     if os.path.isfile(file_path):
         result = read_file(open(file_path, 'rb'))

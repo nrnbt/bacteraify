@@ -57,7 +57,7 @@
   </div>
 
   <div class="uploader-inputs">
-    <div>
+    <div class="w-100">
       <th><label for="reg_no">Регистрийн дугаар:</label></th>
       <td>
         <input
@@ -71,7 +71,7 @@
         >
       </td>
     </div>
-    <div>
+    <div class="w-100">
       <th><label for="id_phone_no">Утасны дугаар:</label></th>
       <td>
         <input
@@ -93,51 +93,85 @@
   >
     <div class="uploader-button-text">Сорьц Шинжлэх</div>
   </button>
+
   <div class="position-relative w-100 d-flex justify-content-center">
-    <button class="test-button flex items-center">
-      <a href="{% url 'test-load-model' %}" class="uploader-button-text">
-        Тест өгөгдөл оруулах
-      </a>
-    </button>
-    <div class="position-relative">
-      <div class="position-absolute top-0">
-        <div class="info-icon-wrapper">
-          <i class="info-icon fa fa-info-circle fa-2xl" aria-hidden="true"></i>
-          <div class="test-info" style="display: none;">
-            Тус тест өгөгдөл оруулах товчон дээр дарснаар бидний урьдчилсан бэлтгэсэн өгөгдлийн сангаас нэг спектрум өгөгдлийг санамсаргүйгээр сонгон хийх юм.
-          </div>
-        </div>
-      </div>
+    <div class="dropdown">
+      <button id="loadingButton" class="test-button dropdown-toggle"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Тест Өгөгдөл Сонгох
+      </button>
+      <ul class="dropdown-menu">
+        {% for strain in strains %}
+          <li><div class="dropdown-item" onclick="testSample('{{forloop.counter0}}', '{{strain}}')">{{ strain }}</div></li>
+        {% endfor%}
+      </ul>
     </div>
   </div>
-</form>
+  <div id="sample-img-wrapper" class="my-3 w-100" style="display: none;">
+    <img id="sampleImg" src="" alt="Sample Data" style="width: 100%; object-fit: contain;">
+  </div>
 
+  <div id="sample-info" class="alert alert-info mt-2">
+    <i class="fa fa-info-circle"></i>
+    Тус тест өгөгдөл оруулах товчон дээр дарснаар бидний урьдчилсан бэлтгэсэн өгөгдлийн сангаас нэг спектрум өгөгдлийг санамсаргүйгээр сонгон хийх юм.
+  </div>
+
+  <button id="submit-sample" style="display: none;" class="test-button text-white" type="button" onclick="submitClick()">
+    Тест Өгөгдөл Шинжлэх
+  </button>
+
+</form>
 <script>
-  try {
-    document.getElementById('id_file').addEventListener('change', function() {
-      if (this.files.length > 0) {
-        var fileName = this.files[0].name;
-        document.getElementById('filename-display').innerText = 'Сорьцын файл: ' + fileName;
-        document.getElementById('upload-confirmation').style.display = 'block';
-      }
-    });
-  } catch (error) {
-    console.error(error);
+  var sampleIndex = ''
+  testSample = (index, strain) => {
+    sampleIndex = index
+    var url = `{% url 'test-sample'%}?index=${index}`
+    var button = document.getElementById('loadingButton')
+    var submitButton = document.getElementById('submit-sample')
+    var sampleInfo = document.getElementById('sample-info')
+    
+    button.classList.add('loading');
+    button.innerText = strain
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+            throw new Error('Network error')
+        }
+        return response.json()
+      })
+      .then(data => {
+        var imgWrapper = document.getElementById('sample-img-wrapper')
+        imgWrapper.style.display = 'block'
+        var imgData = data.graphic_img_data
+        var sampleImg = document.getElementById('sampleImg')
+        sampleImg.src = `data:image/png;base64, ${imgData}`;
+        submitButton.style.display = 'block'
+        sampleInfo.style.display = 'none'
+        button.classList.remove('loading');
+      })
+      .catch(error => {
+        button.classList.remove('loading');
+        console.error('There has been a problem with your fetch operation:', error)
+      })
+  }
+
+  submitClick = () => {
+    window.location.href = `{% url 'test-load-model' %}?index=${parseInt(sampleIndex) + 1}`
   }
 </script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var infoIcon = document.querySelector('.info-icon');
-    var testInfo = document.querySelector('.test-info');
-
-    infoIcon.addEventListener('click', function() {
-      if (testInfo.style.display === 'none' || testInfo.style.display === '') {
-        testInfo.style.display = 'block';
-      } else {
-        testInfo.style.display = 'none';
-      }
-      infoIcon.classList.toggle('info-open');
-    });
-  });
+  try {
+    id_file = document.getElementById('id_file')
+    if(id_file){
+      document.getElementById('id_file').addEventListener('change', function() {
+        if (this.files.length > 0) {
+          var fileName = this.files[0].name;
+          document.getElementById('filename-display').innerText = 'Сорьцын файл: ' + fileName;
+          document.getElementById('upload-confirmation').style.display = 'block';
+        }
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
 </script>

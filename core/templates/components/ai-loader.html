@@ -1,3 +1,5 @@
+{% load static %}
+
 <div style="padding: 20px;">
   <div id="radar-animation" class="jt-relative jt-w-full jt-aspect-[4/3] jt-flex jt-justify-center snipcss-g7Gk8">
     <div class="jt-relative jt-h-full jt-aspect-square">
@@ -157,11 +159,88 @@
   </div>
 </div>
 
+<style>
+.progress-bar-img {
+  top: 0;
+  height: 100%;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
 
-<script type="text/javascript">
-  {% if request.path == '/test/survey/load/' %}
+.progress-bar-img:nth-child(1) { left: 10px !important; }
+.progress-bar-img:nth-child(2) { left: 20px !important; }
+.progress-bar-img:nth-child(3) { left: 35px !important; }
+.progress-bar-img:nth-child(4) { left: 50px !important; }
+.progress-bar-img:nth-child(5) { left: 65px !important; }
+.progress-bar-img:nth-child(6) { left: 80px !important; }
+.progress-bar-img:nth-child(7) { left: 95px !important; }
+.progress-bar-img:nth-child(8) { left: 110px !important; }
+.progress-bar-img:nth-child(9) { left: 125px !important; }
+.progress-bar-img:nth-child(10) { left: 140px !important; }
+.progress-bar-img:nth-child(11) { left: 155px !important; }
+.progress-bar-img:nth-child(12) { left: 170px !important; }
+.progress-bar-img:nth-child(13) { left: 185px !important; }
+.progress-bar-img:nth-child(14) { left: 200px !important; }
+.progress-bar-img:nth-child(15) { left: 215px !important; }
+.progress-bar-img:nth-child(16) { left: 230px !important; }
+.progress-bar-img:nth-child(17) { left: 245px !important; }
+.progress-bar-img:nth-child(18) { left: 260px !important; }
+.progress-bar-img:nth-child(19) { left: 275px !important; }
+.progress-bar-img:nth-child(20) { left: 290px !important; }
+.progress-bar-img:nth-child(21) { left: 305px !important; }
+.progress-bar-img:nth-child(22) { left: 320px !important; }
+.progress-bar-img:nth-child(23) { left: 335px !important; }
+.progress-bar-img:nth-child(24) { left: 350px !important; }
+.progress-bar-img:nth-child(25) { left: 365px !important; }
+</style>
+
+<div style="display: flex; justify-content: center;">
+  <div style="position: relative; height: 50px; width: 300px; border-color: #003376; border-width: 4px; border-radius: 10px; padding-left: 5px; padding-right: 5px;">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+  </div>
+</div>
+
+<script>
+function changeImages() {
+  const images = document.querySelectorAll('.progress-bar-img');
+  const totalDuration = 3000;
+  let delay = 0;
+  const delayIncrement = totalDuration / images.length;
+
+
+  images.forEach((img) => {
     setTimeout(() => {
-        window.location.href = "{% url 'test-survey-result' index %}";
-    }, 2000);
+      img.src = "{% static 'images/progress2.png' %}";
+    }, delay);
+    delay += delayIncrement;
+  });
+
+  setTimeout(() => {
+    window.location.href = "{% url 'test-survey-result' index %}";
+  }, totalDuration);
+
+}
+
+window.onload = function() {
+  {% if request.path == '/test/survey/load/' %}
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('index')) {
+      changeImages();
+    }
   {% endif %}
+};
 </script>
