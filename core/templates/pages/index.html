@@ -4,19 +4,19 @@
 {% block user-content %}
 <div class="d-flex">
   <div class="row">
-      <div class="position-relative col-md-6 col-12" style="padding-left: 0 !important; padding-right: 0 !important;">
-        <img src="{% static 'images/bnr-1.png' %}" class="w-100 h-100 object-fit-cover">
-        <div class="position-absolute top-0 bottom-0 left-0 right-0 container-fluid">
-          <div class="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
-            <h1 class="text-center">Бодит үр дүн.</h1>
-            <h1 class="text-center">Өндөр нарийвчлал.</h1>
-            <h1 class="text-center">Богино хугацаа.</h1>
-          </div>
+    <div class="position-relative col-md-6 col-12" style="padding-left: 0 !important; padding-right: 0 !important;">
+      <img src="{% static 'images/bnr-1.png' %}" class="w-100 h-100 object-fit-cover">
+      <div class="position-absolute top-0 bottom-0 left-0 right-0 container-fluid">
+        <div class="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+          <h1 class="text-center">Бодит үр дүн.</h1>
+          <h1 class="text-center">Өндөр нарийвчлал.</h1>
+          <h1 class="text-center">Богино хугацаа.</h1>
         </div>
       </div>
-      <div class="col-md-6 col-12" style="padding-left: 0 !important; padding-right: 0 !important;">
-        <img src="{% static 'images/bnr-2.png' %}" class="w-100 h-100 object-fit-cover">
-      </div>
+    </div>
+    <div class="col-md-6 col-12" style="padding-left: 0 !important; padding-right: 0 !important;">
+      <img src="{% static 'images/bnr-2.png' %}" class="w-100 h-100 object-fit-cover">
+    </div>
   </div>
 </div>
 
@@ -115,8 +115,8 @@
       <img class="scroll-image" src="{% static 'images/slide8.jpg' %}" alt="-8">
     </div>
   </div>
-  <div class="popup-container" >
-    
+  <div class="popup-container">
+
     <div class="popup-element popup-element-1 popup-center" style="display: none;">
       <span class="close-btn">&times;</span>
       <h2>Химийн бодисыг тодорхойлох</h2>
@@ -189,8 +189,8 @@
       });
     });
     var closeButtons = document.querySelectorAll('.close-btn');
-    closeButtons.forEach(function(button) {
-      button.onclick = function() {
+    closeButtons.forEach(function (button) {
+      button.onclick = function () {
         popupContainer.style.display = "none";
       };
     });
@@ -223,10 +223,12 @@
       <div class="about-us-desc">
         <h3 class="text-white text-start">Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургуулийн Програм
           хангамжийн инженер, Химийн инженер, Механикийн инженерийн ангийн төгсөх курсийн оюутнуудаас бүрдсэн ба 6 хүний
-          бүрэлдэхүүнтэй. 
-        </br>
-      </br>
-          Бид одоогоор лабораторуудад хийгдэж байгаа бактериологийн шинжилгээний 3-5 хоногийн процессийг Raman spectroscopy болон Хиймэл оюун ухаан ашиглан бодит цагийн горимд ажилладаг хиймэл оюун ухаан хөгжүүлж байна.</h3>
+          бүрэлдэхүүнтэй.
+          </br>
+          </br>
+          Бид одоогоор лабораторуудад хийгдэж байгаа бактериологийн шинжилгээний 3-5 хоногийн процессийг Raman
+          spectroscopy болон Хиймэл оюун ухаан ашиглан бодит цагийн горимд ажилладаг хиймэл оюун ухаан хөгжүүлж байна.
+        </h3>
       </div>
     </div>
   </div>
