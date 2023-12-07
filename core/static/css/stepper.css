@@ -142,16 +142,7 @@
   .step-wrapper {
     flex-direction: column;
   }
-}
-
-@media (max-width: 796px) {
-  .step-line {
-    height: 4px;
-    width: 100%;
-    background-color: #4C4C4C;
-    margin-top: 50px;
-  }
-
+  
   .stepper-wrapper {
     flex-direction: row;
     margin: 0 auto;
@@ -160,6 +151,15 @@
     gap: 0px;
     padding-bottom: 40px;
     height: fit-content !important;
+  }
+}
+
+@media (max-width: 796px) {
+  .step-line {
+    height: 4px;
+    width: 100%;
+    background-color: #4C4C4C;
+    margin-top: 50px;
   }
   
   .step {
