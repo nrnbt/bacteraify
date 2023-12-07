@@ -101,7 +101,7 @@
       </button>
       <ul class="dropdown-menu">
         {% for strain in strains %}
-          <li><button class="dropdown-item" onclick="testSample('{{forloop.counter0}}', '{{strain}}')">{{ strain }}</button></li>
+          <li><button class="dropdown-item" type="button" onclick="testSample('{{forloop.counter0}}', '{{strain}}')">{{ strain }}</button></li>
         {% endfor%}
       </ul>
     </div>
