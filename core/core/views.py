@@ -217,7 +217,7 @@ def search_survey(request):
         return render(request, 'pages/search_survey.html', {'form': form if form else SurveySearchForm()})
     
 def test_load_model(request):
-    index = random.randint(1, 10)
+    index = random.randint(1, 14)
     context = {'index': index}
     return render(request, 'pages/survey.html', context)
 

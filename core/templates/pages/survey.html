@@ -51,7 +51,7 @@
             survey_number = data.survey_number
             generatePDF(data.resp_data)
         })
-        .catch(error => { 
+        .catch(error => {
           btn = document.getElementById('loadingButton')
           btn.classList.remove('loading');
           console.error('There has been a problem with your fetch operation:', error)
@@ -88,7 +88,17 @@
         const imgProps = pdf.getImageProperties(hiddenImgData)
         const pdfImageWidth = pdfWidth
         const pdfImageHeight = (imgProps.height * pdfImageWidth) / imgProps.width
-        pdf.addImage(hiddenImgData, 'PNG', 10, 10, pdfImageWidth - 20, pdfImageHeight - 20)
+
+        let heightLeft = pdfImageHeight;
+        let position = 0;
+        heightLeft -= pdfHeight;
+        pdf.addImage(hiddenImgData, 'PNG', 10, 10, pdfImageWidth - 20, pdfImageHeight)
+        while (heightLeft >= 0) {
+          position = heightLeft - pdfImageHeight;
+          pdf.addPage();
+          pdf.addImage(hiddenCanvas, 'PNG', 10, position, pdfImageWidth - 20, pdfImageHeight);
+          heightLeft -= pdfHeight;
+        }
         btn = document.getElementById('loadingButton')
         btn.classList.remove('loading');
         pdf.save(survey_number + ".pdf")
