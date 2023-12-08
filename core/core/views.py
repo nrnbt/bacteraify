@@ -6,7 +6,7 @@ from bacter_identification.models import Survey, Bacteria
 import logging
 from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
-from io import StringIO, BytesIO
+from io import StringIO
 from core.core.utils import hash_user, save_file, get_file, predict, process_result_data, get_file_contents, diff_graphic, rendered_html, get_test_file, get_test_x_data_file, encode_image_to_base64, single_graphic
 from core.core.survey import save_survey, survey_result_available, filter_survey_by_hash
 from core.core.constants import colors, STRAINS
@@ -89,7 +89,6 @@ def survey_result(request):
         file_name = request.GET.get('file_name')
         data = get_file(file_name, 'survey-results')
         result_data = process_result_data(data.values)
-        
         context = {
             'result_data': result_data,
             'colors': colors
@@ -267,9 +266,12 @@ def test_survey_result(request, index):
     try:
         data = get_test_file(index)
         result_data = process_result_data(data.values)
+        strains=[STRAINS[key] for key in STRAINS]
+        indices = [strains.index(strain) for strain in result_data.keys() if strain in strains]
+        filtered_colors = [colors[index] for index in indices]
         context = {
             'result_data': result_data,
-            'colors': colors,
+            'colors': filtered_colors,
             'index': index
         }
         return render(request, 'pages/survey.html', context)

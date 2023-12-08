@@ -161,15 +161,22 @@
         <table class="table table-striped w-full">
           <thead>
             <tr>
-              <th scope="col" class="bg-primary text-white text-center">Бактери нэршил</th>
-              <th scope="col" class="bg-primary text-white text-center">Илэрсэн хувь</th>
+              <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Бактери нэршил</th>
+              <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Илэрсэн хувь</th>
             </tr>
           </thead>
           <tbody>
             {% for key, value in result_data.items %}
               <tr>
-                <td class="text-center">{{ key }}</td>
-                <td class="text-center">{{ value }}</td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-2 align-items-center">
+                    {{ key }}
+                    <img style="height: 45px; object-fit: contain;" src="{% static 'images/bacteria/' %}{{key}}.png" alt="{{ key }}">
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ value }}</div>
+                </td>
               </tr>
             {% endfor %}
           </tbody>
