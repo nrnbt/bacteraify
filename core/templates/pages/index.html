@@ -6,7 +6,7 @@
   <div class="row">
     <div class="position-relative col-md-6 col-12" style="padding-left: 0 !important; padding-right: 0 !important;">
       <img src="{% static 'images/bnr-1.png' %}" class="w-100 h-100 object-fit-cover">
-      <div class="position-absolute top-0 bottom-0 left-0 right-0 container-fluid">
+      <div class="position-absolute top-0 bottom-0 left-0 right-0">
         <div class="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
           <h1 class="text-center">Бодит үр дүн.</h1>
           <h1 class="text-center">Өндөр нарийвчлал.</h1>
@@ -90,7 +90,7 @@
 
 </main>
 
-<div class="main">
+<div class="main" style="padding-top: 0px !important; padding-bottom: 0px !important; gap:10px; min-height: fit-content;">
   <div class="text-wrapper">
     <h1>Раман спектроскопийн хэрэглээ</h1>
   </div>
@@ -212,23 +212,23 @@
   <div class="text-wrapper">
     <h1>Бидний тухай</h1>
   </div>
-  <div class="bnr-container">
-    <div class="bottom-bnr-item">
-      <img class="w-full object-fill" src="{% static 'images/about_us.png' %}" alt="about-us">
+  <div class="bnr-container-about-us">
+    <div class="bottom-bnr-item-about-us">
+      <img class="w-full object-cover" src="{% static 'images/about_us.png' %}" alt="about-us">
     </div>
     <div class="about-us-text-wrapper">
       <div class="about-us-text text-white">
         <h2>Бидний тухай</h2>
       </div>
       <div class="about-us-desc">
-        <h3 class="text-white text-start">Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургуулийн Програм
+        <div class="text-white text-start about-us-text-size">Манай SoftTech баг нь Шинэ Монгол Технологийн Дээд Сургуулийн Програм
           хангамжийн инженер, Химийн инженер, Механикийн инженерийн ангийн төгсөх курсийн оюутнуудаас бүрдсэн ба 6 хүний
           бүрэлдэхүүнтэй.
           </br>
           </br>
           Бид одоогоор лабораторуудад хийгдэж байгаа бактериологийн шинжилгээний 3-5 хоногийн процессийг Raman
           spectroscopy болон Хиймэл оюун ухаан ашиглан бодит цагийн горимд ажилладаг хиймэл оюун ухаан хөгжүүлж байна.
-        </h3>
+        </div>
       </div>
     </div>
   </div>
