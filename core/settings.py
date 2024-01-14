@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os 
 import logging
-import dj_database_url
 
 logger = logging.getLogger(__name__)
 

@@ -62,8 +62,9 @@ urlpatterns = [
     path('admin/customer/<int:id>', admin_views.customer, name='admin-customer'),
     path('admin/customers/', admin_views.customers, name='admin-customers'),
     path('admin/customers/register/', admin_views.register_customer, name='admin-register-customer'),
+    
     path('more/', core_views.more, name='more'),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
