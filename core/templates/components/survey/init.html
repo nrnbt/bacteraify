@@ -1,184 +1,24 @@
 {% load static %}
 
-<form 
-  id="survey-form" 
-  method="post" 
-  class="uploader-form" 
-  action="{% url 'upload-survey' %}" 
-  enctype="multipart/form-data"
-  role="form" 
->
-  {% csrf_token %}
-  <div class="uploader-wrapper" id="uploader-wrapper">
-    <h2 class="uploader-title">Сорьцын файл оруулах</h2>
-    <div class="uploader-dropper">
-      <div class="flex h-half w-full justify-center px-4 pt-4">
-        <img src="{% static 'images/icon-images/upload-icon.png' %}" alt="upload-icon">
-      </div>
-      <div class="flex flex-col justify-evenly h-half">
-        <div class="d-flex flex-wrap justify-content-center">
-          <div class="uploader-text">Файлуудыг чирэх, буулгах эсвэл&nbsp;
-            <label for="id_file" class="uploader-text browse">
-              {% if user.is_authenticated %}
-                <input
-                  type="file" 
-                  id="id_file"
-                  name="file"
-                  hidden 
-                  accept=".txt, .pdf, .xlc, .csv, .word"
-                >
-                <div>Сонгох</div>
-              {% else %}
-                <div style="color: gray;">Сонгох</div>
-              {% endif %}
-            </label>
-          </div>
-        </div>
-        <div class="uploader-desc">
-          файлын төрөл: Txt, Pdf, Xlc, Csv, Word
-        </div>
-        <div id="upload-confirmation" style="display:none;">
-          <div id="filename-display" class="text-center"></div>
-        </div>
-      </div>
-    </div>
-    <label for="id_file" class="uploader-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}">
-      {% if user.is_authenticated %}
-        <input 
-          type="file" 
-          id="id_file"
-          name="file"
-          hidden
-          accept=".txt, .pdf, .xlc, .csv, .word"
-        >
-      {% endif %}
-      <div class="uploader-button-text">Файл оруулах</div>
-    </label>
-  </div>
-
-  <div class="uploader-inputs">
-    <div class="w-100">
-      <th><label for="reg_no">Регистрийн дугаар:</label></th>
-      <td>
-        <input
-          class="form-control" 
-          id="id_reg_no"
-          name="reg_no"
-          type="text"
-          value="{{ form.reg_no.value|default_if_none:'' }}"
-          placeholder="Регистрийн дугаар" 
-          required
-          {% if not user.is_authenticated %}disabled{% endif %}
-        >
-      </td>
-    </div>
-    <div class="w-100">
-      <th><label for="id_phone_no">Утасны дугаар:</label></th>
-      <td>
-        <input
-          class="form-control" 
-          id="id_phone_no"
-          name="phone_no"
-          type="number"
-          value="{{ form.phone_no.value|default_if_none:'' }}"
-          placeholder="Утасны дугаар"
-          required
-          {% if not user.is_authenticated %}disabled{% endif %}
-        >
-      </td>
-    </div>
-  </div>
-  <button
-    type="submit"
-    class="submit-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}"
-    {% if not user.is_authenticated %}disabled{% endif %}
-  >
-    <div class="uploader-button-text">Сорьц Шинжлэх</div>
-  </button>
-
-  <div class="position-relative w-100 d-flex justify-content-center">
-    <div class="dropdown">
-      <button id="loadingButton" class="test-button dropdown-toggle"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Тест Өгөгдөл Сонгох
+<div class="h-100 w-100">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="survey-tab" data-bs-toggle="tab" data-bs-target="#survey" type="button" role="tab" aria-controls="survey" aria-selected="true">
+        Сорьц Шинжлэх Өгөгдөл Оруулах
       </button>
-      <ul class="dropdown-menu">
-        {% for strain in strains %}
-          <li>
-            <button class="dropdown-item d-flex gap-2 justify-content-center" type="button" onclick="testSample('{{forloop.counter0}}', '{{strain}}')">
-              {{ strain }}
-              <img style="height: 32px; object-fit: contain;" src="{% static 'images/bacteria/' %}{{ strain }}.png" alt="">
-            </button>
-          </li>
-        {% endfor%}
-      </ul>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="test-survey-tab" data-bs-toggle="tab" data-bs-target="#test-survey" type="button" role="tab" aria-controls="test-survey" aria-selected="false">
+        Тест Өгөгдөл Дээр Шинжлэх
+      </button>
+    </li>
+  </ul>
+  <div class="tab-content w-100" id="surveyTab">
+    <div class="tab-pane fade show active" id="survey" role="tabpanel" aria-labelledby="survey-tab">
+      {% include 'components/survey/upload-file.html' %}
+    </div>
+    <div class="tab-pane fade" id="test-survey" role="tabpanel" aria-labelledby="test-survey-tab">
+      {% include 'components/survey/test.html' %}
     </div>
   </div>
-  <div id="sample-img-wrapper" class="my-3 w-100" style="display: none;">
-    <img id="sampleImg" src="" alt="Sample Data" style="width: 100%; object-fit: contain;">
-  </div>
-
-  <div id="sample-info" class="alert alert-info mt-2">
-    <i class="fa fa-info-circle"></i>
-    Тус тест өгөгдөл cонгох товчин дээр дарж бидний өгөгдлийн сангаас нэг спектрум өгөгдлийг сонгосноор манай хиймэл оюун хэрхэн ажиллаж буйг туршиж үзнэ үү.
-  </div>
-
-  <button id="submit-sample" style="display: none;" class="test-button text-white" type="button" onclick="submitClick()">
-    Тест Өгөгдөл Шинжлэх
-  </button>
-
-</form>
-<script>
-  var sampleIndex = ''
-  testSample = (index, strain) => {
-    sampleIndex = index
-    var url = `{% url 'test-sample'%}?index=${index}`
-    var button = document.getElementById('loadingButton')
-    var submitButton = document.getElementById('submit-sample')
-    var sampleInfo = document.getElementById('sample-info')
-    
-    button.classList.add('loading');
-    button.innerText = strain
-    fetch(url)
-      .then(response => {
-        if (!response.ok) {
-            throw new Error('Network error')
-        }
-        return response.json()
-      })
-      .then(data => {
-        var imgWrapper = document.getElementById('sample-img-wrapper')
-        imgWrapper.style.display = 'block'
-        var imgData = data.graphic_img_data
-        var sampleImg = document.getElementById('sampleImg')
-        sampleImg.src = `data:image/png;base64, ${imgData}`;
-        submitButton.style.display = 'block'
-        sampleInfo.style.display = 'none'
-        button.classList.remove('loading');
-      })
-      .catch(error => {
-        button.classList.remove('loading');
-        console.error('There has been a problem with your fetch operation:', error)
-      })
-  }
-
-  submitClick = () => {
-    window.location.href = `{% url 'test-load-model' %}?index=${parseInt(sampleIndex) + 1}`
-  }
-</script>
-
-<script>
-  try {
-    id_file = document.getElementById('id_file')
-    if(id_file){
-      document.getElementById('id_file').addEventListener('change', function() {
-        if (this.files.length > 0) {
-          var fileName = this.files[0].name;
-          document.getElementById('filename-display').innerText = 'Сорьцын файл: ' + fileName;
-          document.getElementById('upload-confirmation').style.display = 'block';
-        }
-      });
-    }
-  } catch (error) {
-    console.error(error);
-  }
-</script>
+</div>

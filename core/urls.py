@@ -29,6 +29,7 @@ urlpatterns = [
     path('', core_views.index, name='home'),
     path('login/', auth_views.user_login, name='login'),
     path('logout/', auth_views.user_logout, name='logout'),
+    path('reset-pass/', auth_views.reset_pass, name='reset-pass'),
     path('set-password/<uidb64>/<token>/<email>', auth_views.password_reset_confirm, name='set-password'),
     path('faq/', core_views.faq, name='faq'),
 

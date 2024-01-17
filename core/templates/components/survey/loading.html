@@ -251,17 +251,23 @@ function changeImages() {
   });
 
   setTimeout(() => {
-    window.location.href = "{% url 'test-survey-result' index %}";
+    var indexValue = {{ index }}
+    if(window.location.href === '/test/survey/load/' && indexValue != null && indexValue != undefined){
+
+      var dynamicUrl = "test/survey/result" + "indexValue";
+
+      window.location.href = dynamicUrl
+    }
   }, totalDuration);
 
 }
 
 window.onload = function() {
-  {% if request.path == '/test/survey/load/' %}
+  if (window.location.href === '/test/survey/load/') {
     const params = new URLSearchParams(window.location.search);
     if (params.has('index')) {
       changeImages();
     }
-  {% endif %}
+  }
 };
 </script>
