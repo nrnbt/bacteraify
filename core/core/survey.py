@@ -1,10 +1,12 @@
 from bacter_identification.models import Survey
 
-def survey_result_available(survey_file_name):
-    survey = Survey.objects.get(
-        surveyFileName=survey_file_name
-    )
-    return survey.resultFileName
+def survey_result_available(s):
+    s = s.replace(" predicted", "")
+    numbers = s.split("/")
+    if len(numbers) == 2 and numbers[0].strip() == numbers[1].strip():
+        return True
+    else:
+        return False
 
 def create_survey(user_id, user_email, file_name, data_len, patient_hash, model_types):
     survey_record = Survey(

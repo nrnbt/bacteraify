@@ -73,25 +73,17 @@ def upload_survey(request):
 
 def load_model(request):
     try:
-        def check_status(s):
-            s = s.replace(" predicted", "")
-            numbers = s.split("/")
-            if len(numbers) == 2 and numbers[0].strip() == numbers[1].strip():
-                return True
-            else:
-                return False
         survey_id = request.GET.get('id')
         survey = Survey.objects.filter(id=survey_id).values('surveyFileName', 'modelTypes', 'status').first()
-        file_name = survey['surveyFileName']
-        model_types = survey['modelTypes']
-        status = survey['status']
-        predicted = check_status(status)
+        predicted = survey_result_available(survey['status'])
         if predicted:
-            return redirect('survey-result', { 'survey_file_name': file_name })
+            return redirect('/survey/result/?id={}'.format(survey_id))
         else:
+            file_name = survey['surveyFileName']
+            model_types = survey['modelTypes']
             data = get_file(file_name, 'survey-files')
             predict(data, survey_file_name=file_name, model_types=model_types)
-            return render(request, 'pages/survey.html', { 'survey_file_name': file_name })
+            return render(request, 'pages/survey.html', { 'id': survey_id })
     except Survey.DoesNotExist:
         raise Http404("Survey does not exist")
     except Exception as e:
@@ -101,12 +93,11 @@ def load_model(request):
 
 def survey_result(request):
     try:
-        survey_id = request.GET.get('survey_id')
+        survey_id = request.GET.get('id')
         survey = Survey.objects.filter(id=survey_id).values('surveyFileName', 'modelTypes', 'status', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName').first()
         model_types = survey['modelTypes']
         data = {}
         model_types_list = ast.literal_eval(model_types)
-        print(model_types_list)
         for char in model_types_list:
             if char == 'CNN':
                 data[char] = get_file(survey['cnnPredFileName'], 'survey-results') 
@@ -115,10 +106,23 @@ def survey_result(request):
             elif char == 'RNN':
                 data[char] = get_file(survey['rnnPredFileName'], 'survey-results')
 
-        print('data', data)
-        result_data = process_result_data(data.values)
+        result = {}
+        for key, value in data.items():
+            result_data = process_result_data(value.values)
+            result[key] = result_data
+
+        combined_table_data = {}
+
+        for algorithm, data in result.items():
+            for bacteria, percentage in data.items():
+                if bacteria not in combined_table_data:
+                    combined_table_data[bacteria] = {'bacteria': bacteria}
+                combined_table_data[bacteria][algorithm] = percentage
+
+        table_data = list(combined_table_data.values())
+
         context = {
-            'result_data': result_data,
+            'result_data': table_data,
             'colors': colors
         }
 
@@ -211,9 +215,10 @@ def download_survey(request):
 
 def check_survey_result(request, id=None):
     if id is not None:
-        result = survey_result_available(file_name)
-        if result is not None:
-            return JsonResponse({"result_file_name": result})
+        survey = Survey.objects.filter(id=id).values('status').first()
+        predicted = survey_result_available(survey['status'])
+        if predicted:
+            return JsonResponse({"id": id})
         else:
             return JsonResponse({"error": 'result not found'})
     else:

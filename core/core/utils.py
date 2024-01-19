@@ -28,6 +28,7 @@ import matplotlib.pyplot as plt
 # from core.core.s3_utils import read_file_from_s3
 from django.template.loader import get_template
 from django.conf import settings
+from keras.utils import to_categorical
 
 logger = logging.getLogger(__name__)
 
@@ -143,14 +144,12 @@ def process_result_data(prediction):
     result = {}
     predicted_percentages = prediction * 100
     for class_label, percentage in zip(range(len(predicted_percentages[0])), predicted_percentages[0]):
-        if percentage > 0.1:
+        if percentage > 1:
             bacteria_name = STRAINS[class_label]
             # result.update({ f'{bacteria_name} (Class {class_label})': f'{percentage:.4f}%' })
             result.update({ f'{bacteria_name}': f'{percentage:.4f}%' })
     logger.info('---------------------------- result_data ----------------------------\n', result, '\n')
-
     sorted_bacteria_counts_desc = dict(sorted(result.items(), key=lambda item: float(item[1].rstrip('%')), reverse=True))
-
     return sorted_bacteria_counts_desc
 
 def predict(data, survey_file_name, model_types):
@@ -185,8 +184,9 @@ def predict(data, survey_file_name, model_types):
                 X_test = data.values if isinstance(data, pd.DataFrame) else data
                 logger.info('------------------------------ SVM MODEL ------------------------------\n', model, '\n')
                 y_pred = model.predict(X_test)
+                y_pred_probabilities = model.predict_proba(X_test)
                 logger.info('--------------------------- SVM MODEL Y_PRED ---------------------------\n', y_pred, '\n')
-                file_name = save_data_to_file(pd.DataFrame(y_pred), 'survey-results')
+                file_name = save_data_to_file(pd.DataFrame(y_pred_probabilities), 'survey-results')
                 status = f"{index + 1}/{model_types_len} predicted"
                 update_survey_svm(survey_file_name, status=status, file_name=file_name)
             elif char == 'RNN':

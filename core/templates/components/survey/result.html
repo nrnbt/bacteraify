@@ -86,21 +86,41 @@
     <thead>
       <tr>
         <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Бактери нэршил</th>
-        <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Илэрсэн хувь</th>
+        {% for columns in result_data.0.keys %}
+          {% if columns == 'CNN' %}
+            <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Илэрсэн хувь (CNN)</th>
+          {% elif columns == 'SVM'  %}
+            <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Илэрсэн хувь (SVM)</th>
+          {% elif columns == 'RNN'  %}
+            <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Илэрсэн хувь (RNN)</th>
+          {% endif  %}
+        {% endfor %}
       </tr>
     </thead>
     <tbody>
-      {% for key, value in result_data.items %}
+      {% for row in result_data %}
         <tr>
           <td class="text-center">
             <div class="d-flex justify-content-center gap-2 align-items-center">
-              {{ key }}
-              <img style="height: 45px; object-fit: contain;" src="{% static 'images/bacteria/' %}{{key}}.png" alt="{{ key }}">
+              {{ row.bacteria }}
+              <img style="height: 45px; object-fit: contain;" src="{% static 'images/bacteria/' %}{{row.bacteria}}.png" alt="{{ row.bacteria }}">
             </div>
           </td>
-          <td class="text-center">
-            <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ value }}</div>
-          </td>
+          {% for columns in result_data.0.keys %}
+            {% if columns == 'CNN' %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ row.CNN }}</div>
+              </td>
+            {% elif columns == 'SVM'  %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ row.SVM }}</div>
+              </td>
+            {% elif columns == 'RNN'  %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ row.RNN }}</div>
+              </td>
+            {% endif  %}
+          {% endfor %}
         </tr>
       {% endfor %}
     </tbody>
