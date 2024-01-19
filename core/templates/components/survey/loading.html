@@ -4,14 +4,14 @@
 <script>
   checkForResult = () => {
     $.ajax({
-      url: '/survey/check-result/{{ survey_file_name }}',
+      url: '/survey/check-result/{{ survey_id }}',
       success: (response) => {
-        const resultFileName = response.result_file_name
-        if (resultFileName) {
+        const survey_id = response.survey_id
+        if (survey_id) {
           clearInterval(pollingInterval);
           const currentUrl = window.location.href
           const baseUrl = currentUrl.split('/survey/')[0]
-          const newUrl = baseUrl + '/survey/result/?file_name=' + resultFileName
+          const newUrl = baseUrl + '/survey/result/?survey_id=' + survey_id
           window.location.href = newUrl
         }
       },

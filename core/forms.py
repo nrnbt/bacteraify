@@ -2,10 +2,23 @@ from django import forms
 import re
 
 class SurveyForm(forms.Form):
+  MODEL_CHOICES = [
+    ('CNN', 'CNN'),
+    ('SVM', 'SVM'),
+    ('RNN', 'RNN'),
+  ]
   file = forms.FileField(required=True)
   reg_no = forms.CharField(max_length=10, min_length=10, required=True)
   phone_no = forms.CharField(max_length=8, min_length=8, required=True)
-  
+  model_types = forms.MultipleChoiceField(
+    required=False,
+    widget=forms.CheckboxSelectMultiple,
+    choices=MODEL_CHOICES,
+    error_messages={
+        'required': 'Please select at least one model type.',
+    }
+  )
+
   def clean_reg_no(self):
       reg_no = self.cleaned_data['reg_no']
       pattern = r'^[А-Яа-яӨөҮү]{2}\d{8}$'

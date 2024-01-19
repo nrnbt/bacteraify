@@ -36,7 +36,7 @@ urlpatterns = [
     path('survey/', core_views.survey, name='survey'),
     path('survey/upload/', login_required(core_views.upload_survey), name='upload-survey'),
     path('survey/load/', login_required(core_views.load_model), name='load-model'),
-    path('survey/check-result/<file_name>/', login_required(core_views.check_survey_result), name = "check-survey-result"),
+    path('survey/check-result/<id>/', login_required(core_views.check_survey_result), name = "check-survey-result"),
     path('survey/result/', login_required(core_views.survey_result), name='survey-result'),
 
     path('surveys/', login_required(core_views.surveys), name='surveys'),

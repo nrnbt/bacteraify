@@ -8,13 +8,13 @@ from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
 from io import StringIO
 from core.core.utils import hash_user, save_file, get_file, predict, process_result_data, get_file_contents, diff_graphic, rendered_html, get_test_file, get_test_x_data_file, encode_image_to_base64, single_graphic
-from core.core.survey import save_survey, survey_result_available, filter_survey_by_hash
+from core.core.survey import create_survey, survey_result_available, filter_survey_by_hash
 from core.core.constants import colors, STRAINS
 from core.forms import SurveyForm, SurveySearchForm
 import json
 import numpy as np
 from datetime import datetime, timedelta
-import random
+import ast
 
 logger = logging.getLogger(__name__)
 
@@ -41,20 +41,22 @@ def upload_survey(request):
                 phone_no = form.cleaned_data['phone_no']
                 reg_no = form.cleaned_data['reg_no'].upper()
                 file = form.cleaned_data['file']
+                model_types = form.cleaned_data['model_types']
 
                 file_name = save_file(file, 'survey-files')
                 data = get_file(file_name, 'survey-files')
                 
                 if file_name:
-                    save_survey(
+                    survey_id = create_survey(
                         user_id=request.user.id, 
                         user_email= request.user.email,
                         file_name=file_name, 
                         data_len=len(data),
-                        userHash=hash_user(reg_no, phone_no)
+                        patient_hash=hash_user(reg_no, phone_no),
+                        model_types = model_types
                     )
 
-                    return redirect('/survey/load/?file_name={}'.format(file_name))
+                    return redirect('/survey/load/?id={}'.format(survey_id))
                 else:
                     messages.error(request, 'Error: Something went wrong!', {'form': form})
                     return render(request, 'pages/survey.html')
@@ -71,14 +73,27 @@ def upload_survey(request):
 
 def load_model(request):
     try:
-        file_name = request.GET.get('file_name')
-        if survey_result_available(file_name):
-            return render(request, 'pages/survey.html', { 'survey_file_name': file_name })
+        def check_status(s):
+            s = s.replace(" predicted", "")
+            numbers = s.split("/")
+            if len(numbers) == 2 and numbers[0].strip() == numbers[1].strip():
+                return True
+            else:
+                return False
+        survey_id = request.GET.get('id')
+        survey = Survey.objects.filter(id=survey_id).values('surveyFileName', 'modelTypes', 'status').first()
+        file_name = survey['surveyFileName']
+        model_types = survey['modelTypes']
+        status = survey['status']
+        predicted = check_status(status)
+        if predicted:
+            return redirect('survey-result', { 'survey_file_name': file_name })
         else:
             data = get_file(file_name, 'survey-files')
-            predict(data, survey_file_name=file_name)
+            predict(data, survey_file_name=file_name, model_types=model_types)
             return render(request, 'pages/survey.html', { 'survey_file_name': file_name })
-       
+    except Survey.DoesNotExist:
+        raise Http404("Survey does not exist")
     except Exception as e:
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
@@ -86,8 +101,21 @@ def load_model(request):
 
 def survey_result(request):
     try:
-        file_name = request.GET.get('file_name')
-        data = get_file(file_name, 'survey-results')
+        survey_id = request.GET.get('survey_id')
+        survey = Survey.objects.filter(id=survey_id).values('surveyFileName', 'modelTypes', 'status', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName').first()
+        model_types = survey['modelTypes']
+        data = {}
+        model_types_list = ast.literal_eval(model_types)
+        print(model_types_list)
+        for char in model_types_list:
+            if char == 'CNN':
+                data[char] = get_file(survey['cnnPredFileName'], 'survey-results') 
+            elif char == 'SVM':
+                data[char] = get_file(survey['svmPredFileName'], 'survey-results') 
+            elif char == 'RNN':
+                data[char] = get_file(survey['rnnPredFileName'], 'survey-results')
+
+        print('data', data)
         result_data = process_result_data(data.values)
         context = {
             'result_data': result_data,
@@ -181,8 +209,8 @@ def download_survey(request):
         messages.error(request, 'Error: Something went wrong!')
         return render(request, 'pages/surveys.html')
 
-def check_survey_result(request, file_name=None):
-    if file_name is not None:
+def check_survey_result(request, id=None):
+    if id is not None:
         result = survey_result_available(file_name)
         if result is not None:
             return JsonResponse({"result_file_name": result})

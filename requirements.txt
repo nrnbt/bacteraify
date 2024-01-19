@@ -9,6 +9,7 @@ matplotlib==3.8.2
 dj_database_url==2.1.0
 pymysql==1.1.0
 psycopg2-binary==2.9.9
+scikit-learn==1.2.2
 # gunicorn==21.2.0
 # whitenoise==6.6.0
 ## for s3 bucket

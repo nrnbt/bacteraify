@@ -30,7 +30,7 @@
   <div 
     class="uploader-dropper"
     id="drop-area" 
-    ondragover="allowDrop(event)" 
+    ondragover="allowDrop(event)"
     ondrop="dropHandler(event)"
   >
     <div class="flex h-half w-full justify-center px-4 pt-4">
@@ -87,6 +87,7 @@
         name="reg_no"
         type="text"
         value="{{ form.reg_no.value|default_if_none:'' }}"
+        pattern="^[А-Яа-я]{2}\d{8}$"
         placeholder="Регистрийн дугаар" 
         required
         {% if not user.is_authenticated %}disabled{% endif %}
@@ -100,9 +101,10 @@
         class="form-control" 
         id="id_phone_no"
         name="phone_no"
-        type="number"
+        type="text"
         value="{{ form.phone_no.value|default_if_none:'' }}"
         placeholder="Утасны дугаар"
+        pattern="\d{8}" 
         required
         {% if not user.is_authenticated %}disabled{% endif %}
       >

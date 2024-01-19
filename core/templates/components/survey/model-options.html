@@ -1,14 +1,13 @@
 <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-  <input type="checkbox" class="btn-check"  {% if not user.is_authenticated %}disabled{% endif %} id="CNN" autocomplete="off" checked>
+  <input type="checkbox" class="btn-check" name="model_types" value="CNN" {% if not user.is_authenticated %}disabled{% endif %} id="CNN" autocomplete="off" checked>
   <label class="btn btn-outline-primary" for="CNN">CNN</label>
 
-  <input type="checkbox" class="btn-check" {% if not user.is_authenticated %}disabled{% endif %} id="SVM" autocomplete="off">
+  <input type="checkbox" class="btn-check" name="model_types" value="SVM" {% if not user.is_authenticated %}disabled{% endif %} id="SVM" autocomplete="off">
   <label class="btn btn-outline-primary" for="SVM">SVM</label>
 
-  <input type="checkbox" class="btn-check" {% if not user.is_authenticated %}disabled{% endif %} id="RNN" autocomplete="off">
+  <input type="checkbox" class="btn-check" name="model_types" value="RNN" {% if not user.is_authenticated %}disabled{% endif %} id="RNN" autocomplete="off">
   <label class="btn btn-outline-primary" for="RNN">RNN</label>
 </div>
-
 <script>
   $(document).ready(function () {
     $('.btn-check').on('change', function () {

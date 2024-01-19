@@ -5,6 +5,9 @@ import PyPDF2
 import hashlib
 from datetime import datetime
 from tensorflow.keras.models import load_model
+import tensorflow as tf
+
+from joblib import load
 import threading
 # from channels.layers import get_channel_layer
 # from asgiref.sync import async_to_sync
@@ -13,8 +16,9 @@ import logging
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
-from core.core.constants import model_file_path, STRAINS, upload_file_path
-from core.core.survey import update_survey
+from core.core.constants import cnn_model_file_path, svm_model_file_path, rnn_model_file_path, STRAINS, upload_file_path
+from core.core.survey import update_survey_cnn, update_survey_svm, update_survey_rnn
+import ast
 
 from io import BytesIO
 import base64
@@ -135,7 +139,6 @@ def notify_survey_result(request):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
-
 def process_result_data(prediction):
     result = {}
     predicted_percentages = prediction * 100
@@ -150,19 +153,53 @@ def process_result_data(prediction):
 
     return sorted_bacteria_counts_desc
 
-def predict(data, survey_file_name):
+def predict(data, survey_file_name, model_types):
   try:
     def task():
-        # model_data = read_file_from_s3('model/cnn_model.h5')
-        # model_stream = BytesIO(model_data)
-        # model = load_model(model_stream)
-        model = load_model(model_file_path)
-        logger.info('------------------------------ model ------------------------------\n', model, '\n')
-        y_pred = model.predict(data)
-        logger.info('------------------------------ y_pred ------------------------------\n', y_pred, '\n')
-        file_name = save_data_to_file(pd.DataFrame(y_pred), 'survey-results')
+        model_types_list = ast.literal_eval(model_types)
+        model_types_len = len(model_types_list)
+        for index, char in enumerate(model_types_list):
+            if hasattr(tf, 'executing_eagerly_outside_functions'):
+                tf.compat.v1.executing_eagerly_outside_functions = tf.executing_eagerly_outside_functions
+                del tf.executing_eagerly_outside_functions
 
-        update_survey(survey_file_name, result_file_name=file_name)
+            # model_data = read_file_from_s3('model/cnn_model.h5')
+            # model_stream = BytesIO(model_data)
+            # model = load_model(model_stream)
+            if char == 'CNN':
+                path = cnn_model_file_path
+                # labels = tf.constant(list(STRAINS.keys()))
+                # logits = model.predict(data)
+                # loss = tf.compat.v1.losses.sparse_softmax_cross_entropy(labels, logits)
+                # logger.info('------------------------------ CNN LOSS ------------------------------\n', loss, '\n')
+                model = load_model(path)
+                logger.info('------------------------------ CNN MODEL ------------------------------\n', model, '\n')
+                y_pred = model.predict(data)
+                logger.info('--------------------------- CNN MODEL Y_PRED ---------------------------\n', y_pred, '\n')
+                file_name = save_data_to_file(pd.DataFrame(y_pred), 'survey-results')
+                status = f"{index + 1}/{model_types_len} predicted"
+                update_survey_cnn(survey_file_name, status=status, file_name=file_name)
+            elif char == 'SVM':
+                path = svm_model_file_path
+                model = load(path)
+                X_test = data.values if isinstance(data, pd.DataFrame) else data
+                logger.info('------------------------------ SVM MODEL ------------------------------\n', model, '\n')
+                y_pred = model.predict(X_test)
+                logger.info('--------------------------- SVM MODEL Y_PRED ---------------------------\n', y_pred, '\n')
+                file_name = save_data_to_file(pd.DataFrame(y_pred), 'survey-results')
+                status = f"{index + 1}/{model_types_len} predicted"
+                update_survey_svm(survey_file_name, status=status, file_name=file_name)
+            elif char == 'RNN':
+                path = rnn_model_file_path
+                model = load_model(path)
+                logger.info('------------------------------ RNN MODEL ------------------------------\n', model, '\n')
+                y_pred = model.predict(data)
+                logger.info('--------------------------- RNN MODEL Y_PRED ---------------------------\n', y_pred, '\n')
+                file_name = save_data_to_file(pd.DataFrame(y_pred), 'survey-results')
+                status = f"{index + 1}/{model_types_len} predicted"
+                update_survey_rnn(survey_file_name, status=status, file_name=file_name)
+            else:
+                logger.warning('Invalid model type')
 
         # notify_survey_result({ "file_name": file_name })
     thread = threading.Thread(target=task)

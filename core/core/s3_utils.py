@@ -2,7 +2,6 @@
 
 import boto3
 import os
-from core.core.constants import model_file_path
 import logging
 
 logger = logging.getLogger(__name__)
