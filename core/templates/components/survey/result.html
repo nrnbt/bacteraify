@@ -125,7 +125,7 @@
       {% endfor %}
     </tbody>
   </table>
-  <button id="loadingButton" class="btn button bg-primary" type="submit" onclick="downloadPdf('{{ request.GET.file_name|urlencode }}')">
+  <button id="loadingButton" class="btn button bg-primary" type="submit" onclick="downloadPdf('{{ request.GET.id|urlencode }}')">
     <a class="h-full w-full text-white" href="#">
       <i class="fas fa-file-pdf text-lg me-1"></i>Шинжилгээний хариу татах
     </a>

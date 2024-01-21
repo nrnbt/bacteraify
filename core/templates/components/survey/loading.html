@@ -18,7 +18,9 @@
       error: (error) => { console.error('Error:', error)}
     })
   }
-  var pollingInterval = setInterval(checkForResult, 5000);
+  if(!window.location.href.includes('/test/survey/load')){
+    var pollingInterval = setInterval(checkForResult, 5000);
+  }
 </script>
 
 <div style="padding: 20px;">
@@ -252,22 +254,19 @@ function changeImages() {
 
   setTimeout(() => {
     var indexValue = {{ index }}
-    if(window.location.href === '/test/survey/load/' && indexValue != null && indexValue != undefined){
+    if(window.location.href.includes('/test/survey/load/') && indexValue != null && indexValue != undefined){
+      var currentUrl = window.location.href;
+      var newPart = "test/survey/result/" + indexValue;
+      var newUrl = window.location.href.replace(/\/test\/survey\/load\/?\??(.*)/, '/' + newPart);
 
-      var dynamicUrl = "test/survey/result" + "indexValue";
-
-      window.location.href = dynamicUrl
+      window.location.replace(newUrl);
     }
   }, totalDuration);
 
 }
 
 window.onload = function() {
-  if (window.location.href === '/test/survey/load/') {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('index')) {
-      changeImages();
-    }
-  }
+  const params = new URLSearchParams(window.location.search);
+  changeImages();
 };
 </script>

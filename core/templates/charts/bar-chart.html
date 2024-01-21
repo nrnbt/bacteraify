@@ -6,8 +6,9 @@
   var result_data = {{ result_data|safe }}
   var colors = {{ colors|safe }}
 
-  var labels = Object.keys(result_data)
-  var values = labels.map(label => parseFloat(result_data[label]))
+  const labels = result_data.map(entry => entry.bacteria);
+  const cnnPercentages = result_data.map(entry => parseFloat(entry.CNN));
+  const svmPercentages = result_data.map(entry => parseFloat(entry.SVM));
   var ctx = document.getElementById('result-chart').getContext('2d')
 
   var barChart = new Chart(ctx, {
@@ -15,10 +16,19 @@
     data: {
         labels: labels,
         datasets: [{
-            data: values,
+            label: 'CNN Percentages',
+            data: cnnPercentages,
             backgroundColor: colors,
             borderColor: colors,
-            borderWidth: 1
+            borderWidth: 1,
+            borderSkipped: 'bottom'
+        }, {
+            label: 'SVM Percentages',
+            data: svmPercentages,
+            backgroundColor: colors,
+            borderColor: colors,
+            borderWidth: 1,
+            borderSkipped: 'bottom'
         }]
     },
     options: {
@@ -27,6 +37,10 @@
             legend: {
                 display: false
             },
+            shadowBlur: 100,
+            shadowColor: 'rgba(0, 0, 0, 1)',
+            shadowOffsetX: 50,
+            shadowOffsetY: 50,
             tooltip: {
                 callbacks: {
                     label: function(context) {

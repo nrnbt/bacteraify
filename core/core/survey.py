@@ -39,7 +39,5 @@ def update_survey_rnn(survey_file_name, status, file_name):
     survey.status = status
     survey.save()
 
-
-
 def filter_survey_by_hash(hash):
     return Survey.objects.filter(patientHash=hash)

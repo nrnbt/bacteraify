@@ -7,14 +7,15 @@ import logging
 from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
 from io import StringIO
-from core.core.utils import hash_user, save_file, get_file, predict, process_result_data, get_file_contents, diff_graphic, rendered_html, get_test_file, get_test_x_data_file, encode_image_to_base64, single_graphic
+from core.core.utils import hash_user, FileWriter, FileReader, Predictor, TestDataReader, GraphicGenerator, rendered_html, encode_image_to_base64
 from core.core.survey import create_survey, survey_result_available, filter_survey_by_hash
-from core.core.constants import colors, STRAINS
+from core.core.constants import COLORS, STRAINS
 from core.forms import SurveyForm, SurveySearchForm
 import json
 import numpy as np
 from datetime import datetime, timedelta
 import ast
+from core.core.types import FileDir
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +23,7 @@ def index(request):
     return render(request, 'pages/index.html')
 
 def survey(request):
-    context = {
-        'strains': [STRAINS[key] for key in STRAINS]
-    }
+    context = { 'strains': [STRAINS[key] for key in STRAINS] }
     return render(request, 'pages/survey.html', context)
 
 def faq(request):
@@ -42,9 +41,11 @@ def upload_survey(request):
                 reg_no = form.cleaned_data['reg_no'].upper()
                 file = form.cleaned_data['file']
                 model_types = form.cleaned_data['model_types']
+                file_reader = FileReader()
+                file_writer = FileWriter()
 
-                file_name = save_file(file, 'survey-files')
-                data = get_file(file_name, 'survey-files')
+                file_name = file_writer.save_file(file, FileDir.SURVEY)
+                data = file_reader.get_file_contents(file_name, FileDir.SURVEY)
                 
                 if file_name:
                     survey_id = create_survey(
@@ -81,8 +82,11 @@ def load_model(request):
         else:
             file_name = survey['surveyFileName']
             model_types = survey['modelTypes']
-            data = get_file(file_name, 'survey-files')
-            predict(data, survey_file_name=file_name, model_types=model_types)
+            file_reader = FileReader()
+            data = file_reader.get_file_contents(file_name, FileDir.SURVEY)
+            model_types_list = ast.literal_eval(model_types)
+            predictor = Predictor()
+            predictor.predict(data, survey_file_name=file_name, model_types=model_types_list)
             return render(request, 'pages/survey.html', { 'id': survey_id })
     except Survey.DoesNotExist:
         raise Http404("Survey does not exist")
@@ -98,17 +102,21 @@ def survey_result(request):
         model_types = survey['modelTypes']
         data = {}
         model_types_list = ast.literal_eval(model_types)
+        file_reader = FileReader()
+        predictor = Predictor()
+
         for char in model_types_list:
             if char == 'CNN':
-                data[char] = get_file(survey['cnnPredFileName'], 'survey-results') 
+                data[char] = file_reader.get_file_contents(survey['cnnPredFileName'], FileDir.RESULT) 
             elif char == 'SVM':
-                data[char] = get_file(survey['svmPredFileName'], 'survey-results') 
+                data[char] = file_reader.get_file_contents(survey['svmPredFileName'], FileDir.RESULT) 
             elif char == 'RNN':
-                data[char] = get_file(survey['rnnPredFileName'], 'survey-results')
+                data[char] = file_reader.get_file_contents(survey['rnnPredFileName'], FileDir.RESULT)
 
         result = {}
+        
         for key, value in data.items():
-            result_data = process_result_data(value.values)
+            result_data = predictor.process_prediction_result(value.values)
             result[key] = result_data
 
         combined_table_data = {}
@@ -123,7 +131,7 @@ def survey_result(request):
 
         context = {
             'result_data': table_data,
-            'colors': colors
+            'colors': COLORS
         }
 
         return render(request, 'pages/survey.html', context)
@@ -135,17 +143,18 @@ def survey_result(request):
 def surveys(request):
     try:
         surveys = Survey.objects.filter(userId=request.user.id)
-        context = {
-            'surveys': surveys
-        }
+        context = { 'surveys': surveys }
     except Exception as e:
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
     return render(request, 'pages/surveys.html', context)
 
 def download_survey(request):
-    survey = request.GET.get('survey')
     result = request.GET.get('result')
+    survey = Survey.objects.filter(id=result).values('modelTypes', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName').first()
+    
+    file_reader = FileReader()
+    predictor = Predictor()
 
     def get_csv_file_contents(fileName, dir):
         file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), dir, fileName + '.csv')
@@ -159,8 +168,9 @@ def download_survey(request):
 
     def get_predicted_graphic(df, surveyFileName):
         graphics = []
+        graphic_generator = GraphicGenerator()
 
-        x_data = get_file_contents(surveyFileName,'survey-files')
+        x_data = file_reader.get_file(surveyFileName, FileDir.SURVEY)
         for predicted_bacteria in df['Bacteria']:
             y_data = Bacteria.objects.get(label=predicted_bacteria)
             spectrum_list  = json.loads(y_data.spectrum)
@@ -170,7 +180,7 @@ def download_survey(request):
             x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
             bacteria_img = {
                 'bacteria': predicted_bacteria,
-                'img_data':  diff_graphic(predicted_bacteria, y_data_array, x_data_array)
+                'img_data':  graphic_generator.create_graphic(title=predicted_bacteria, x_data=x_data_array, y_data=y_data_array)
             }
             graphics.append(bacteria_img)
 
@@ -178,8 +188,8 @@ def download_survey(request):
 
     try:
         if result is not None:
-            data = get_file(result, 'survey-results')
-            result_data = process_result_data(data.values)
+            data = file_reader.get_file(result, FileDir.RESULT)
+            result_data = predictor.process_prediction_result(data.values)
             df = pd.DataFrame(list(result_data.items()), columns=['Bacteria', 'Percentage'])
 
             survey = Survey.objects.get(resultFileName=result)
@@ -258,7 +268,8 @@ def test_load_model(request):
 def test_sample_result(request, index):
     try:
         bacteria = STRAINS[index]
-        x_data = get_test_x_data_file(index)
+        test_data_reader = TestDataReader()
+        x_data = test_data_reader.get_test_x_data_file(index)
         x_data_io = StringIO(x_data)
         x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
 
@@ -266,7 +277,8 @@ def test_sample_result(request, index):
         spectrum_list  = json.loads(y_data.spectrum)
         y_data_array = np.array(spectrum_list)
 
-        graphic_img_data = diff_graphic(bacteria, y_data_array, x_data_array)
+        grapic_generator = GraphicGenerator()
+        graphic_img_data = grapic_generator.create_graphic(title=bacteria, y_data=y_data_array, x_data=x_data_array)
         res = json.dumps({
             'graphic_img_data': graphic_img_data
         })
@@ -279,13 +291,15 @@ def test_sample_result(request, index):
     
 def test_sample(request):
     index = request.GET.get('index')
+    grapic_generator = GraphicGenerator()
+
     try:
         bacterias = [STRAINS[key] for key in STRAINS]
         bacteria = bacterias[int(index)]
         y_data = Bacteria.objects.get(label=bacteria)
         spectrum_list  = json.loads(y_data.spectrum)
         y_data_array = np.array(spectrum_list)
-        graphic_img_data = single_graphic(bacteria, y_data_array)
+        graphic_img_data = grapic_generator.create_graphic(title=bacteria, y_data=y_data_array)
         res = json.dumps({
             'graphic_img_data': graphic_img_data
         })
@@ -297,11 +311,13 @@ def test_sample(request):
 
 def test_survey_result(request, index):
     try:
-        data = get_test_file(index)
-        result_data = process_result_data(data.values)
+        test_data_reader = TestDataReader()
+        predictor = Predictor()
+        data = test_data_reader.get_test_file(index)
+        result_data = predictor.process_prediction_result(data.values)
         strains=[STRAINS[key] for key in STRAINS]
         indices = [strains.index(strain) for strain in result_data.keys() if strain in strains]
-        filtered_colors = [colors[index] for index in indices]
+        filtered_colors = [COLORS[index] for index in indices]
         context = {
             'result_data': result_data,
             'colors': filtered_colors,
@@ -317,10 +333,13 @@ def test_survey_result(request, index):
 
 def download_test_survey(request):
     result = request.GET.get('result')
+    test_data_reader = TestDataReader()
+
     def get_predicted_graphic(df, surveyFileName):
         graphics = []
+        grapic_generator = GraphicGenerator()
 
-        x_data = get_test_x_data_file(surveyFileName)
+        x_data = test_data_reader.get_test_x_data_file(surveyFileName)
         for predicted_bacteria in df['Bacteria']:
             y_data = Bacteria.objects.get(label=predicted_bacteria)
             spectrum_list  = json.loads(y_data.spectrum)
@@ -329,14 +348,16 @@ def download_test_survey(request):
             x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
             bacteria_img = {
                 'bacteria': predicted_bacteria,
-                'img_data':  diff_graphic(predicted_bacteria, y_data_array, x_data_array)
+                'img_data':  grapic_generator.create_graphic(title=predicted_bacteria, y_data=y_data_array, x_data=x_data_array)
             }
             graphics.append(bacteria_img)
         return graphics
 
     try:
-        data = get_test_file(result)
-        result_data = process_result_data(data.values)
+        predictor = Predictor()
+
+        data = test_data_reader.get_test_file(result)
+        result_data = predictor.process_prediction_result(data.values)
         df = pd.DataFrame(list(result_data.items()), columns=['Bacteria', 'Percentage'])
         three_seconds_earlier = datetime.now() - timedelta(seconds=3)
         formatted_date = three_seconds_earlier.strftime('%Y-%m-%d %H:%M:%S')
