@@ -100,6 +100,7 @@ def survey_result(request):
         survey_id = request.GET.get('id')
         survey = Survey.objects.filter(id=survey_id).values('surveyFileName', 'modelTypes', 'status', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName').first()
         model_types = survey['modelTypes']
+        print('model_types: -------', model_types)
         data = {}
         model_types_list = ast.literal_eval(model_types)
         file_reader = FileReader()

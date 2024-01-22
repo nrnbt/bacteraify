@@ -22,7 +22,6 @@ class Survey(models.Model):
     rowNumber = models.IntegerField()
     status = models.CharField(max_length=50)
     created_at = models.DateTimeField(default=timezone.now)
-    modelTypes = models.TextField(default='CNN')
     def save(self, *args, **kwargs):
             if not self.surveyNumber:
                 is_unique = False
