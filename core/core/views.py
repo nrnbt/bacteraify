@@ -14,7 +14,6 @@ from core.forms import SurveyForm, SurveySearchForm
 import json
 import numpy as np
 from datetime import datetime, timedelta
-import ast
 from core.core.types import FileDir
 
 logger = logging.getLogger(__name__)
@@ -84,9 +83,8 @@ def load_model(request):
             model_types = survey['modelTypes']
             file_reader = FileReader()
             data = file_reader.get_file_contents(file_name, FileDir.SURVEY)
-            model_types_list = ast.literal_eval(model_types)
             predictor = Predictor()
-            predictor.predict(data, survey_file_name=file_name, model_types=model_types_list)
+            predictor.predict(data, survey_file_name=file_name, model_types=model_types)
             return render(request, 'pages/survey.html', { 'id': survey_id })
     except Survey.DoesNotExist:
         raise Http404("Survey does not exist")
@@ -100,38 +98,18 @@ def survey_result(request):
         survey_id = request.GET.get('id')
         survey = Survey.objects.filter(id=survey_id).values('surveyFileName', 'modelTypes', 'status', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName').first()
         model_types = survey['modelTypes']
-        print('model_types: -------', model_types)
         data = {}
-        model_types_list = ast.literal_eval(model_types)
-        file_reader = FileReader()
+
         predictor = Predictor()
-
-        for char in model_types_list:
-            if char == 'CNN':
-                data[char] = file_reader.get_file_contents(survey['cnnPredFileName'], FileDir.RESULT) 
-            elif char == 'SVM':
-                data[char] = file_reader.get_file_contents(survey['svmPredFileName'], FileDir.RESULT) 
-            elif char == 'RNN':
-                data[char] = file_reader.get_file_contents(survey['rnnPredFileName'], FileDir.RESULT)
-
-        result = {}
-        
-        for key, value in data.items():
-            result_data = predictor.process_prediction_result(value.values)
-            result[key] = result_data
-
-        combined_table_data = {}
-
-        for algorithm, data in result.items():
-            for bacteria, percentage in data.items():
-                if bacteria not in combined_table_data:
-                    combined_table_data[bacteria] = {'bacteria': bacteria}
-                combined_table_data[bacteria][algorithm] = percentage
-
-        table_data = list(combined_table_data.values())
+        result = predictor.process_prediction_result(
+            model_types=model_types,
+            cnn=survey['cnnPredFileName'],
+            svm=survey['svmPredFileName'],
+            rnn=survey['rnnPredFileName']
+        )
 
         context = {
-            'result_data': table_data,
+            'result_data': result,
             'colors': COLORS
         }
 
@@ -152,7 +130,7 @@ def surveys(request):
 
 def download_survey(request):
     result = request.GET.get('result')
-    survey = Survey.objects.filter(id=result).values('modelTypes', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName').first()
+    survey = Survey.objects.filter(id=result).values('modelTypes', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName', 'created_at', 'surveyNumber', 'surveyFileName').first()
     
     file_reader = FileReader()
     predictor = Predictor()
@@ -172,7 +150,7 @@ def download_survey(request):
         graphic_generator = GraphicGenerator()
 
         x_data = file_reader.get_file(surveyFileName, FileDir.SURVEY)
-        for predicted_bacteria in df['Bacteria']:
+        for predicted_bacteria in df['bacteria']:
             y_data = Bacteria.objects.get(label=predicted_bacteria)
             spectrum_list  = json.loads(y_data.spectrum)
             y_data_array = np.array(spectrum_list)
@@ -189,25 +167,27 @@ def download_survey(request):
 
     try:
         if result is not None:
-            data = file_reader.get_file(result, FileDir.RESULT)
-            result_data = predictor.process_prediction_result(data.values)
-            df = pd.DataFrame(list(result_data.items()), columns=['Bacteria', 'Percentage'])
-
-            survey = Survey.objects.get(resultFileName=result)
-            parsed_date = datetime.strptime(str(survey.created_at), '%Y-%m-%d %H:%M:%S.%f%z')
+            result_data = predictor.process_prediction_result(
+                model_types=survey['modelTypes'],
+                cnn=survey['cnnPredFileName'],
+                svm=survey['svmPredFileName'],
+                rnn=survey['rnnPredFileName']
+            )
+            
+            parsed_date = datetime.strptime(str(survey['created_at']), '%Y-%m-%d %H:%M:%S.%f%z')
             formatted_date = parsed_date.strftime('%Y-%m-%d %H:%M:%S')
 
             context = {
                 'created_at': formatted_date,
                 'logo_img_data': encode_image_to_base64('images/brand-logo.png'),
-                'number': survey.number,
+                'number': survey['surveyNumber'],
                 'result_data': result_data,
-                'bacteria_images': get_predicted_graphic(df,survey.surveyFileName),
+                'bacteria_images': get_predicted_graphic(pd.DataFrame(result_data),survey['surveyFileName']),
                 'BASE_URL': os.environ.get('BASE_URL', 'http://127.0.0.1:8000')
             }
             resp_data = rendered_html('pages/survey-result-pdf.html', context)
             res = json.dumps({
-                'resp_data': resp_data, 'survey_number': survey.number 
+                'resp_data': resp_data, 'survey_number': survey['surveyNumber']
             })
             return HttpResponse(res, content_type="application/json")
         

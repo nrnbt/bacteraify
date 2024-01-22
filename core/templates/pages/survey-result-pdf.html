@@ -25,18 +25,45 @@
     <thead>
       <tr>
         <th scope="col" style="border-width: 2px;" class="text-center">#</th>
-        <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Бактерийн нэр</th>
-        <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Таамагласан хувь</th>
+        <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Бактери нэршил</th>
+        {% for columns in result_data.0.keys %}
+          {% if columns == 'CNN' %}
+            <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Илэрсэн хувь (CNN)</th>
+          {% elif columns == 'SVM'  %}
+            <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Илэрсэн хувь (SVM)</th>
+          {% elif columns == 'RNN'  %}
+            <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Илэрсэн хувь (RNN)</th>
+          {% endif  %}
+        {% endfor %}
       </tr>
     </thead>
     <tbody>
-        {% for key, value in result_data.items %}
-          <tr>
-            <th style="border-width: 2px;" class="text-center">{{ forloop.counter }}</th>
-            <td style="border-left: 0px;  border-width: 2px;" class="text-center">{{ key }}</td>
-            <td style="border-left: 0px; border-width: 2px;" class="text-center">{{ value }}</td>
-          </tr>
-        {% endfor %}
+      {% for row in result_data %}
+        <tr>
+          <th style="border-width: 2px;" class="text-center">{{ forloop.counter }}</th>
+          <td class="text-center">
+            <div class="d-flex justify-content-center gap-2 align-items-center">
+              {{ row.bacteria }}
+              <img style="height: 45px; object-fit: contain;" src="{% static 'images/bacteria/' %}{{row.bacteria}}.png" alt="{{ row.bacteria }}">
+            </div>
+          </td>
+          {% for columns in result_data.0.keys %}
+            {% if columns == 'CNN' %}
+              <td style="border-left: 0px;  border-width: 2px;" class="text-center">
+                {{ row.CNN }}
+              </td>
+            {% elif columns == 'SVM'  %}
+              <td style="border-left: 0px;  border-width: 2px;" class="text-center">
+                {{ row.SVM }}
+              </td>
+            {% elif columns == 'RNN'  %}
+              <td style="border-left: 0px;  border-width: 2px;" class="text-center">
+                {{ row.RNN }}
+              </td>
+            {% endif  %}
+          {% endfor %}
+        </tr>
+      {% endfor %}
     </tbody>
   </table>
   <i class="w-full text-center">Бактери илрүүлсэн харьцаа</i>

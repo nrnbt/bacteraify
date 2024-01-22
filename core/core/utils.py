@@ -213,17 +213,39 @@ class Predictor:
             logger.error(e)
             return None
         
-    def process_prediction_result(self, prediction: pd.DataFrame) -> dict:
-        result = {}
-        predicted_percentages = prediction * 100
-        for class_label, percentage in enumerate(predicted_percentages[0]):
-            if percentage > 1:
-                bacteria_name = STRAINS[class_label]
-                # result.update({ f'{bacteria_name} (Class {class_label})': f'{percentage:.4f}%' })
-                result.update({f"{bacteria_name}": f"{percentage:.4f}%"})
-        logger.info("---------------------------- result_data ----------------------------\n", result, "\n")
-        sorted_bacteria_counts_desc = dict(sorted(result.items(), key=lambda item: float(item[1].rstrip("%")), reverse=True))
-        return sorted_bacteria_counts_desc
+    def process_prediction_result(self, model_types: list, cnn: str, svm: str, rnn: str) -> list:
+        file_reader = FileReader()
+        
+        data = {}
+        for char in model_types:
+            if char == 'CNN':
+                data[char] = file_reader.get_file_contents(cnn, FileDir.RESULT) 
+            elif char == 'SVM':
+                data[char] = file_reader.get_file_contents(svm, FileDir.RESULT) 
+            elif char == 'RNN':
+                data[char] = file_reader.get_file_contents(rnn, FileDir.RESULT)
+
+        result_by_model_key = {}
+        for key, value in data.items():
+            result = {}
+            prediction = value.values
+            predicted_percentages = prediction * 100
+            for class_label, percentage in enumerate(predicted_percentages[0]):
+                if percentage > 1:
+                    bacteria_name = STRAINS[class_label]
+                    result.update({f"{bacteria_name}": f"{percentage:.4f}%"})
+            logger.info("---------------------------- result_data ----------------------------\n", result, "\n")
+            result = dict(sorted(result.items(), key=lambda item: float(item[1].rstrip("%")), reverse=True))
+            result_by_model_key[key] = result
+
+        combined_table_data = {}
+        for algorithm, data in result_by_model_key.items():
+            for bacteria, percentage in data.items():
+                if bacteria not in combined_table_data:
+                    combined_table_data[bacteria] = {'bacteria': bacteria}
+                combined_table_data[bacteria][algorithm] = percentage
+
+        return list(combined_table_data.values())
         
 class GraphicGenerator:
     def __init__(self):
