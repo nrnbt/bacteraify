@@ -98,18 +98,17 @@ def survey_result(request):
         survey_id = request.GET.get('id')
         survey = Survey.objects.filter(id=survey_id).values('surveyFileName', 'modelTypes', 'status', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName').first()
         model_types = survey['modelTypes']
-        data = {}
 
         predictor = Predictor()
-        result = predictor.process_prediction_result(
+        result_data = predictor.suvrey_result_data(
             model_types=model_types,
             cnn=survey['cnnPredFileName'],
             svm=survey['svmPredFileName'],
             rnn=survey['rnnPredFileName']
         )
-
+        result_by_percentage = predictor.process_prediction_result(result_data)
         context = {
-            'result_data': result,
+            'result_data': result_by_percentage,
             'colors': COLORS
         }
 
@@ -121,7 +120,7 @@ def survey_result(request):
 
 def surveys(request):
     try:
-        surveys = Survey.objects.filter(userId=request.user.id)
+        surveys = Survey.objects.filter(userId=request.user.id).order_by('-created_at')
         context = { 'surveys': surveys }
     except Exception as e:
         logger.error(e)
@@ -129,76 +128,47 @@ def surveys(request):
     return render(request, 'pages/surveys.html', context)
 
 def download_survey(request):
-    result = request.GET.get('result')
-    survey = Survey.objects.filter(id=result).values('modelTypes', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName', 'created_at', 'surveyNumber', 'surveyFileName').first()
-    
-    file_reader = FileReader()
+    survey_id = request.GET.get('id')
+    survey = Survey.objects.filter(id=survey_id).values('modelTypes', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName', 'created_at', 'surveyNumber', 'surveyFileName').first()
     predictor = Predictor()
 
-    def get_csv_file_contents(fileName, dir):
-        file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), dir, fileName + '.csv')
-        with open(file_path, 'rb') as file:
-            return file.read()
-        
-    def send_csv(file_contents, file_name):
-        response = HttpResponse(file_contents, content_type='application/force-download')
-        response['Content-Disposition'] = f'attachment; filename="{file_name}"'
-        return response
-
-    def get_predicted_graphic(df, surveyFileName):
-        graphics = []
-        graphic_generator = GraphicGenerator()
-
-        x_data = file_reader.get_file(surveyFileName, FileDir.SURVEY)
-        for predicted_bacteria in df['bacteria']:
-            y_data = Bacteria.objects.get(label=predicted_bacteria)
-            spectrum_list  = json.loads(y_data.spectrum)
-            y_data_array = np.array(spectrum_list)
-
-            x_data_io = StringIO(x_data)
-            x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
-            bacteria_img = {
-                'bacteria': predicted_bacteria,
-                'img_data':  graphic_generator.create_graphic(title=predicted_bacteria, x_data=x_data_array, y_data=y_data_array)
-            }
-            graphics.append(bacteria_img)
-
-        return graphics
-
     try:
-        if result is not None:
-            result_data = predictor.process_prediction_result(
+        if survey_id is not None:
+            result_data = predictor.suvrey_result_data(
                 model_types=survey['modelTypes'],
                 cnn=survey['cnnPredFileName'],
                 svm=survey['svmPredFileName'],
                 rnn=survey['rnnPredFileName']
             )
-            
+            result_by_percentage = predictor.process_prediction_result(result_data)
             parsed_date = datetime.strptime(str(survey['created_at']), '%Y-%m-%d %H:%M:%S.%f%z')
             formatted_date = parsed_date.strftime('%Y-%m-%d %H:%M:%S')
+            graphic_generator = GraphicGenerator()
+            bacteria_graphics = graphic_generator.get_predicted_graphic(
+                [item['bacteria'] for item in result_by_percentage], 
+                survey['surveyFileName']
+            )
+            encoded_logo_img = encode_image_to_base64('images/brand-logo.png')
 
             context = {
                 'created_at': formatted_date,
-                'logo_img_data': encode_image_to_base64('images/brand-logo.png'),
+                'logo_img_data': encoded_logo_img,
                 'number': survey['surveyNumber'],
-                'result_data': result_data,
-                'bacteria_images': get_predicted_graphic(pd.DataFrame(result_data),survey['surveyFileName']),
+                'result_data': result_by_percentage,
+                'bacteria_images': bacteria_graphics,
                 'BASE_URL': os.environ.get('BASE_URL', 'http://127.0.0.1:8000')
             }
+
             resp_data = rendered_html('pages/survey-result-pdf.html', context)
             res = json.dumps({
                 'resp_data': resp_data, 'survey_number': survey['surveyNumber']
             })
             return HttpResponse(res, content_type="application/json")
         
-        elif survey is not None:
-            file_contents = get_csv_file_contents(survey, 'survey-files')
-            return send_csv(file_contents, survey + '.csv')
-        
         else:
             messages.error(request, 'Error: Something went wrong!')
-            return Http404("Filename not provided")
-      
+            return Http404("Survey not provided")
+
     except Exception as e:
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
@@ -214,6 +184,48 @@ def check_survey_result(request, id=None):
             return JsonResponse({"error": 'result not found'})
     else:
         return JsonResponse({"error": 'survey not found'})
+
+def survey_result_pdf_view(request):
+    survey_id = request.GET.get('id')
+    survey = Survey.objects.filter(id=survey_id).values('modelTypes', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName', 'created_at', 'surveyNumber', 'surveyFileName').first()
+    predictor = Predictor()
+
+    try:
+        if survey_id is not None:
+            result_data = predictor.suvrey_result_data(
+                model_types=survey['modelTypes'],
+                cnn=survey['cnnPredFileName'],
+                svm=survey['svmPredFileName'],
+                rnn=survey['rnnPredFileName']
+            )
+            result_by_percentage = predictor.process_prediction_result(result_data)
+            parsed_date = datetime.strptime(str(survey['created_at']), '%Y-%m-%d %H:%M:%S.%f%z')
+            formatted_date = parsed_date.strftime('%Y-%m-%d %H:%M:%S')
+            graphic_generator = GraphicGenerator()
+            bacteria_graphics = graphic_generator.get_predicted_graphic(
+                [item['bacteria'] for item in result_by_percentage], 
+                survey['surveyFileName']
+            )
+            encoded_logo_img = encode_image_to_base64('images/brand-logo.png')
+
+            context = {
+                'created_at': formatted_date,
+                'logo_img_data': encoded_logo_img,
+                'number': survey['surveyNumber'],
+                'result_data': result_by_percentage,
+                'bacteria_images': bacteria_graphics,
+                'BASE_URL': os.environ.get('BASE_URL', 'http://127.0.0.1:8000')
+            }
+            return render(request, 'pages/survey-result-pdf.html', context)
+        
+        else:
+            messages.error(request, 'Error: Something went wrong!')
+            return Http404("Survey not provided")
+      
+    except Exception as e:
+        logger.error(e)
+        messages.error(request, 'Error: Something went wrong!')
+        return render(request, 'pages/survey-result-pdf.html')
     
 def search_survey(request):
     form = SurveySearchForm()
@@ -257,7 +269,6 @@ def test_sample_result(request, index):
         y_data = Bacteria.objects.get(label=bacteria)
         spectrum_list  = json.loads(y_data.spectrum)
         y_data_array = np.array(spectrum_list)
-
         grapic_generator = GraphicGenerator()
         graphic_img_data = grapic_generator.create_graphic(title=bacteria, y_data=y_data_array, x_data=x_data_array)
         res = json.dumps({

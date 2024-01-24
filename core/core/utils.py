@@ -35,6 +35,10 @@ from django.template.loader import get_template
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
 from core.core.types import FileDir
+from bacter_identification.models import Bacteria
+import json
+import numpy as np
+from io import StringIO
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +92,7 @@ class FileReader:
         else:
             raise FileNotFoundError("File not found")
 
-    def get_file(self, file_name, directory):
+    def get_file(self, file_name: str, directory: FileDir):
         file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), directory.value, file_name + ".csv")
         with open(file_path, "r") as file:
             return file.read()
@@ -212,10 +216,9 @@ class Predictor:
         except Exception as e:
             logger.error(e)
             return None
-        
-    def process_prediction_result(self, model_types: list, cnn: str, svm: str, rnn: str) -> list:
+    
+    def suvrey_result_data(self, model_types: list, cnn: str, svm: str, rnn: str) -> dict:
         file_reader = FileReader()
-        
         data = {}
         for char in model_types:
             if char == 'CNN':
@@ -224,9 +227,12 @@ class Predictor:
                 data[char] = file_reader.get_file_contents(svm, FileDir.RESULT) 
             elif char == 'RNN':
                 data[char] = file_reader.get_file_contents(rnn, FileDir.RESULT)
-
+        return data
+        
+    def process_prediction_result(self, result_data: dict) -> list:
         result_by_model_key = {}
-        for key, value in data.items():
+        
+        for key, value in result_data.items():
             result = {}
             prediction = value.values
             predicted_percentages = prediction * 100
@@ -250,13 +256,13 @@ class Predictor:
 class GraphicGenerator:
     def __init__(self):
         matplotlib.use("Agg")
-
-    def create_graphic(self, title, y_data, x_data=None):
-        fig, ax = plt.subplots(figsize=(10, 3))
-        ax.plot(y_data, label="бодит")
         
-        if x_data:
-            ax.plot(x_data, label="Таамагласан")
+    def create_graphic(self, title: str, true_x_data: np.ndarray, x_data: np.ndarray = None) -> str:
+        fig, ax = plt.subplots(figsize=(10, 3))
+        ax.plot(true_x_data, label="бодит")
+        
+        if x_data is not None and len(x_data) > 0:
+            ax.plot(x_data, label="Сорьцын өгөгдөл")
 
         ax.set_xlabel("Долгионы урт (нм)")
         ax.set_ylabel("Раманы Эрчим")
@@ -272,6 +278,34 @@ class GraphicGenerator:
             graphic = base64.b64encode(image_png)
             graphic = graphic.decode("utf-8")
             return graphic
+        
+    def get_predicted_graphic(self, bacteria: list, surveyFileName: str) -> list:
+        file_reader = FileReader()
+        x_data = file_reader.get_file(surveyFileName, FileDir.SURVEY)
+        graphics = []
+
+        graphic_generator = GraphicGenerator()
+
+        for bacteria_name in bacteria:
+            true_x_data = Bacteria.objects.get(label=bacteria_name)
+            spectrum_list  = json.loads(true_x_data.spectrum)
+            true_x_data_arr = np.array(spectrum_list)
+
+            x_data_io = StringIO(x_data)
+            x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
+
+            bacteria_img = {
+                'bacteria': bacteria_name,
+                'img_data':  graphic_generator.create_graphic(title=bacteria_name, x_data=x_data_array, true_x_data=true_x_data_arr)
+            }
+            graphics.append(bacteria_img)
+
+        return graphics
+
+# def send_csv(self, file_contents, file_name):
+#     response = HttpResponse(file_contents, content_type='application/force-download')
+#     response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+#     return response
 
 def rendered_html(template_src, context_dict={}):
     template = get_template(template_src)
