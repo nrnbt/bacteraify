@@ -4,7 +4,6 @@ const downloadPdf = (surveyId) => {
   const currentLocation = window.location.href
   const url = new URL('download-result', currentLocation)
 
-  let fetchUrl
   if (test) {
     const idx = '{{ index }}'
     url.pathname = `/test/download/?result=${idx}`
@@ -76,5 +75,6 @@ const generatePDF = (htmlContent) => {
     btn = document.getElementById('loadingButton')
     btn.classList.remove('loading')
     pdf.save(surveyNumber + '.pdf')
+    hiddenContainer.style.display = 'none'
   })
 }

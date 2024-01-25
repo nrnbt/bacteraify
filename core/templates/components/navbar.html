@@ -25,8 +25,13 @@
     </li>
   </ul>
   <div class="flex gap-10 search-container">
-    <form class="flex w-full" for="search">
+    <form class="flex w-full input-group" for="search">
       <input class="form-control search-input" type="search" placeholder="Хайх...">
+      <button class="input-group-append btn search-btn">
+        <span class="input-group-text">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+      </button>
     </form>
     {% if user.is_authenticated and not user.is_superuser %}
     <div class="dropdown">
@@ -34,10 +39,23 @@
         <i class="fa-solid fa-user"></i>
       </button>
       <div class="dropdown-content">
-        <h3 class="border-b">{{ user.email }}</h3>
-        <a class="border-b" href="{% url 'surveys' %}">Шинжилгээний түүх</a>
-        <a class="border-b" href="{% url 'search-survey' %}">Шинжилгээ хайх</a>
-        <a href="{% url 'logout' %}">Гарах</a>
+        <div class="profile">
+          {{ user.username }}
+          <div class="email">{{ user.email }}</div>
+        </div>
+        <hr class="solid divider">
+        <a dropdown-item" href="{% url 'surveys' %}">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <div>Шинжилгээний түүх</div>
+        </a>
+        <a href="{% url 'search-survey' %}">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <div>Шинжилгээ хайх</div>
+        </a>
+        <a class="dropdown-item" href="{% url 'logout' %}">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <div>Гарах</div>
+        </a>
       </div>
     </div>
     {% else %}

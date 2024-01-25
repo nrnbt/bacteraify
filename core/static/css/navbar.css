@@ -10,6 +10,31 @@
   width: 100%;
 }
 
+.search-input:focus {
+  outline: none !important;
+}
+
+.search-btn:active {
+  outline-color: red !important;
+}
+
+.search-btn:focus, .btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.search-btn {
+  padding: 0px !important;
+  background-color: #1881E2 !important;
+  border: 2px solid #1881E2;
+}
+
+.search-btn .input-group-text {
+  background-color: #1881E2 !important;
+  border: 2px solid #1881E2;
+  color: white;
+}
+
 .container-fluid {
   /* flex: 1; */
   flex-grow: 1;
