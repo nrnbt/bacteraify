@@ -15,6 +15,7 @@ import json
 import numpy as np
 from datetime import datetime, timedelta
 from core.core.types import FileDir
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 logger = logging.getLogger(__name__)
 
@@ -120,8 +121,20 @@ def survey_result(request):
 
 def surveys(request):
     try:
-        surveys = Survey.objects.filter(userId=request.user.id).order_by('-created_at')
-        context = { 'surveys': surveys }
+        surveys_list  = Survey.objects.filter(userId=request.user.id).order_by('-created_at')
+        surveys_per_page = 10
+
+        paginator = Paginator(surveys_list, surveys_per_page)
+        page = request.GET.get('page')
+
+        try:
+            surveys = paginator.page(page)
+        except PageNotAnInteger:
+            surveys = paginator.page(1)
+        except EmptyPage:
+            surveys = paginator.page(paginator.num_pages)
+        context = {'surveys': surveys}
+
     except Exception as e:
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
