@@ -1,7 +1,7 @@
 .toaster {
-  visibility: visible;
+  visibility: hidden;
   min-width: 250px;
-  margin-left: -125px;
+  margin-left: -175px;
   text-align: center;
   border-radius: 2px;
   padding: 16px;

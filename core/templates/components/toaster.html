@@ -20,7 +20,7 @@
   {% if messages %}
     {% for message in messages %}
       {% if message.tags == 'error' %}
-        <div class="error">
+        <div class="error gap-2">
           <div class="error-icon-container">
             <i class="fa-solid fa-exclamation"></i>
           </div>
@@ -30,7 +30,7 @@
           </a>
         </div>
       {% else %}
-      <div class="info-toast">
+      <div class="info-toast gap-2">
         <div class="info-icon-container">
           <i class="fa-solid fa-info" style="color: #3188f2;"></i>
         </div>

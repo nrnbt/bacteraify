@@ -107,9 +107,10 @@ def survey_result(request):
             svm=survey['svmPredFileName'],
             rnn=survey['rnnPredFileName']
         )
-        result_by_percentage = predictor.process_prediction_result(result_data)
+        result_by_percentage = predictor.process_prediction_result(result_data, model_types)
         context = {
             'result_data': result_by_percentage,
+            'model_types': model_types,
             'colors': COLORS
         }
 

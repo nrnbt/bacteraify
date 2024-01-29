@@ -39,6 +39,7 @@ from bacter_identification.models import Bacteria
 import json
 import numpy as np
 from io import StringIO
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -60,9 +61,10 @@ class FileWriter:
         data.dropna(inplace=True)
         data.reset_index(drop=True, inplace=True)
 
-        if not all(col.isdigit() for col in data.columns):
-            headers = [f"{i+1}" for i in range(len(data.columns))]
-            # Clean file data
+        if data.empty:
+            num_columns = data.shape[1]
+            columns = list(str(i) for i in range(1, num_columns + 1))
+            data = pd.DataFrame([data.columns], columns=columns)
 
         data.to_csv(file_path, index=False)
         return file_name
@@ -229,30 +231,57 @@ class Predictor:
                 data[char] = file_reader.get_file_contents(rnn, FileDir.RESULT)
         return data
         
-    def process_prediction_result(self, result_data: dict) -> list:
-        result_by_model_key = {}
-        
+    def process_prediction_result(self, result_data: dict, model_types: list) -> list:
+        result_with_rows = []
         for key, value in result_data.items():
-            result = {}
-            prediction = value.values
-            predicted_percentages = prediction * 100
-            for class_label, percentage in enumerate(predicted_percentages[0]):
-                if percentage > 1:
-                    bacteria_name = STRAINS[class_label]
-                    result.update({f"{bacteria_name}": f"{percentage:.4f}%"})
-            logger.info("---------------------------- result_data ----------------------------\n", result, "\n")
-            result = dict(sorted(result.items(), key=lambda item: float(item[1].rstrip("%")), reverse=True))
-            result_by_model_key[key] = result
+            for index, survey_row in enumerate(value.values):
+                result = []
+                predicted_percentages = survey_row * 100
 
-        combined_table_data = {}
-        for algorithm, data in result_by_model_key.items():
-            for bacteria, percentage in data.items():
-                if bacteria not in combined_table_data:
-                    combined_table_data[bacteria] = {'bacteria': bacteria}
-                combined_table_data[bacteria][algorithm] = percentage
-
-        return list(combined_table_data.values())
+                for class_label, percentage in enumerate(predicted_percentages):
+                    if percentage > 1:
+                        result.append({
+                            'bacteria': f"{STRAINS[class_label]}",
+                            'percentage': f"{percentage:.4f}",
+                            'algorithm': f"{key}",
+                        })
+                
+                logger.info("---------------------------- result_data ----------------------------\n", result, "\n")
+                duplicated_row = False
+                for item in result_with_rows:
+                    if item.get('row') == index:
+                        item['data'].extend(result)
+                        duplicated_row = True
+                        break
+                if not duplicated_row:
+                    result_with_rows.append({
+                        'row': index,
+                        'data': result
+                    })
+                    
+        transformed_data = {}
+        for item in result_with_rows:
+            row = item['row']
+            if row not in transformed_data:
+                transformed_data[row] = []
+            
+            temp_dict = {}
+            for entry in item['data']:
+                if entry['bacteria'] not in temp_dict:
+                    temp_dict[entry['bacteria']] = {}
+                temp_dict[entry['bacteria']][entry['algorithm']] = entry['percentage']
+            
+            for bacteria, algorithms in temp_dict.items():
+                temp_entry = {'bacteria': bacteria}
+                for algorithm, percentage in algorithms.items():
+                    temp_entry[algorithm] = percentage
+                transformed_data[row].append(temp_entry)
         
+        transformed_data_list = [{'row': row, 'data': data} for row, data in transformed_data.items()]
+        transformed_data_list.sort(key=lambda x: x['row'])  # Sort by 'row' number
+        
+        return transformed_data_list
+
 class GraphicGenerator:
     def __init__(self):
         matplotlib.use("Agg")
