@@ -231,7 +231,7 @@ class Predictor:
                 data[char] = file_reader.get_file_contents(rnn, FileDir.RESULT)
         return data
         
-    def process_prediction_result(self, result_data: dict, model_types: list) -> list:
+    def process_prediction_result(self, result_data: dict) -> list:
         result_with_rows = []
         for key, value in result_data.items():
             for index, survey_row in enumerate(value.values):
@@ -242,7 +242,7 @@ class Predictor:
                     if percentage > 1:
                         result.append({
                             'bacteria': f"{STRAINS[class_label]}",
-                            'percentage': f"{percentage:.4f}",
+                            'percentage': f"{percentage:.4f}%",
                             'algorithm': f"{key}",
                         })
                 
@@ -258,28 +258,32 @@ class Predictor:
                         'row': index,
                         'data': result
                     })
-                    
-        transformed_data = {}
+
+        transformed_data_list = []
         for item in result_with_rows:
-            row = item['row']
-            if row not in transformed_data:
-                transformed_data[row] = []
-            
-            temp_dict = {}
-            for entry in item['data']:
-                if entry['bacteria'] not in temp_dict:
-                    temp_dict[entry['bacteria']] = {}
-                temp_dict[entry['bacteria']][entry['algorithm']] = entry['percentage']
-            
-            for bacteria, algorithms in temp_dict.items():
-                temp_entry = {'bacteria': bacteria}
-                for algorithm, percentage in algorithms.items():
-                    temp_entry[algorithm] = percentage
-                transformed_data[row].append(temp_entry)
-        
-        transformed_data_list = [{'row': row, 'data': data} for row, data in transformed_data.items()]
-        transformed_data_list.sort(key=lambda x: x['row'])  # Sort by 'row' number
-        
+            row_data = item['data']
+            transformed_row_data = []
+
+            for entry in row_data:
+                bacteria = entry['bacteria']
+                algorithm = entry['algorithm']
+                percentage = entry['percentage']
+
+                found = False
+                for transformed_entry in transformed_row_data:
+                    if transformed_entry['bacteria'] == bacteria:
+                        transformed_entry[algorithm] = percentage
+                        found = True
+                        break
+                
+                if not found:
+                    transformed_entry = {'bacteria': bacteria, algorithm: percentage}
+                    transformed_row_data.append(transformed_entry)
+
+            transformed_data_list.append({'row': item['row'], 'data': transformed_row_data})
+
+        transformed_data_list.sort(key=lambda x: x['row'])
+
         return transformed_data_list
 
 class GraphicGenerator:
