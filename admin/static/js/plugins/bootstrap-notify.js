@@ -132,7 +132,7 @@
       if (this.settings.content.icon) {
         this.setIcon()
       }
-      if (this.settings.content.url != '#') {
+      if (this.settings.content.url !== '#') {
         this.styleURL()
       }
       this.styleDismiss()
@@ -149,6 +149,8 @@
             commands = command
           }
           for (const cmd in commands) {
+            let newDelay
+            let $icon
             switch (cmd) {
               case 'type':
                 this.$ele.removeClass('alert-' + self.settings.type)
@@ -157,7 +159,7 @@
                 this.$ele.addClass('alert-' + commands[cmd]).find('[data-notify="progressbar"] > .progress-bar').addClass('progress-bar-' + commands[cmd])
                 break
               case 'icon':
-                const $icon = this.$ele.find('[data-notify="icon"]')
+                $icon = this.$ele.find('[data-notify="icon"]')
                 if (self.settings.icon_type.toLowerCase() === 'class') {
                   $icon.removeClass(self.settings.content.icon).addClass(commands[cmd])
                 } else {
@@ -169,7 +171,7 @@
                 self.settings.content.icon = commands[command]
                 break
               case 'progress':
-                const newDelay = self.settings.delay - (self.settings.delay * (commands[cmd] / 100))
+                newDelay = self.settings.delay - (self.settings.delay * (commands[cmd] / 100))
                 this.$ele.data('notify-delay', newDelay)
                 this.$ele.find('[data-notify="progressbar"] > div').attr('aria-valuenow', commands[cmd]).css('width', commands[cmd] + '%')
                 break
@@ -267,7 +269,7 @@
           break
       }
       this.$ele.css(css).addClass(this.settings.animate.enter)
-      $.each(Array('webkit-', 'moz-', 'o-', 'ms-', ''), function (index, prefix) {
+      $.each(['webkit-', 'moz-', 'o-', 'ms-', ''], function (index, prefix) {
         self.$ele[0].style[prefix + 'AnimationIterationCount'] = 1
       })
 
@@ -308,7 +310,7 @@
 
       if ($.isFunction(self.settings.onClick)) {
         this.$ele.on('click', function (event) {
-          if (event.target != self.$ele.find('[data-notify="dismiss"]')[0]) {
+          if (event.target !== self.$ele.find('[data-notify="dismiss"]')[0]) {
             self.settings.onClick.call(this, event)
           }
         })
@@ -325,7 +327,7 @@
         self.$ele.data('notify-delay', self.settings.delay)
         const timer = setInterval(function () {
           const delay = parseInt(self.$ele.data('notify-delay')) - self.settings.timer
-          if ((self.$ele.data('data-hover') === 'false' && self.settings.mouse_over === 'pause') || self.settings.mouse_over != 'pause') {
+          if ((self.$ele.data('data-hover') === 'false' && self.settings.mouse_over === 'pause') || self.settings.mouse_over !== 'pause') {
             const percent = ((self.settings.delay - delay) / self.settings.delay) * 100
             self.$ele.data('notify-delay', delay)
             self.$ele.find('[data-notify="progressbar"] > div').attr('aria-valuenow', percent).css('width', percent + '%')
