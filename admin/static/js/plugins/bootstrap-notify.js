@@ -1,10 +1,10 @@
 /*
- * Project: Bootstrap Notify = v3.1.5
- * Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
- * Author: Mouse0270 aka Robert McIntosh
- * License: MIT License
- * Website: https://github.com/mouse0270/bootstrap-growl
- */
+* Project: Bootstrap Notify = v3.1.5
+* Description: Turns standard Bootstrap alerts into "Growl-like" notifications.
+* Author: Mouse0270 aka Robert McIntosh
+* License: MIT License
+* Website: https://github.com/mouse0270/bootstrap-growl
+*/
 
 /* global define:false, require: false, jQuery:false */
 
@@ -54,32 +54,32 @@
   }
 
   String.format = function () {
-    let args = arguments
-    var str = arguments[0]
+    const args = arguments
+    const str = arguments[0]
     return str.replace(/(\{\{\d\}\}|\{\d\})/g, function (str) {
       if (str.substring(0, 2) === '{{') return str
-      var num = parseInt(str.match(/\d/)[0])
+      const num = parseInt(str.match(/\d/)[0])
       return args[num + 1]
     })
-  };
+  }
 
   function isDuplicateNotification (notification) {
     let isDupe = false
 
     $('[data-notify="container"]').each(function (i, el) {
-      let $el = $(el)
-      var title = $el.find('[data-notify="title"]').html().trim()
-      var message = $el.find('[data-notify="message"]').html().trim()
+      const $el = $(el)
+      const title = $el.find('[data-notify="title"]').html().trim()
+      const message = $el.find('[data-notify="message"]').html().trim()
 
       // The input string might be different than the actual parsed HTML string!
       // (<br> vs <br /> for example)
       // So we have to force-parse this as HTML here!
-      var isSameTitle = title === $('<div>' + notification.settings.content.title + '</div>').html().trim()
-      var isSameMsg = message === $('<div>' + notification.settings.content.message + '</div>').html().trim()
-      var isSameType = $el.hasClass('alert-' + notification.settings.type)
+      const isSameTitle = title === $('<div>' + notification.settings.content.title + '</div>').html().trim()
+      const isSameMsg = message === $('<div>' + notification.settings.content.message + '</div>').html().trim()
+      const isSameType = $el.hasClass('alert-' + notification.settings.type)
 
       if (isSameTitle && isSameMsg && isSameType) {
-        // we found the dupe. Set the var and stop checking.
+        // we found the dupe. Set the let and stop checking.
         isDupe = true
       }
       return !isDupe
@@ -90,7 +90,7 @@
 
   function Notify (element, content, options) {
     // Setup Content of Notify
-    let contentObj = {
+    const contentObj = {
       content: {
         message: typeof content === 'object' ? content.message : content,
         title: content.title ? content.title : '',
@@ -126,7 +126,7 @@
 
   $.extend(Notify.prototype, {
     init: function () {
-      let self = this
+      const self = this
 
       this.buildNotify()
       if (this.settings.content.icon) {
@@ -148,16 +148,16 @@
           } else {
             commands = command
           }
-          for (let cmd in commands) {
+          for (const cmd in commands) {
             switch (cmd) {
               case 'type':
                 this.$ele.removeClass('alert-' + self.settings.type)
                 this.$ele.find('[data-notify="progressbar"] > .progress-bar').removeClass('progress-bar-' + self.settings.type)
                 self.settings.type = commands[cmd]
                 this.$ele.addClass('alert-' + commands[cmd]).find('[data-notify="progressbar"] > .progress-bar').addClass('progress-bar-' + commands[cmd])
-                break;
+                break
               case 'icon':
-                var $icon = this.$ele.find('[data-notify="icon"]')
+                const $icon = this.$ele.find('[data-notify="icon"]')
                 if (self.settings.icon_type.toLowerCase() === 'class') {
                   $icon.removeClass(self.settings.content.icon).addClass(commands[cmd])
                 } else {
@@ -167,33 +167,32 @@
                   $icon.attr('src', commands[cmd])
                 }
                 self.settings.content.icon = commands[command]
-                break;
+                break
               case 'progress':
-                var newDelay = self.settings.delay - (self.settings.delay * (commands[cmd] / 100))
+                const newDelay = self.settings.delay - (self.settings.delay * (commands[cmd] / 100))
                 this.$ele.data('notify-delay', newDelay)
                 this.$ele.find('[data-notify="progressbar"] > div').attr('aria-valuenow', commands[cmd]).css('width', commands[cmd] + '%')
-                break;
+                break
               case 'url':
                 this.$ele.find('[data-notify="url"]').attr('href', commands[cmd])
-                break;
+                break
               case 'target':
                 this.$ele.find('[data-notify="url"]').attr('target', commands[cmd])
-                break;
+                break
               default:
                 this.$ele.find('[data-notify="' + cmd + '"]').html(commands[cmd])
             }
           }
-          let posX = this.$ele.outerHeight() + parseInt(self.settings.spacing) + parseInt(self.settings.offset.y)
+          const posX = this.$ele.outerHeight() + parseInt(self.settings.spacing) + parseInt(self.settings.offset.y)
           self.reposition(posX)
         },
         close: function () {
           self.close()
         }
       }
-
     },
     buildNotify: function () {
-      let content = this.settings.content
+      const content = this.settings.content
       this.$ele = $(String.format(this.settings.template, this.settings.type, content.title, content.message, content.url, content.target))
       this.$ele.attr('data-notify-position', this.settings.placement.from + '-' + this.settings.placement.align)
       if (!this.settings.allow_dismiss) {
@@ -237,17 +236,17 @@
       })
     },
     placement: function () {
-      let self = this;
-        var offsetAmt = this.settings.offset.y;
-        var css = {
-          display: 'inline-block',
-          margin: '0px auto',
-          position: this.settings.position ? this.settings.position : (this.settings.element === 'body' ? 'fixed' : 'absolute'),
-          transition: 'all .5s ease-in-out',
-          zIndex: this.settings.z_index
-        };
-        var hasAnimation = false;
-        var settings = this.settings
+      const self = this
+      let offsetAmt = this.settings.offset.y
+      const css = {
+        display: 'inline-block',
+        margin: '0px auto',
+        position: this.settings.position ? this.settings.position : (this.settings.element === 'body' ? 'fixed' : 'absolute'),
+        transition: 'all .5s ease-in-out',
+        zIndex: this.settings.z_index
+      }
+      let hasAnimation = false
+      const settings = this.settings
 
       $('[data-notify-position="' + this.settings.placement.from + '-' + this.settings.placement.align + '"]:not([data-closing="true"])').each(function () {
         offsetAmt = Math.max(offsetAmt, parseInt($(this).css(settings.placement.from)) + parseInt($(this).outerHeight()) + parseInt(settings.spacing))
@@ -261,11 +260,11 @@
         case 'left':
         case 'right':
           css[this.settings.placement.align] = this.settings.offset.x + 'px'
-          break;
+          break
         case 'center':
           css.left = 0
           css.right = 0
-          break;
+          break
       }
       this.$ele.css(css).addClass(this.settings.animate.enter)
       $.each(Array('webkit-', 'moz-', 'o-', 'ms-', ''), function (index, prefix) {
@@ -301,7 +300,7 @@
       }, 600)
     },
     bind: function () {
-      let self = this
+      const self = this
 
       this.$ele.find('[data-notify="dismiss"]').on('click', function () {
         self.close()
@@ -324,10 +323,10 @@
 
       if (this.settings.delay > 0) {
         self.$ele.data('notify-delay', self.settings.delay)
-        var timer = setInterval(function () {
-          let delay = parseInt(self.$ele.data('notify-delay')) - self.settings.timer
+        const timer = setInterval(function () {
+          const delay = parseInt(self.$ele.data('notify-delay')) - self.settings.timer
           if ((self.$ele.data('data-hover') === 'false' && self.settings.mouse_over === 'pause') || self.settings.mouse_over != 'pause') {
-            let percent = ((self.settings.delay - delay) / self.settings.delay) * 100
+            const percent = ((self.settings.delay - delay) / self.settings.delay) * 100
             self.$ele.data('notify-delay', delay)
             self.$ele.find('[data-notify="progressbar"] > div').attr('aria-valuenow', percent).css('width', percent + '%')
           }
@@ -339,9 +338,9 @@
       }
     },
     close: function () {
-      let self = this;
-        var posX = parseInt(this.$ele.css(this.settings.placement.from));
-        var hasAnimation = false
+      const self = this
+      const posX = parseInt(this.$ele.css(this.settings.placement.from))
+      let hasAnimation = false
 
       this.$ele.attr('data-closing', 'true').addClass(this.settings.animate.exit)
       self.reposition(posX)
@@ -369,9 +368,9 @@
       }, 600)
     },
     reposition: function (posX) {
-      let self = this;
-        var notifies = '[data-notify-position="' + this.settings.placement.from + '-' + this.settings.placement.align + '"]:not([data-closing="true"])';
-        var $elements = this.$ele.nextAll(notifies)
+      const self = this
+      const notifies = '[data-notify-position="' + this.settings.placement.from + '-' + this.settings.placement.align + '"]:not([data-closing="true"])'
+      let $elements = this.$ele.nextAll(notifies)
       if (this.settings.newest_on_top === true) {
         $elements = this.$ele.prevAll(notifies)
       }
@@ -383,13 +382,13 @@
   })
 
   $.notify = function (content, options) {
-    let plugin = new Notify(this, content, options)
+    const plugin = new Notify(this, content, options)
     return plugin.notify
-  };
+  }
   $.notifyDefaults = function (options) {
     defaults = $.extend(true, {}, defaults, options)
     return defaults
-  };
+  }
 
   $.notifyClose = function (selector) {
     if (typeof selector === 'undefined' || selector === 'all') {
@@ -410,6 +409,4 @@
       $('[data-notify]').not(selector).find('[data-notify="dismiss"]').trigger('click')
     }
   }
-
-
 }))

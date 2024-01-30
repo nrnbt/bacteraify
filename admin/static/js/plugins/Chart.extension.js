@@ -3,7 +3,7 @@
 // Code from: https://codepen.io/jedtrow/full/ygRYgo
 //
 
-Chart.elements.Rectangle.prototype.draw = function () {
+const Chart.elements.Rectangle.prototype.draw = function () {
   const ctx = this._chart.ctx
   const vm = this._view
   var left, right, top, bottom, signX, signY, borderSkipped, radius
@@ -88,19 +88,19 @@ Chart.elements.Rectangle.prototype.draw = function () {
 
   for (let i = 1; i < 4; i++) {
     corner = cornerAt(i)
-    nextCornerId = i + 1
-    if (nextCornerId == 4) {
+    const nextCornerId = i + 1
+    if (nextCornerId === 4) {
       nextCornerId = 0
     }
 
-    nextCorner = cornerAt(nextCornerId)
+    const nextCorner = cornerAt(nextCornerId)
 
-    width = corners[2][0] - corners[1][0]
-    height = corners[0][1] - corners[1][1]
-    x = corners[1][0]
-    y = corners[1][1]
+    const width = corners[2][0] - corners[1][0]
+    const height = corners[0][1] - corners[1][1]
+    const x = corners[1][0]
+    const y = corners[1][1]
 
-    var radius = cornerRadius
+    let radius = cornerRadius
 
     // Fix radius being too large
     if (radius > height / 2) {

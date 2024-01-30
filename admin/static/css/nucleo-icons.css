@@ -1,9 +1,3 @@
-/*--------------------------------
-
-hermes-dashboard-icons Web Font - built using nucleoapp.com
-License - nucleoapp.com/license/
-
--------------------------------- */
 @font-face {
   font-family: 'NucleoIcons';
   src: url('../fonts/nucleo-icons.eot');
@@ -12,9 +6,6 @@ License - nucleoapp.com/license/
   font-style: normal;
 }
 
-/*------------------------
-    base class definition
--------------------------*/
 .ni {
   display: inline-block;
   font: normal normal normal 14px/1 NucleoIcons;
@@ -24,11 +15,8 @@ License - nucleoapp.com/license/
   -moz-osx-font-smoothing: grayscale;
 }
 
-/*------------------------
-  change icon size
--------------------------*/
 .ni-lg {
-  font-size: 1.33333333em;
+  font-size: 1.3333em;
   line-height: 0.75em;
   vertical-align: -15%;
 }
@@ -49,12 +37,9 @@ License - nucleoapp.com/license/
   font-size: 5em;
 }
 
-/*----------------------------------
-  add a square/circle background
------------------------------------*/
 .ni.square,
 .ni.circle {
-  padding: 0.33333333em;
+  padding: 0.3333em;
   vertical-align: -16%;
   background-color: #eee;
 }
@@ -68,7 +53,7 @@ License - nucleoapp.com/license/
 -------------------------*/
 .ni-ul {
   padding-left: 0;
-  margin-left: 2.14285714em;
+  margin-left: 2.1429em;
   list-style-type: none;
 }
 
@@ -78,25 +63,22 @@ License - nucleoapp.com/license/
 
 .ni-ul>li>.ni {
   position: absolute;
-  left: -1.57142857em;
-  top: 0.14285714em;
+  left: -1.5714em;
+  top: 0.1429em;
   text-align: center;
 }
 
 .ni-ul>li>.ni.lg {
   top: 0;
-  left: -1.35714286em;
+  left: -1.3571em;
 }
 
 .ni-ul>li>.ni.circle,
 .ni-ul>li>.ni.square {
-  top: -0.19047619em;
-  left: -1.9047619em;
+  top: -0.1904em;
+  left: -1.9047em;
 }
 
-/*------------------------
-  spinning icons
--------------------------*/
 .ni.spin {
   -webkit-animation: nc-spin 2s infinite linear;
   -moz-animation: nc-spin 2s infinite linear;
