@@ -182,9 +182,11 @@ class Predictor:
                             del tf.executing_eagerly_outside_functions
                         path = CNN_MODEL_FILE_PATH
                         model = load_model(path)
-                        logger.info("------------------------------ CNN MODEL ------------------------------\n", model, "\n")
+                        logger.info("------------------------------ CNN MODEL ------------------------------")
+                        logger.info(model)
                         y_pred = model.predict(data)
-                        logger.info("--------------------------- CNN MODEL Y_PRED ---------------------------\n", y_pred, "\n")
+                        logger.info("--------------------------- CNN MODEL Y_PRED ---------------------------")
+                        logger.info(y_pred)
                         file_name = file_writer.save_df_to_file(pd.DataFrame(y_pred), FileDir.RESULT)
                         status = f"{index + 1}/{model_types_len} predicted"
                         update_survey_cnn(survey_file_name, status=status, file_name=file_name)
@@ -192,19 +194,23 @@ class Predictor:
                         path = SVM_MODEL_FILE_PATH
                         model = load(path)
                         X_test = data.values if isinstance(data, pd.DataFrame) else data
-                        logger.info("------------------------------ SVM MODEL ------------------------------\n", model, "\n")
+                        logger.info("------------------------------ SVM MODEL ------------------------------")
+                        logger.info(model)
                         y_pred = model.predict(X_test)
                         y_pred_probabilities = model.predict_proba(X_test)
-                        logger.info("--------------------------- SVM MODEL Y_PRED ---------------------------\n", y_pred, "\n")
+                        logger.info("--------------------------- SVM MODEL Y_PRED ---------------------------")
+                        logger.info(y_pred)
                         file_name = file_writer.save_df_to_file(pd.DataFrame(y_pred_probabilities), FileDir.RESULT)
                         status = f"{index + 1}/{model_types_len} predicted"
                         update_survey_svm(survey_file_name, status=status, file_name=file_name)
                     elif char == "RNN":
                         path = RNN_MODEL_FILE_PATH
                         model = load_model(path)
-                        logger.info("------------------------------ RNN MODEL ------------------------------\n", model, "\n")
+                        logger.info("------------------------------ RNN MODEL ------------------------------")
+                        logger.info(model)
                         y_pred = model.predict(data)
-                        logger.info("--------------------------- RNN MODEL Y_PRED ---------------------------\n",y_pred,"\n")
+                        logger.info("--------------------------- RNN MODEL Y_PRED ---------------------------")
+                        logger.info(y_pred)
                         file_name = file_writer.save_df_to_file(pd.DataFrame(y_pred), FileDir.RESULT)
                         status = f"{index + 1}/{model_types_len} predicted"
                         update_survey_rnn(survey_file_name, status=status, file_name=file_name)
@@ -246,7 +252,8 @@ class Predictor:
                             'algorithm': f"{key}",
                         })
                 
-                logger.info("---------------------------- result_data ----------------------------\n", result, "\n")
+                logger.info("---------------------------- result_data ----------------------------")
+                logger.info(result)
                 duplicated_row = False
                 for item in result_with_rows:
                     if item.get('row') == index:
