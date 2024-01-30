@@ -282,9 +282,9 @@ def test_sample_result(request, index):
 
         y_data = Bacteria.objects.get(label=bacteria)
         spectrum_list  = json.loads(y_data.spectrum)
-        y_data_array = np.array(spectrum_list)
+        true_x_data_arr = np.array(spectrum_list)
         grapic_generator = GraphicGenerator()
-        graphic_img_data = grapic_generator.create_graphic(title=bacteria, y_data=y_data_array, x_data=x_data_array)
+        graphic_img_data = grapic_generator.create_graphic(title=bacteria, true_x_data=true_x_data_arr, x_data=x_data_array)
         res = json.dumps({
             'graphic_img_data': graphic_img_data
         })
@@ -304,8 +304,7 @@ def test_sample(request):
         bacteria = bacterias[int(index)]
         y_data = Bacteria.objects.get(label=bacteria)
         spectrum_list  = json.loads(y_data.spectrum)
-        y_data_array = np.array(spectrum_list)
-        graphic_img_data = grapic_generator.create_graphic(title=bacteria, y_data=y_data_array)
+        graphic_img_data = grapic_generator.create_graphic(title=bacteria, true_x_data=np.array(spectrum_list))
         res = json.dumps({
             'graphic_img_data': graphic_img_data
         })
@@ -349,12 +348,12 @@ def download_test_survey(request):
         for predicted_bacteria in df['Bacteria']:
             y_data = Bacteria.objects.get(label=predicted_bacteria)
             spectrum_list  = json.loads(y_data.spectrum)
-            y_data_array = np.array(spectrum_list)
+            true_x_data_arr = np.array(spectrum_list)
             x_data_io = StringIO(x_data)
             x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
             bacteria_img = {
                 'bacteria': predicted_bacteria,
-                'img_data':  grapic_generator.create_graphic(title=predicted_bacteria, y_data=y_data_array, x_data=x_data_array)
+                'img_data':  grapic_generator.create_graphic(title=predicted_bacteria, true_x_data=true_x_data_arr, x_data=x_data_array)
             }
             graphics.append(bacteria_img)
         return graphics
