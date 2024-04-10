@@ -1,0 +1,66 @@
+{% load static %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+<script src="{% static 'js/download-survey-result.js' %}"></script>
+
+<div style="max-width: 780px;" class="w-full flex flex-col">
+  <table class="table table-striped w-full">
+    <thead>
+      <tr>
+        {% if not result_data|length == 1 %}
+          <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">#</th>
+        {% endif %}
+        <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Бактери нэршил</th>
+        {% for model_type in model_types %}
+          <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Илэрсэн хувь {{ model_type }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in result_data %}
+        {% for bacteria in item.data %}
+          <tr>
+            {% if not result_data|length == 1 %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">
+                  {{ item.row }}
+                </div>
+              </td>
+            {% endif %}
+            <td class="text-center">
+              <div class="d-flex justify-content-center gap-2 align-items-center">
+                {{ bacteria.bacteria }}
+                <img style="height: 45px; object-fit: contain;" src="{% static 'images/bacteria/' %}{{bacteria.bacteria}}.png" alt="{{ bacteria.bacteria }}">
+              </div>
+            </td>
+            {% if 'CNN' in model_types  %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ bacteria.CNN }}</div>
+              </td>
+            {% endif %}
+            {% if 'SVM' in model_types  %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ bacteria.SVM }}</div>
+              </td>
+            {% endif %}
+            {% if 'RNN' in model_types  %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ bacteria.RNN }}</div>
+              </td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <button id="loadingButton" class="btn button bg-primary" type="submit" onclick="downloadPdf('{{ request.GET.id|urlencode }}')">
+    <a class="h-full text-white" href="#">
+      <i class="fas fa-file-pdf text-lg me-1"></i>Шинжилгээний хариу татах
+    </a>
+  </button>
+  <div class="result-chart">
+    {% include 'charts/bar-chart.html' %}
+  </div>
+</div>
+<div id="hiddenContainer" style="max-width: 1280px; width: 100%"></div>

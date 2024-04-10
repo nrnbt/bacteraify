@@ -1,8 +1,7 @@
 .toaster {
-  visibility: hidden; /* Initially hidden */
+  visibility: hidden;
   min-width: 250px;
-  margin-left: -125px;
-  color: white;
+  margin-left: -175px;
   text-align: center;
   border-radius: 2px;
   padding: 16px;
@@ -13,17 +12,60 @@
 }
 
 .error {
-  background-color: red;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f0bca9;
+  border: 2px solid #dd927d;
+  border-radius: 10px;
+  padding: 10px;
   height: 100%;
+  margin-bottom: 10px;
   width: 100%;
   font-size: 17px;
+  color: black;
 }
 
-.info {
-  background-color: blue;
+.close-btn {
+  cursor: pointer;
+  color: black;
+}
+
+.error-icon-container {
+  border: 8px solid #ff4e57;
+  color: #ff4e57;
+  height: 40px;
+  width: 40px;
+  border-radius: 1000px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+}
+
+.info-toast {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #c7d6ec;
+  border: 2px solid #afc3df;
+  border-radius: 10px;
+  padding: 10px;
   height: 100%;
+  margin-bottom: 10px;
   width: 100%;
   font-size: 17px;
+  color: black;
+}
+
+.info-icon-container {
+  border: 8px solid #3188f2;
+  color: #3188f2;
+  height: 40px;
+  width: 40px;
+  border-radius: 1000px;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Show the toaster */

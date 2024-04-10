@@ -1,0 +1,82 @@
+{% load static %}
+
+<form 
+  id="survey-form" 
+  method="post" 
+  class="uploader-form" 
+  action="{% url 'upload-survey' %}" 
+  enctype="multipart/form-data"
+  role="form" 
+>
+  {% csrf_token %}
+  <div class="position-relative w-100 d-flex justify-content-center">
+    <div class="dropdown">
+      <button id="loadingButton" class="test-button dropdown-toggle"  type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Тест Өгөгдөл Сонгох
+      </button>
+      <ul class="dropdown-menu">
+        {% for strain in strains %}
+          <li>
+            <button class="dropdown-item d-flex gap-2 justify-content-center" type="button" onclick="testSample('{{forloop.counter0}}', '{{strain}}')">
+              {{ strain }}
+              <img style="height: 32px; object-fit: contain;" src="{% static 'images/bacteria/' %}{{ strain }}.png" alt="">
+            </button>
+          </li>
+        {% endfor%}
+      </ul>
+    </div>
+  </div>
+  
+  <div id="sample-img-wrapper" class="my-3 w-100" style="display: none;">
+    <img id="sampleImg" src="" alt="Sample Data" style="width: 100%; object-fit: contain;">
+  </div>
+
+  <div id="sample-info" class="alert alert-info mt-2">
+    <i class="fa fa-info-circle"></i>
+    Тус тест өгөгдөл cонгох товчин дээр дарж бидний өгөгдлийн сангаас нэг спектрум өгөгдлийг сонгосноор манай хиймэл оюун хэрхэн ажиллаж буйг туршиж үзнэ үү.
+  </div>
+
+  <button id="submit-sample" style="display: none;" class="test-button text-white" type="button" onclick="submitClick()">
+    Тест Өгөгдөл Шинжлэх
+  </button>
+</form>
+
+<script>
+  var sampleIndex = ''
+  testSample = (index, strain) => {
+    sampleIndex = index
+    var url = `{% url 'test-sample'%}?index=${index}`
+    var button = document.getElementById('loadingButton')
+    var submitButton = document.getElementById('submit-sample')
+    var sampleInfo = document.getElementById('sample-info')
+    var modelOptions = document.getElementById('model-options')
+    
+    button.classList.add('loading');
+    button.innerText = strain
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+            throw new Error('Network error')
+        }
+        return response.json()
+      })
+      .then(data => {
+        var imgWrapper = document.getElementById('sample-img-wrapper')
+        imgWrapper.style.display = 'block'
+        var imgData = data.graphic_img_data
+        var sampleImg = document.getElementById('sampleImg')
+        sampleImg.src = `data:image/png;base64, ${imgData}`;
+        submitButton.style.display = 'block'
+        sampleInfo.style.display = 'none'
+        button.classList.remove('loading');
+      })
+      .catch(error => {
+        button.classList.remove('loading');
+        console.error('There has been a problem with your fetch operation:', error)
+      })
+  }
+
+  submitClick = () => {
+    window.location.href = `{% url 'test-load-model' %}?index=${parseInt(sampleIndex) + 1}`
+  }
+</script>

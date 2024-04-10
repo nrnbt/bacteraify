@@ -29,18 +29,20 @@ urlpatterns = [
     path('', core_views.index, name='home'),
     path('login/', auth_views.user_login, name='login'),
     path('logout/', auth_views.user_logout, name='logout'),
+    path('reset-pass/', auth_views.reset_pass, name='reset-pass'),
     path('set-password/<uidb64>/<token>/<email>', auth_views.password_reset_confirm, name='set-password'),
     path('faq/', core_views.faq, name='faq'),
 
     path('survey/', core_views.survey, name='survey'),
     path('survey/upload/', login_required(core_views.upload_survey), name='upload-survey'),
     path('survey/load/', login_required(core_views.load_model), name='load-model'),
-    path('survey/check-result/<file_name>/', login_required(core_views.check_survey_result), name = "check-survey-result"),
+    path('survey/check-result/<id>/', login_required(core_views.check_survey_result), name = "check-survey-result"),
     path('survey/result/', login_required(core_views.survey_result), name='survey-result'),
+    path('survey/result-pdf/', login_required(core_views.survey_result_pdf_view), name='survey-result-pdf'),
 
     path('surveys/', login_required(core_views.surveys), name='surveys'),
     path('search-survey/', login_required(core_views.search_survey), name='search-survey'),
-    path('download/', login_required(core_views.download_survey), name='download-survey'),
+    path('download-result/', login_required(core_views.download_survey), name='download-survey'),
 
     path('test/samples/', core_views.test_sample, name='test-sample'),
     path('test/survey/load/', core_views.test_load_model, name='test-load-model'),
@@ -62,8 +64,9 @@ urlpatterns = [
     path('admin/customer/<int:id>', admin_views.customer, name='admin-customer'),
     path('admin/customers/', admin_views.customers, name='admin-customers'),
     path('admin/customers/register/', admin_views.register_customer, name='admin-register-customer'),
+    
     path('more/', core_views.more, name='more'),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

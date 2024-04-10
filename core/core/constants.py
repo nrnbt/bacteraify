@@ -1,6 +1,6 @@
 import os
 
-colors = [
+COLORS = [
     '#FFFDD0',
     '#A52A2A',
     '#ADFF2F',
@@ -66,5 +66,7 @@ STRAINS = {
     29: "Group G Strep.",
 }
 
-model_file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
-upload_file_path = os.path.dirname(os.path.dirname(__file__))
+CNN_MODEL_FILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'cnn_model.h5')
+SVM_MODEL_FILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'svm_model.pkl')
+RNN_MODEL_FILE_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'rnn_model.h5')
+UPLOAD_FILE_PATH = os.path.dirname(os.path.dirname(__file__))

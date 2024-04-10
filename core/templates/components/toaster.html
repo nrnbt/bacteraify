@@ -8,19 +8,38 @@
                 toaster.classList.remove('show-toaster'); 
               }, 2900)
           })
+          $(document).ready(function() {
+            $(".close-btn").on("click", function() {
+              $(this).closest(".error").hide();
+            });
+          });
         </script>
     {% endfor %}
 {% endif %}
 <div class="toaster">
   {% if messages %}
-  {% for message in messages %}
-    {% if message.tags == 'error' %}
-      <div class="error">{{ message }}</div>
-    {% else %}
-      <div class="info">{{ message }}</div>
-    {% endif %}
-  {% endfor %}
-  {% else %}
-    <div class="error">Алдаа Гарлаа</div>
+    {% for message in messages %}
+      {% if message.tags == 'error' %}
+        <div class="error gap-2">
+          <div class="error-icon-container">
+            <i class="fa-solid fa-exclamation"></i>
+          </div>
+          <div style="font-weight: bold;">{{ message }}</div>
+          <a class="close-btn">
+            <i class="fa-solid fa-x"></i>
+          </a>
+        </div>
+      {% else %}
+      <div class="info-toast gap-2">
+        <div class="info-icon-container">
+          <i class="fa-solid fa-info" style="color: #3188f2;"></i>
+        </div>
+        <div style="font-weight: bold;">Алдаа Гарлаа</div>
+        <a class="close-btn">
+          <i class="fa-solid fa-x"></i>
+        </a>
+      </div>
+      {% endif %}
+    {% endfor %}
   {% endif %}
 </div>

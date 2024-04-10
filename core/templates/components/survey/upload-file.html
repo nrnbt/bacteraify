@@ -1,0 +1,166 @@
+{% load static %}
+
+{% if not user.is_authenticated %}
+<div class="d-flex justify-content-center">
+  <div id="auth-req-info" class="alert alert-info mt-4 d-flex gap-2">
+    <div class="d-flex justify-content-center align-items-center">
+      <i class="fa fa-info-circle"></i>&nbsp;
+      Нэвтэрч орсоноор сорьцын файл оруулна уу.
+    </div>
+    <button class="btn button bg-primary" type="submit">
+      <a class="h-full w-full text-white font-semibold" href="{% url 'login' %}">
+        Нэвтрэх
+      </a>
+    </button>
+  </div>
+</div>
+{% endif %}
+
+<form
+  id="survey-form"
+  method="post"
+  class="uploader-form"
+  action="{% url 'upload-survey' %}"
+  enctype="multipart/form-data"
+  role="form"
+>
+{% csrf_token %}
+<div id="uploader-wrapper" class="uploader-wrapper">
+  <h2 class="uploader-title">Сорьцын файл оруулах</h2>
+  <div 
+    class="uploader-dropper"
+    id="drop-area" 
+    ondragover="allowDrop(event)"
+    ondrop="dropHandler(event)"
+  >
+    <div class="flex h-half w-full justify-center px-4 pt-4">
+      <img src="{% static 'images/icon-images/upload-icon.png' %}" alt="upload-icon">
+    </div>
+    <div class="flex flex-col justify-evenly h-half">
+      <div class="d-flex flex-wrap justify-content-center">
+        <div class="uploader-text">Файлуудыг чирэх, буулгах эсвэл&nbsp;
+          <label for="id_file" class="uploader-text browse">
+            {% if user.is_authenticated %}
+              <input
+                type="file" 
+                id="id_file"
+                name="file"
+                hidden 
+                accept=".txt, .pdf, .xlc, .csv, .word"
+              >
+              <div>Сонгох</div>
+            {% else %}
+              <div style="color: gray;">Сонгох</div>
+            {% endif %}
+          </label>
+        </div>
+      </div>
+      <div class="uploader-desc">
+        файлын төрөл: Txt, Pdf, Xlc, Csv, Word
+      </div>
+      <div id="upload-confirmation" style="display:none;">
+        <div id="filename-display" class="text-center"></div>
+      </div>
+    </div>
+  </div>
+  <label for="id_file" class="uploader-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}">
+    {% if user.is_authenticated %}
+      <input 
+        type="file" 
+        id="id_file"
+        name="file"
+        hidden
+        accept=".txt, .pdf, .xlc, .csv, .word"
+      >
+    {% endif %}
+    <div class="uploader-button-text">Файл оруулах</div>
+  </label>
+</div>
+
+<div class="uploader-inputs">
+  <div class="w-100">
+    <th><label for="reg_no">Регистрийн дугаар:</label></th>
+    <td>
+      <input
+        class="form-control" 
+        id="id_reg_no"
+        name="reg_no"
+        type="text"
+        value="{{ form.reg_no.value|default_if_none:'' }}"
+        pattern="^[А-Яа-я]{2}\d{8}$"
+        placeholder="Регистрийн дугаар" 
+        required
+        {% if not user.is_authenticated %}disabled{% endif %}
+      >
+    </td>
+  </div>
+  <div class="w-100">
+    <th><label for="id_phone_no">Утасны дугаар:</label></th>
+    <td>
+      <input
+        class="form-control" 
+        id="id_phone_no"
+        name="phone_no"
+        type="text"
+        value="{{ form.phone_no.value|default_if_none:'' }}"
+        placeholder="Утасны дугаар"
+        pattern="\d{8}" 
+        required
+        {% if not user.is_authenticated %}disabled{% endif %}
+      >
+    </td>
+  </div>
+</div>
+<div style="margin: 4px; margin-top: 20px;">
+  {% include 'components/survey/model-options.html' %}
+</div>
+<button
+  type="submit"
+  class="submit-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}"
+  {% if not user.is_authenticated %}disabled{% endif %}
+>
+  <div class="uploader-button-text">Сорьц Шинжлэх</div>
+</button>
+</form>
+
+<script>
+  try {
+    id_file = document.getElementById('id_file')
+    if(id_file){
+      document.getElementById('id_file').addEventListener('change', function() {
+        if (this.files.length > 0) {
+          var fileName = this.files[0].name;
+          document.getElementById('filename-display').innerText = 'Сорьцын файл: ' + fileName;
+          document.getElementById('upload-confirmation').style.display = 'block';
+        }
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  const allowDrop = (event) => {
+    event.preventDefault();
+    document.getElementById('drop-area').style.border = '2px dashed #999';
+  }
+
+  const dropHandler = (event) => {
+    event.preventDefault();
+    document.getElementById('drop-area').style.border = '2px dashed #ccc';
+
+    var files = event.dataTransfer.files;
+    handleFiles(files);
+  }
+
+  const handleFiles = (files) => {
+    if (files.length > 0) {
+      var hiddenInput = document.getElementById('id_file')
+      hiddenInput.value = files[0].name;
+      console.log(hiddenInput)
+      var fileName = files[0].name;
+      document.getElementById('filename-display').innerText = 'Сорьцын файл: ' + fileName;
+      document.getElementById('upload-confirmation').style.display = 'block';
+    }
+  }
+
+</script>

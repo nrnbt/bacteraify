@@ -54,6 +54,12 @@ a {
   align-items: stretch
 }
 
+.bnr-container-about-us {
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+}
+
 .main {
   display: flex;
   flex-direction: column;
@@ -82,12 +88,17 @@ a {
 
 .tech-img {
   width: 50%;
+  max-height: 250px;
+  height: 100%;
   object-fit: contain;
 }
 
 .bottom-bnr-item {
-  display: flex;
-  flex-direction: column;
+  width: 50%;
+  height: 100%;
+}
+
+.bottom-bnr-item-about-us {
   width: 50%;
   height: 100%;
 }
@@ -100,12 +111,13 @@ a {
 }
 
 .about-us-desc {
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
 }
 
 .about-us-text {
-  padding: 40px;
+  padding: 20px;
 }
 
 bottom {
@@ -185,6 +197,67 @@ bottom {
   }
 }
 
+.about-us-text-size {
+  font-size: 14px;
+}
+
+
+@media (max-width: 877px) {
+  .about-us-text-size {
+    font-size: 12px;
+  }
+
+}
+
+@media (max-width: 780px) {
+  .about-us-text-size {
+    font-size: 12px;
+  }
+  .about-us-text {
+    padding-bottom: 10px;
+  }
+}
+
+@media (max-width: 745px) {
+  .about-us-text-size {
+    font-size: 12px;
+  }
+  .about-us-text {
+    padding: 10px;
+  }
+  .about-us-desc {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+
+@media (max-width: 717px) {
+  .bnr-container-about-us {
+    display: grid;
+  }
+  .bottom-bnr-item-about-us {
+    width: 100%;
+  }
+  
+  .about-us-text-wrapper {
+    width: 100%;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .raman-title {
+    font-size: 24px;
+  }
+
+  .raman-desc {
+    font-size: 16px;
+  }
+}
+
+
 @media (max-width: 570px) {
   h1 {
     font-size: 18px;
@@ -202,11 +275,6 @@ bottom {
 
   .bnr-txt {
     padding: 20px;
-  }
-
-  .bnr-container {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
   }
 
   .main {
@@ -229,6 +297,14 @@ bottom {
     flex-direction: column;
   }
 
+  .sers-img {
+    order: 2;
+  }
+  
+  .sers-text {
+    order: 1;
+  }
+
   .tech-text {
     gap: 20px;
     padding: 20px;
@@ -247,21 +323,14 @@ bottom {
     height: 100%;
   }
 
-  .about-us-text-wrapper {
-    width: 100%;
-    padding-top: 20px;
-    padding-bottom: 20px;
+  .about-us-desc {
     padding-left: 10px;
     padding-right: 10px;
+    padding-bottom: 10px;
   }
 
-  .about-us-text {
-    padding: 20px;
-  }
-
-  .about-us-desc {
-    padding-left: 20px;
-    padding-right: 20px;
+  .bnr-container {
+    display: grid;
   }
 
   .text-lg {
@@ -306,6 +375,13 @@ bottom {
   .search-survey-form {
     flex-direction: column;
   } 
+}
+
+@media (max-width: 356px) {
+  .about-us-text-wrapper {
+    width: 100%;
+    padding-bottom: 20px;
+  }
 }
 
 .relative {
