@@ -60,8 +60,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'storages'
 ]
-
-AUTH_USER_MODEL = 'authentication.UserAuth'
+AUTH_USER_MODEL = 'authentication.SystemAdmin'
 AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']
 
 LOGIN_URL = '/login/'

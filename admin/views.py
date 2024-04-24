@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
 from admin_soft.forms import LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from django.contrib.auth import logout, get_user_model
-from authentication.forms import UserRegisterForm
+from authentication.forms import MerchantAdminRegisterForm
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
@@ -97,14 +97,14 @@ def customers(request):
     users = get_user_model().objects.filter(is_superuser=0)
     context = {
         'users': users,
-        'segment': 'Customers'
+        'segment': 'Merchants'
     }
     return render(request, 'admin-pages/customers.html', context)
 
 def register_customer(request):
     if request.method == 'POST':
         try:
-            form = UserRegisterForm(request.POST)
+            form = MerchantAdminRegisterForm(request.POST)
             if form.is_valid():
                 form.save()
 
@@ -127,16 +127,16 @@ def register_customer(request):
                     return redirect('admin-customers')
                 else:
                     messages.error(request, 'Error: User not registered')
-                    return render(request, 'admin-pages/register-customer.html', {'form': form})
+                    return render(request, 'admin-pages/register-merchant-admin.html', {'form': form})
                 
         except Exception as e:
             logger.error(e)
             messages.error(request, e)
-            return render(request, 'admin-pages/register-customer.html', {'form': form})
+            return render(request, 'admin-pages/register-merchant-admin.html', {'form': form})
             
     else:
-        form = UserRegisterForm()
-    return render(request, 'admin-pages/register-customer.html', {'form': form})
+        form = MerchantAdminRegisterForm()
+    return render(request, 'admin-pages/register-merchant-admin.html', {'form': form})
 
 class UserPasswordResetView(PasswordResetView):
   template_name = 'account/password_reset.html'

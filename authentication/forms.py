@@ -1,26 +1,26 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import UserAuth
+from .models import MerchantAdmin
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
 
-class UserRegisterForm(forms.ModelForm):
+class MerchantAdminRegisterForm(forms.ModelForm):
     email = forms.EmailField(label='Email', required=True)
-    corporateId = forms.CharField(label='Corporate ID', max_length=7, required=True)
-    corporateName = forms.CharField(label='Corporate Name', max_length=100, required=True)
+    merchant_id = forms.CharField(label='Merchant ID', max_length=7, required=True)
+    merchant_name = forms.CharField(label='Merchant Name', max_length=100, required=True)
     class Meta(forms.ModelForm):
-        model = UserAuth
-        fields = ('email', 'corporateId', 'corporateName')
+        model = MerchantAdmin
+        fields = ('email', 'merchant_id', 'merchant_name')
 
-class UserAuthCreationForm(UserCreationForm):
+class MerchantAdminCreationForm(UserCreationForm):
     class Meta(UserChangeForm.Meta):
-        model = UserAuth
-        fields = ('email', 'corporateId', 'corporateName')
+        model = MerchantAdmin
+        fields = ('email', 'merchant_id', 'merchant_name')
 
-class UserAuthChangeForm(UserChangeForm):
+class MerchantAdminChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
-        model = UserAuth
-        fields = ('email', 'corporateId', 'corporateName')
+        model = MerchantAdmin
+        fields = ('email', 'merchant_id', 'merchant_name')
 
 User = get_user_model()
 
