@@ -19,7 +19,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from core.core import views as core_views
+from main.core import views as core_views
 import authentication.views as auth_views
 import admin.views as admin_views
 from django.contrib.auth.decorators import login_required

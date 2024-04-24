@@ -1,6 +1,6 @@
 from django.db import migrations
 import numpy as np
-from core.core.constants import STRAINS
+from main.core.constants import STRAINS
 import json
 import os
 

@@ -102,12 +102,12 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = 'main.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'core'/'templates', BASE_DIR/'admin'/'admin-templates'],
+        'DIRS': [BASE_DIR/'main'/'templates', BASE_DIR/'admin'/'admin-templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,7 +120,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
+WSGI_APPLICATION = 'main.wsgi.application'
 
 
 # Database
@@ -192,14 +192,14 @@ if USE_S3:
 else:
     STATIC_URL = "/static/"
     STATICFILES_DIRS = [
-        BASE_DIR / "core" / "static",
+        BASE_DIR / "main" / "static",
         BASE_DIR / "admin" / "static"
     ]
 
-STATIC_ROOT = BASE_DIR / "core" / "staticfiles"
+STATIC_ROOT = BASE_DIR / "main" / "staticfiles"
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "core" / "media"
+MEDIA_ROOT = BASE_DIR / "main" / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

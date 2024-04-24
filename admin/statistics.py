@@ -1,4 +1,4 @@
-from core.core import utils as core_model
+from main.core import utils as core_model
 from bacter_identification.models import Survey
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -17,44 +17,41 @@ def get_all_user_number():
     return users.__len__
 
 def new_users_monthly():
+    #   .annotate(month=ExtractMonth('created_at')) \
+    #   .values('month') \
+    #   .order_by('month')
     user_stats = get_user_model().objects \
       .filter(created_at__year=current_year, is_superuser=False) \
-      .annotate(month=ExtractMonth('created_at')) \
-      .values('month') \
-      .annotate(count=Count('id')) \
-      .order_by('month')
+      .annotate(count=Count('id'))
     new_users_mothly_count = [0] * 12
     
     for item in user_stats:
-        month_index = item['month'] - 1
-        new_users_mothly_count[month_index] = item['count']
+        month_index = item.created_at.month - 1
+        new_users_mothly_count[month_index] = item.count
     
     return new_users_mothly_count
 
 def surveys_monthly(userId=None):
+    # .annotate(year=ExtractYear('created_at'), month=ExtractMonth('created_at')) \
+    # .values('year', 'month') \
+    # .order_by('year', 'month')
 
     if userId is None:
         survey_stats = Survey.objects \
             .filter(created_at__year=current_year) \
-            .annotate(year=ExtractYear('created_at'), month=ExtractMonth('created_at')) \
-            .values('year', 'month') \
-            .annotate(total_row_number=Sum('rowNumber'), count=Count('id')) \
-            .order_by('year', 'month')
+            .annotate(total_row_number=Sum('rowNumber'), count=Count('id'))
     else:
         survey_stats = Survey.objects \
             .filter(created_at__year=current_year, userId=userId) \
-            .annotate(year=ExtractYear('created_at'), month=ExtractMonth('created_at')) \
-            .values('year', 'month') \
-            .annotate(total_row_number=Sum('rowNumber'), count=Count('id')) \
-            .order_by('year', 'month')
+            .annotate(total_row_number=Sum('rowNumber'), count=Count('id'))
     
     monthly_row_count = [0] * 12
     monthly_survey_count = [0] * 12
 
     for item in survey_stats:
-        month_index = item['month'] - 1
-        monthly_row_count[month_index] = item['total_row_number']
-        monthly_survey_count[month_index] = item['count']
+        month_index = item.created_at.month - 1
+        monthly_row_count[month_index] = item.total_row_number
+        monthly_survey_count[month_index] = item.count
 
     return monthly_row_count, monthly_survey_count
 

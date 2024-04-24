@@ -16,14 +16,14 @@ import logging
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
-from core.core.constants import (
+from main.core.constants import (
     CNN_MODEL_FILE_PATH,
     SVM_MODEL_FILE_PATH,
     RNN_MODEL_FILE_PATH,
     STRAINS,
     UPLOAD_FILE_PATH,
 )
-from core.core.survey import update_survey_cnn, update_survey_svm, update_survey_rnn
+from main.core.survey import update_survey_cnn, update_survey_svm, update_survey_rnn
 
 from io import BufferedReader, BytesIO
 import base64
@@ -34,7 +34,7 @@ import matplotlib.pyplot as plt
 from django.template.loader import get_template
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
-from core.core.types import FileDir
+from main.core.types import FileDir
 from bacter_identification.models import Bacteria
 import json
 import numpy as np
@@ -353,7 +353,7 @@ def rendered_html(template_src, context_dict={}):
     return html
 
 def encode_image_to_base64(image_relative_path):
-    image_path = os.path.join(settings.BASE_DIR, "core/static", image_relative_path)
+    image_path = os.path.join(settings.BASE_DIR, "main/static", image_relative_path)
     with open(image_path, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read())
         return encoded_string.decode("utf-8")

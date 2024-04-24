@@ -29,7 +29,7 @@ Before you get started, make sure you have the following installed:
 
 ## To enable consumer
 1. Start redis server
-2. Use "daphne core.asgi:application --port 8001" command to start asgi on port 8001
+2. Use "daphne main.asgi:application --port 8001" command to start asgi on port 8001
 
 ## Start project
 Use "python manage.py runserver" command for start project

@@ -15,9 +15,9 @@ Scripts/
 Include/
 
 #models
-core/models
+main/models
 cnn_model
 
 #user data files
-core/survey-files/
-core/survey-results/
+main/survey-files/
+main/survey-results/

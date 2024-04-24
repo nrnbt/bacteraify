@@ -7,14 +7,14 @@ import logging
 from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
 from io import StringIO
-from core.core.utils import hash_user, FileWriter, FileReader, Predictor, TestDataReader, GraphicGenerator, rendered_html, encode_image_to_base64
-from core.core.survey import create_survey, survey_result_available, filter_survey_by_hash
-from core.core.constants import COLORS, STRAINS
-from core.forms import SurveyForm, SurveySearchForm
+from main.core.utils import hash_user, FileWriter, FileReader, Predictor, TestDataReader, GraphicGenerator, rendered_html, encode_image_to_base64
+from main.core.survey import create_survey, survey_result_available, filter_survey_by_hash
+from main.core.constants import COLORS, STRAINS
+from main.forms import SurveyForm, SurveySearchForm
 import json
 import numpy as np
 from datetime import datetime, timedelta
-from core.core.types import FileDir
+from main.core.types import FileDir
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 logger = logging.getLogger(__name__)
