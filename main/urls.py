@@ -61,9 +61,9 @@ urlpatterns = [
     path('accounts/password-reset-complete/', admin_views.PasswordResetCompleteView, name='password_reset_complete'),
 
     path('admin/dashboard/', admin_views.dashboard, name='admin-dashboard'),
-    path('admin/customer/<int:id>', admin_views.customer, name='admin-customer'),
-    path('admin/customers/', admin_views.customers, name='admin-customers'),
-    path('admin/customers/register/', admin_views.register_customer, name='admin-register-customer'),
+    path('admin/merchant/<int:id>', admin_views.merchant, name='admin-merchant'),
+    path('admin/merchants/', admin_views.merchants, name='admin-merchants'),
+    path('admin/merchants/register/', admin_views.register_merchant, name='admin-register-merchant'),
     
     path('more/', core_views.more, name='more'),
 ]

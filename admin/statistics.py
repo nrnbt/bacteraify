@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.db.models import Count, Sum
 from django.db.models.functions import ExtractYear, ExtractMonth
 from collections import defaultdict
+from authentication.models import MerchantAdmin
 
 current_year = timezone.now().year
 
@@ -13,14 +14,14 @@ def get_all_survey_number():
     return surveys.__len__
 
 def get_all_user_number():
-    users = get_user_model().objects.filter(is_superuser=0)
+    users = MerchantAdmin.objects.filter(is_superuser=0)
     return users.__len__
 
 def new_users_monthly():
     #   .annotate(month=ExtractMonth('created_at')) \
     #   .values('month') \
     #   .order_by('month')
-    user_stats = get_user_model().objects \
+    user_stats = MerchantAdmin.objects \
       .filter(created_at__year=current_year, is_superuser=False) \
       .annotate(count=Count('id'))
     new_users_mothly_count = [0] * 12

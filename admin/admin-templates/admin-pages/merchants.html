@@ -13,7 +13,7 @@
               <h6>Хэрэглэгчдийн хүснэгт</h6>
             </div>
             <button class="btn btn-primary text-sm w-auto">
-              <a href="{% url 'admin-register-customer' %}" class="text-white">Шинэ хэрэглэгч бүртгэх +</a>
+              <a href="{% url 'admin-register-merchant' %}" class="text-white">Шинэ хэрэглэгч бүртгэх +</a>
             </button>
           </div>
         </div>
@@ -25,42 +25,43 @@
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Хэрэглэгч</th>
                   <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Байгууллага</th>
                   <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Төлөв</th>
-                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Үүсгэсэн</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Үүсгэсэн
+                  </th>
                   <th class="text-secondary opacity-7"></th>
                 </tr>
               </thead>
               <tbody>
                 {% for user in users %}
-                  <tr>
-                    <td>
-                      <div class="d-flex px-2 py-1">
-                        <div class="d-flex flex-column justify-content-center">
-                          <a href="{% url 'admin-customer' id=user.id %}">
-                            <h6 class="mb-0 text-sm">{{ user.email }}</h6>
-                          </a>
-                        </div>
+                <tr>
+                  <td>
+                    <div class="d-flex px-2 py-1">
+                      <div class="d-flex flex-column justify-content-center">
+                        <a href="{% url 'admin-merchant' id=user.id %}">
+                          <h6 class="mb-0 text-sm">{{ user.email }}</h6>
+                        </a>
                       </div>
-                    </td>
-                    <td>
-                      <p class="text-xs font-weight-bold mb-0">{{ user.corporateId }}</p>
-                      <p class="text-xs text-secondary mb-0">{{ user.corporateName }}</p>
-                    </td>
-                    <td class="align-middle text-center text-sm">
-                      {% if user.is_active %}
-                        <span class="badge badge-sm bg-gradient-success">Идэвхтэй</span>
-                      {% else %}
-                       <span class="badge badge-sm bg-gradient-danger">Идэвхгүй</span>
-                      {% endif %}
-                    </td>
-                    <td class="align-middle text-center">
-                      <span class="text-secondary text-xs font-weight-bold">{{ user.created_at }}</span>
-                    </td>
-                    <!-- <td class="align-middle">
+                    </div>
+                  </td>
+                  <td>
+                    <p class="text-xs font-weight-bold mb-0">{{ user.corporateId }}</p>
+                    <p class="text-xs text-secondary mb-0">{{ user.corporateName }}</p>
+                  </td>
+                  <td class="align-middle text-center text-sm">
+                    {% if user.is_active %}
+                    <span class="badge badge-sm bg-gradient-success">Идэвхтэй</span>
+                    {% else %}
+                    <span class="badge badge-sm bg-gradient-danger">Идэвхгүй</span>
+                    {% endif %}
+                  </td>
+                  <td class="align-middle text-center">
+                    <span class="text-secondary text-xs font-weight-bold">{{ user.created_at }}</span>
+                  </td>
+                  <!-- <td class="align-middle">
                       <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                         Edit
                       </a>
                     </td> -->
-                  </tr>
+                </tr>
                 {% empty %}
                 <div class="row w-100 justify-content-center"> Хэрэглэгч олдсонгүй.</div>
                 {% endfor %}

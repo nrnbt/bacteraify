@@ -5,29 +5,29 @@
 
 <div class="container-fluid py-4">
   <div class="row">
-      <form method="post">
-        {% csrf_token %}
-        <tr>
-          <th><label for="id_email">Майл хаяг:</label></th>
-          <td>
-            <input type="email" name="email" maxlength="320" required id="id_email">
-          </td>
-        </tr>
-        <tr>
-          <th><label for="id_corporateId">Байгууллагын бүртгэлийн дугаар:</label></th>
-          <td>
-            <input type="text" name="corporateId" maxlength="7" required id="id_corporateId">
-          </td>
-        </tr>
-        <tr>
-          <th><label for="id_corporateName">Байгууллагын нэр:</label></th>
-          <td>
-            <input type="text" name="corporateName" maxlength="100" required id="id_corporateName">
-          </td>
-        </tr>
-        <button class="btn btn-primary dark mt-3" type="submit">Бүртгэх</button>
-        <span class="text-danger">{{ form.errors }}</span>
-      </form>
+    <form method="post">
+      {% csrf_token %}
+      <tr>
+        <th><label for="id_email">Майл хаяг:</label></th>
+        <td>
+          <input type="email" name="email" maxlength="320" required id="id_email">
+        </td>
+      </tr>
+      <tr>
+        <th><label for="id_merchant_id">Байгууллагын бүртгэлийн дугаар:</label></th>
+        <td>
+          <input type="text" name="merchant_id" maxlength="7" required id="id_merchant_id">
+        </td>
+      </tr>
+      <tr>
+        <th><label for="id_merchant_name">Байгууллагын нэр:</label></th>
+        <td>
+          <input type="text" name="merchant_name" maxlength="100" required id="id_merchant_name">
+        </td>
+      </tr>
+      <button class="btn btn-primary dark mt-3" type="submit">Бүртгэх</button>
+      <span class="text-danger">{{ form.errors }}</span>
+    </form>
   </div>
 </div>
 {% endblock content %}

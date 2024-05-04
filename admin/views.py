@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView, PasswordResetConfirmView
 from admin_soft.forms import LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
-from django.contrib.auth import logout, get_user_model
+from django.contrib.auth import logout
+from authentication.models import MerchantAdmin
 from authentication.forms import MerchantAdminRegisterForm
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode
@@ -71,7 +72,7 @@ def dashboard(request):
     surveys = Survey.objects.all()
     statistics = [
         {
-            'name': 'Нийт Хэрэглэгч',
+            'name': 'Нийт Merchant',
             'number' : get_all_user_number(),
             'icon': 'ni-world'
 
@@ -93,15 +94,15 @@ def dashboard(request):
     }
     return render(request, 'admin-pages/index.html', context)
 
-def customers(request):
-    users = get_user_model().objects.filter(is_superuser=0)
+def merchants(request):
+    users = MerchantAdmin.objects.filter(is_superuser=0)
     context = {
         'users': users,
         'segment': 'Merchants'
     }
-    return render(request, 'admin-pages/customers.html', context)
+    return render(request, 'admin-pages/merchants.html', context)
 
-def register_customer(request):
+def register_merchant(request):
     if request.method == 'POST':
         try:
             form = MerchantAdminRegisterForm(request.POST)
@@ -109,7 +110,7 @@ def register_customer(request):
                 form.save()
 
                 recipient_email = form.cleaned_data['email']
-                users = get_user_model().objects.get(email=recipient_email)
+                users = MerchantAdmin.objects.get(email=recipient_email)
 
                 if users is not None:
                     token = hashlib.sha256(recipient_email.encode() + str(users.id).encode()).hexdigest()
@@ -124,7 +125,7 @@ def register_customer(request):
                         [recipient_email],
                         fail_silently=False,
                     )
-                    return redirect('admin-customers')
+                    return redirect('admin-merchants')
                 else:
                     messages.error(request, 'Error: User not registered')
                     return render(request, 'admin-pages/register-merchant-admin.html', {'form': form})
@@ -159,25 +160,25 @@ def PasswordResetDoneView(request):
 def PasswordChangeDoneView(request):
     return render(request, 'account/password_change_done.html')
 
-def customer(request, id=None):
+def merchant(request, id=None):
     if id is not None:
-        user = get_user_model().objects.get(id=id)
+        user = MerchantAdmin.objects.get(id=id)
         surveys = Survey.objects.filter(userId=user.id)
 
         if user is not None:
             monthly_row_count, monthly_survey_count = surveys_monthly(user.id)
             context= {
                 'user': user,
-                'segment': 'Customer',
+                'segment': 'Merchant',
                 'surveys': surveys,
                 'monthly_row_count': monthly_row_count,
                 'monthly_survey_count': monthly_survey_count,
                 'merged_suvrey_result': result_by_customer(user.id),
             }
-            return render(request, 'admin-pages/customer.html', context)
+            return render(request, 'admin-pages/merchant.html', context)
         else:
-            messages.error(request, 'Error: Customer not found')
-            return redirect('admin-customers')
+            messages.error(request, 'Error: Merchant not found')
+            return redirect('admin-merchants')
     else:
         messages.error(request, 'Error: id not found')
-        return redirect('admin-customers')
+        return redirect('admin-merchants')
