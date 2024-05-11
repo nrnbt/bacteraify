@@ -1,5 +1,7 @@
-html, body {
-  overflow-y: auto; /* Only shows scrollbar when needed */
+html,
+body {
+  overflow-y: auto;
+  /* Only shows scrollbar when needed */
 }
 
 body {
@@ -71,6 +73,16 @@ a {
   padding-bottom: 40px;
   padding-top: 40px;
   min-height: calc(100vh - 81px - 120px);
+}
+
+.merch-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 40px;
+  min-height: 100vh;
 }
 
 .tech-wrapper {
@@ -170,7 +182,7 @@ bottom {
     gap: 20px;
     padding: 20px;
   }
-  
+
   bottom {
     background-color: #33364D;
     width: 100vw;
@@ -178,7 +190,7 @@ bottom {
     display: flex;
     justify-content: center;
   }
-  
+
   .bottom-item {
     gap: 10px;
     width: 100%;
@@ -213,6 +225,7 @@ bottom {
   .about-us-text-size {
     font-size: 12px;
   }
+
   .about-us-text {
     padding-bottom: 10px;
   }
@@ -222,9 +235,11 @@ bottom {
   .about-us-text-size {
     font-size: 12px;
   }
+
   .about-us-text {
     padding: 10px;
   }
+
   .about-us-desc {
     padding-left: 10px;
     padding-right: 10px;
@@ -236,10 +251,11 @@ bottom {
   .bnr-container-about-us {
     display: grid;
   }
+
   .bottom-bnr-item-about-us {
     width: 100%;
   }
-  
+
   .about-us-text-wrapper {
     width: 100%;
     padding-left: 0px;
@@ -263,12 +279,12 @@ bottom {
     font-size: 18px;
     margin-bottom: 0px;
   }
-  
+
   h2 {
     font-size: 14px;
     margin-bottom: 0px;
   }
-  
+
   h3 {
     font-size: 12px !important;
   }
@@ -300,7 +316,7 @@ bottom {
   .sers-img {
     order: 2;
   }
-  
+
   .sers-text {
     order: 1;
   }
@@ -317,7 +333,7 @@ bottom {
   .text-wrapper {
     padding: 10px;
   }
-  
+
   .bottom-bnr-item {
     width: 100%;
     height: 100%;
@@ -346,7 +362,7 @@ bottom {
     gap: 20px;
     padding: 20px;
   }
-  
+
   bottom {
     background-color: #33364D;
     width: 100vw;
@@ -354,7 +370,7 @@ bottom {
     display: flex;
     justify-content: center;
   }
-  
+
   .bottom-item {
     gap: 10px;
     width: 100%;
@@ -374,7 +390,7 @@ bottom {
 
   .search-survey-form {
     flex-direction: column;
-  } 
+  }
 }
 
 @media (max-width: 356px) {

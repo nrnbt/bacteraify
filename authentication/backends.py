@@ -1,16 +1,33 @@
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth import get_user_model
-from django.db.models import Q
+from authentication.models import MerchantAdmin, MerchantEmployee
 
-UserModel = get_user_model()
-
-class EmailBackend(ModelBackend):
-  def authenticate(self, request, username=None, password=None, **kwargs):
+class MerchAdminEmailBackend(ModelBackend):
+  def authenticate(self, request, email=None, password=None, **kwargs):
     try:
-      user = UserModel.objects.get(Q(username__iexact=username) | Q(email__iexact=username))
-    except UserModel.DoesNotExist:
+      user = MerchantAdmin.objects.get(email=email)
+      if user.check_password(password):
+          return user
+    except MerchantAdmin.DoesNotExist:
       return
-    except UserModel.MultipleObjectsReturned:
-      user = UserModel.objects.filter(Q(username__iexact=username) | Q(email__iexact=username)).order_by('id').first()
-    if user.check_password(password) and self.user_can_authenticate(user):
-      return user
+  
+  def get_user(self, user_id):
+    try:
+        return MerchantAdmin.objects.get(pk=user_id)
+    except MerchantAdmin.DoesNotExist:
+        return None
+
+class MerchantEmployeeEmailBackend(ModelBackend):
+  def authenticate(self, request, email=None, password=None, **kwargs):
+    try:
+      user = MerchantEmployee.objects.get(email=email)
+      if user.check_password(password):
+          return user
+    except MerchantEmployee.DoesNotExist:
+      return
+    
+  def get_user(self, user_id):
+        try:
+            return MerchantEmployee.objects.get(pk=user_id)
+        except MerchantEmployee.DoesNotExist:
+            return None
+

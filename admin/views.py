@@ -75,7 +75,6 @@ def dashboard(request):
             'name': 'Нийт Merchant',
             'number' : get_all_user_number(),
             'icon': 'ni-world'
-
         },
         {
             'name': 'Нийт Шинжилгээ',
@@ -115,8 +114,9 @@ def register_merchant(request):
                 if users is not None:
                     token = hashlib.sha256(recipient_email.encode() + str(users.id).encode()).hexdigest()
                     uid = urlsafe_base64_encode(force_bytes(users.id))
+                    type = 'MA'
                     password_reset_url = request.build_absolute_uri(
-                        reverse('set-password', kwargs={'uidb64': uid, 'token': token, 'email': recipient_email})
+                        reverse('set-password', kwargs={'uidb64': uid, 'token': token, 'email': recipient_email, 'type': type})
                     )
                     send_mail(
                         'Нууц үг тохируулах',

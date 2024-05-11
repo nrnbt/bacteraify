@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import MerchantAdmin
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import get_user_model
 
 class MerchantAdminRegisterForm(forms.ModelForm):
     email = forms.EmailField(label='Email', required=True)
@@ -22,18 +21,9 @@ class MerchantAdminChangeForm(UserChangeForm):
         model = MerchantAdmin
         fields = ('email', 'merchant_id', 'merchant_name')
 
-User = get_user_model()
-
 class EmailAuthForm(AuthenticationForm):
-    username = forms.EmailField(label="Email", max_length=254)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields.pop('username', None)
 
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        try:
-            User.objects.get(email=username)
-        except User.DoesNotExist:
-            raise forms.ValidationError("This email does not exist.")
-        return username
-
-class EmailLoginForm(AuthenticationForm):
-    username = forms.CharField(label='Email / Username')
+    email = forms.EmailField(label="Email", max_length=254)

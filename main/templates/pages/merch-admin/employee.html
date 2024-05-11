@@ -1,0 +1,191 @@
+{% extends 'layouts/merch-layout.html' %}
+{% load static %}
+
+{% block style %}
+<style>
+  .loader {
+    border: 5px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 5px solid #3498db;
+    width: 20px;
+    height: 20px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+    display: none;
+  }
+
+  @-webkit-keyframes spin {
+    0% {
+      -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+{% endblock style %}
+
+{% block merch-content %}
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <div class="row justify-content-between">
+            <div class="w-50">
+              <h6>Ажилчдын хүснэгт</h6>
+            </div>
+            <button type="button" class="btn btn-primary text-sm w-auto" data-bs-toggle="modal"
+              data-bs-target="#register-employee">
+              Шинэ ажилтан бүртгэх +
+            </button>
+          </div>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th style="text-align: center;"
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">#</th>
+                  <th style="text-align: center;"
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Ажилтан</th>
+                  <th style="text-align: center;"
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Шинжилгээ</th>
+                  <th style="text-align: center;"
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Төлөв</th>
+                  <th style="text-align: center;"
+                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Үүсгэсэн
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in merch_employees %}
+                <tr>
+                  <td>
+                    <p style="text-align: center;" class="text-xs font-weight-bold mb-0">{{ forloop.counter }}</p>
+                  </td>
+                  <td>
+                    <div class="d-flex px-2 py-1">
+                      <div class="d-flex flex-column justify-content-center">
+                        <!-- <a href="{% url 'admin-merchant' id=user.id %}"> -->
+                        <h6 style="text-align: center;" class="mb-0 text-sm">{{ user.email }}</h6>
+                        <!-- </a> -->
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <p style="text-align: center;" class="text-xs font-weight-bold mb-0">
+                      {{ user.uploaded_surveys.total}}
+                    </p>
+                    <p style="text-align: center;" class="text-xs text-secondary mb-0">{{ user.corporateName }}</p>
+                  </td>
+                  <td class="align-middle text-sm">
+                    {% if user.is_active %}
+                    <span class="">Идэвхтэй</span>
+                    {% else %}
+                    <span class="">Идэвхгүй</span>
+                    {% endif %}
+                  </td>
+                  <td class="align-middle">
+                    <span style="text-align: center;" class=" text-secondary text-xs font-weight-bold">
+                      {{ user.created_at }}
+                    </span>
+                  </td>
+                </tr>
+                {% empty %}
+                <div class="row w-100 justify-content-center">Ажилтан олдсонгүй.</div>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="register-employee" tabindex="-1" aria-labelledby="register-employee-label"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="register-employee-label">Шинэ ажилтан бүртгэх</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group mb-3">
+          <input id="new-employee-email" type="text" class="form-control" placeholder="майл" aria-label="майл"
+            aria-describedby="basic-addon1">
+        </div>
+        <div id="successMessage" style="display: none; color: green;">Амжилттай бүртгэгдлээ.</div>
+        <div id="errorMessage" style="display: none; color: red;">Алдаа гарлаа.</div>
+
+      </div>
+      <div class="modal-footer">
+        <button id="register" type="button" class="btn btn-primary d-flex gap-2">
+          <div class="loader" id="loader"></div>
+          <div>Бүртгэх</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    $('#register-employee').on('hidden.bs.modal', function () {
+      location.reload();
+    });
+
+    function enableButtons() {
+      var email = $("#new-emp-email").val();
+      $("#register").prop('disabled', false);
+    }
+
+    $("#register").click(function () {
+      var email = $("#new-employee-email").val();
+      sendRequest(email, $(this));
+    });
+
+    function sendRequest(email, button) {
+      var loader = $("#loader");
+      loader.show();
+      button.prop('disabled', true);
+      $.ajax({
+        url: "{% url 'register-employee' %}",
+        type: "POST",
+        data: {
+          email: email,
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function (response) {
+          $("#successMessage").show()
+          $("#errorMessage").hide();
+          enableButtons();
+          loader.hide();
+        },
+        error: function (xhr, errmsg, err) {
+          $("#errorMessage").show()
+          $("#successMessage").hide();
+          enableButtons();
+          loader.hide();
+        }
+      });
+    }
+  });
+</script>
+{% endblock merch-content %}

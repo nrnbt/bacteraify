@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, AbstractBaseUser, BaseUserManager, PermissionsMixin, Group
 from django.db import models
 from django.utils import timezone
+from django.core.validators import validate_email
 
 class UserManager(BaseUserManager):
     USER_TYPE_CHOICES = (
@@ -28,7 +29,7 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class SystemAdmin(AbstractUser, PermissionsMixin):
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, validators=[validate_email])
     is_active = models.BooleanField(default=True)
     user_type = models.CharField(max_length=2, choices=UserManager.USER_TYPE_CHOICES, default='SA')
     created_at = models.DateTimeField(default=timezone.now)
@@ -63,7 +64,7 @@ class SystemAdmin(AbstractUser, PermissionsMixin):
 
 class MerchantAdmin(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=100, blank=True, null=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, validators=[validate_email])
     is_active = models.BooleanField(default=False)
     merchant_id = models.CharField(max_length=7, blank=True)
     merchant_name = models.CharField(max_length=100, blank=True)
@@ -97,7 +98,7 @@ class MerchantAdmin(AbstractBaseUser, PermissionsMixin):
 
 class MerchantEmployee(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=100, blank=True, null=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, validators=[validate_email])
     is_active = models.BooleanField(default=False)
     merchant_id = models.CharField(max_length=7, blank=True)
     created_by = models.CharField(max_length=100)

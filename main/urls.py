@@ -27,11 +27,19 @@ from django.contrib.auth import views as admin_auth_views
 
 urlpatterns = [
     path('', core_views.index, name='home'),
-    path('login/', auth_views.user_login, name='login'),
+    path('faq/', core_views.faq, name='faq'),
+
+    path('login/', auth_views.merch_emp_login, name='login'),
     path('logout/', auth_views.user_logout, name='logout'),
     path('reset-pass/', auth_views.reset_pass, name='reset-pass'),
-    path('set-password/<uidb64>/<token>/<email>', auth_views.password_reset_confirm, name='set-password'),
-    path('faq/', core_views.faq, name='faq'),
+    path('set-password/<uidb64>/<token>/<email>/<type>', auth_views.password_reset_confirm, name='set-password'),
+
+    path('merch-login/', auth_views.merch_admin_login, name='merch-login'),
+    path('merch/', login_required(auth_views.merch_home), name='merch-home'),
+    path('merch-dashboard/', login_required(auth_views.merch_dashboard), name='merch-dashboard'),
+    path('merch-employee/', login_required(auth_views.merch_employee), name='merch-employee'),
+    path('merch-employee/register', login_required(auth_views.employee_register), name='register-employee'),
+    
 
     path('survey/', core_views.survey, name='survey'),
     path('survey/upload/', login_required(core_views.upload_survey), name='upload-survey'),

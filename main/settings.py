@@ -58,10 +58,13 @@ INSTALLED_APPS = [
     # 'admin'
     'bacter_identification',
     'whitenoise.runserver_nostatic',
-    'storages'
+    'storages',
 ]
 AUTH_USER_MODEL = 'authentication.SystemAdmin'
-AUTHENTICATION_BACKENDS = ['authentication.backends.EmailBackend']
+AUTHENTICATION_BACKENDS = [
+    'authentication.backends.MerchAdminEmailBackend',
+    'authentication.backends.MerchantEmployeeEmailBackend'
+]
 
 LOGIN_URL = '/login/'
 BASE_URL = os.environ.get('BASE_URL', 'http://127.0.0.1:8000')

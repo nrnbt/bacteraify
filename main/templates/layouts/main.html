@@ -2,7 +2,9 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,18 +36,20 @@
     {% endif %}
   </head>
 </head>
+
 <body>
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   {% if '/survey/result/' in request.path %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   {% endif %}
 
   {% include 'components/navbar.html' %}
   <main class="main">
-  {% block user-content %}{% endblock user-content %}
+    {% block user-content %}{% endblock user-content %}
   </main>
   {% include 'components/footer.html' %}
 
 </body>
+
 </html>

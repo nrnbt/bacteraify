@@ -4,25 +4,25 @@
 {% block user-content %}
 <form action="{% url 'login' %}" class="flex-d login-form" method="post">
   {% csrf_token %}
-    <h1>Bacteraify -д нэвтрэх</h1>
-    <div class="input-container">
-      <input class="input-field" id="id_username" name="username" type="email"
-        value="{{ form.username.value|default_if_none:'' }}" placeholder="нэвтрэх нэр/майл хаяг" required>
-      <div class="icon-container">
-        <i class="far fa-envelope"></i>
-      </div>
+  <h1>Bacteraify -д нэвтрэх</h1>
+  <div class="input-container">
+    <input class="input-field" id="id_email" name="email" type="email" value="{{ form.email.value|default_if_none:'' }}"
+      placeholder="Майл хаяг" required>
+    <div class="icon-container">
+      <i class="far fa-envelope"></i>
     </div>
-    <div class="input-container">
-      <input class="input-field" id="id_password" name="password" type="password" placeholder="********" required>
-      <div class="icon-container">
-        <i class="fas fa-lock"></i>
-      </div>
+  </div>
+  <div class="input-container">
+    <input class="input-field" id="id_password" name="password" type="password" placeholder="********" required>
+    <div class="icon-container">
+      <i class="fas fa-lock"></i>
     </div>
-    <div class="w-100 d-flex justify-content-end" style="margin-bottom: 15px; margin-right: 15px;">
-      <a href="{% url 'reset-pass' %}">
-        нууц үг сэргээх
-      </a>
-    </div>
-    <button class="button-submit" type="submit">Нэвтрэх</button>
+  </div>
+  <div class="w-100 d-flex justify-content-end" style="margin-bottom: 15px; margin-right: 15px;">
+    <a href="{% url 'reset-pass' %}">
+      нууц үг сэргээх
+    </a>
+  </div>
+  <button class="button-submit" type="submit">Нэвтрэх</button>
 </form>
 {% endblock user-content %}
