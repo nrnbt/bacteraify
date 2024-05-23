@@ -135,7 +135,10 @@ DATABASES = {
         'USER': MY_SQL_USER,
         'PASSWORD': MY_SQL_PASS,
         'HOST': MY_SQL_HOST,
-        'PORT': MY_SQL_PORT
+        'PORT': MY_SQL_PORT,
+        'OPTIONS': {
+            'init_command': "SET GLOBAL time_zone = '+08:00';",
+        },
     }
 }
 
@@ -163,7 +166,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Singapore'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 

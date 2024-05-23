@@ -35,7 +35,7 @@ from django.template.loader import get_template
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
 from main.core.types import FileDir
-from bacter_identification.models import Bacteria
+from bacter_identification.models import Bacteria, ClassificationResult, Survey
 import json
 import numpy as np
 from io import StringIO
@@ -170,7 +170,7 @@ def notify_survey_result(request):
 
 class Predictor:
 
-    def predict(self, data: pd.DataFrame, survey_file_name: str, model_types: list):
+    def predict(self, data: pd.DataFrame, survey_file_name: str, model_types: list, result: ClassificationResult):
         try:
             def task():
                 file_writer = FileWriter()
@@ -217,8 +217,25 @@ class Predictor:
                     else:
                         logger.warning("Invalid model type")
 
-            thread = threading.Thread(target=task)
-            thread.start()
+                survey_records = Survey.objects.get(surveyFileName=survey_file_name)
+                result_data = self.suvrey_result_data(
+                        model_types=model_types,
+                        cnn=survey_records.cnnPredFileName,
+                        svm=survey_records.svmPredFileName,
+                        rnn=survey_records.rnnPredFileName
+                    )
+                result_data_meta = self.process_prediction_result_meta(result_data)
+                
+                if 'CNN' in result_data_meta and result_data_meta['CNN'] is not None:
+                    result.cnn_result = result_data_meta['CNN']
+                if 'SVM' in result_data_meta and result_data_meta['SVM'] is not None:
+                    result.svm_result = result_data_meta['SVM']
+                if 'RNN' in result_data_meta and result_data_meta['RNN'] is not None:
+                    result.rnn_result = result_data_meta['RNN']
+                result.save()
+            # thread = threading.Thread(target=task)
+            # thread.start()
+            task()
             return "Prediction started"
 
         except Exception as e:
@@ -292,6 +309,23 @@ class Predictor:
         transformed_data_list.sort(key=lambda x: x['row'])
 
         return transformed_data_list
+    
+    def process_prediction_result_meta(self, result_data: dict) -> dict:
+        try:
+            transformed_data = {}
+            for key, value in result_data.items():
+                transformed_data[key] = {}
+                for index, survey_row in enumerate(value.values):
+                    predicted_percentages = survey_row * 100
+                    for class_label, percentage in enumerate(predicted_percentages):
+                        if percentage > 1:
+                            bacteria = STRAINS[class_label]
+                            if bacteria not in transformed_data[key]:
+                                transformed_data[key][bacteria] = {}
+                            transformed_data[key][bacteria] = f"{percentage:.4f}%"
+            return transformed_data
+        except Exception as e:
+            logger.error(e)
 
 class GraphicGenerator:
     def __init__(self):

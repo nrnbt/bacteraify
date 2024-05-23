@@ -5,7 +5,6 @@ from django.contrib.auth import logout
 from django.contrib.auth.forms import SetPasswordForm
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
-from django.shortcuts import render, redirect
 from authentication.forms import EmailAuthForm
 from authentication.models import MerchantEmployee, MerchantAdmin
 import hashlib
@@ -17,6 +16,8 @@ from django.utils.encoding import force_bytes
 import os
 from django.http import HttpResponseBadRequest, HttpResponse
 import json
+from authentication.statistics import new_employee_weekly_report, survey_weekly_report, most_identified_bacterias, most_common_4_string, total_employee, total_survey, bacteria_monthly
+from main.core.constants import COLORS, STRAINS
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,23 @@ def merch_home(request):
     
 def merch_dashboard(request):
     if request.user is not None and request.user.is_authenticated and not request.user.is_superuser and request.user.user_type is not None and request.user.user_type == 'MA':
-        return render(request, 'pages/merch-admin/dashboard.html')
+        
+        merch_id = request.user.merchant_id
+        survey_weekly = survey_weekly_report(merch_id)
+        employee_weekly = new_employee_weekly_report(merch_id)
+
+        data = {
+            'new_employee_weekly_report': employee_weekly,
+            'survey_weekly_report': survey_weekly,
+            'most_common_4_string': most_common_4_string(most_identified_bacterias(merch_id)),
+            'survey_weekly_total': sum(item['y'] for item in survey_weekly),
+            'new_employee_weekly_total': sum(item['y'] for item in employee_weekly),
+            'total_employee': total_employee(merch_id),
+            'total_survey': total_survey(merch_id),
+            'bacteria_monthly': bacteria_monthly(merch_id=merch_id)
+        }
+
+        return render(request, 'pages/merch-admin/dashboard.html', data)
     else:
         return redirect('merch-login')
 
@@ -122,19 +139,19 @@ def merch_admin_login(request):
                 raise HttpResponseBadRequest("User type not implemented")
             if user is not None and not user.is_superuser:
                 login(request, user)
-                return redirect('merch-home')
+                return redirect('merch-dashboard')
             else:
                 messages.error(request, 'Error: Authentication failed!')
                 return render(request, 'pages/auth/merch-login.html')
         else :
             logger.error(form.errors)
             messages.error(request, 'Error: Authentication failed!')
-            return render(request, 'pages/auth/merch-home.html', { 'form': form })
+            return render(request, 'pages/auth/merch-dashboard.html', { 'form': form })
     else:
         if request.user is not None and request.user.is_authenticated and not request.user.is_superuser:
-            return redirect('merch-home')
+            return redirect('merch-dashboard')
         else:
-            return render(request, 'pages/auth/merch-home.html')
+            return render(request, 'pages/auth/merch-dashboard.html')
 
   except Exception as e:
     logger.error(e)

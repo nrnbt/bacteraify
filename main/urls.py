@@ -40,7 +40,6 @@ urlpatterns = [
     path('merch-employee/', login_required(auth_views.merch_employee), name='merch-employee'),
     path('merch-employee/register', login_required(auth_views.employee_register), name='register-employee'),
     
-
     path('survey/', core_views.survey, name='survey'),
     path('survey/upload/', login_required(core_views.upload_survey), name='upload-survey'),
     path('survey/load/', login_required(core_views.load_model), name='load-model'),

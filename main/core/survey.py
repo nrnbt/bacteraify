@@ -8,9 +8,10 @@ def survey_result_available(s):
     else:
         return False
 
-def create_survey(user_id, user_email, file_name, data_len, patient_hash, model_types):
+def create_survey(user_id, user_email, file_name, data_len, patient_hash, model_types, merch_id):
     survey_record = Survey(
         userId = user_id,
+        merch_id = merch_id,
         userEmail = user_email,
         surveyFileName = file_name,
         rowNumber = data_len,

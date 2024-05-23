@@ -23,6 +23,7 @@ class Survey(models.Model):
     status = models.CharField(max_length=50)
     created_at = models.DateTimeField(default=timezone.now)
     modelTypes = models.JSONField(default=dict)
+    merch_id = models.CharField(max_length=7, blank=True)
     def save(self, *args, **kwargs):
             if not self.surveyNumber:
                 is_unique = False
@@ -33,7 +34,15 @@ class Survey(models.Model):
                         is_unique = True
             super(Survey, self).save(*args, **kwargs)
 
-
 class Bacteria(models.Model):
     label = models.CharField(max_length=100)
     spectrum = models.TextField()
+
+class ClassificationResult(models.Model):
+    survey_id = models.CharField(max_length=255)
+    merch_id = models.CharField(max_length=7, blank=True)
+    employee_id = models.CharField(max_length=255)
+    created_at = models.DateTimeField(default=timezone.now)
+    cnn_result = models.JSONField(default=dict,null=True)
+    svm_result = models.JSONField(default=dict,null=True)
+    rnn_result = models.JSONField(default=dict,null=True)

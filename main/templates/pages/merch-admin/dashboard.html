@@ -6,6 +6,94 @@
 </style>
 {% endblock style %}
 
+{% block script %}
+{% endblock script %}
+
 {% block merch-content %}
-Dashboard
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<div class="px-4 pt-6">
+  <div class="grid w-full grid-cols-1 gap-4 mt-4 grid-cols-3">
+    <div
+      class="items-center justify-between px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 dark:bg-gray-800">
+      <div class="w-full">
+        <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Шинжилгээ</h3>
+        <span class="text-xl font-bold leading-none text-gray-900">нийт: {{ total_survey }}</span>
+        <p class="flex flex-col items-start text-sm font-normal text-gray-500 dark:text-gray-400">
+          <span>
+            Өнгөрсөн 7 хоногт:
+          </span>
+          <span>
+            {{ survey_weekly_total }}
+          </span>
+        </p>
+      </div>
+      <div class="w-full" id="classification-weekly"></div>
+    </div>
+    <div
+      class="items-center justify-between px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm sm:flex dark:border-gray-700 dark:bg-gray-800">
+      <div class="w-full">
+        <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Ажилчид</h3>
+        <span class="text-xl font-bold leading-none text-gray-900 ">нийт: {{ total_employee }}</span>
+        <p class="flex flex-col items-start text-sm font-normal text-gray-500 dark:text-gray-400">
+          <span>
+            Өнгөрсөн 7 хоногт:
+          </span>
+          <span>
+            {{ new_employee_weekly_total }}
+          </span>
+        </p>
+      </div>
+      <div class="w-full" id="week-signups-chart"></div>
+    </div>
+    <div class="px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+      <div class="w-full">
+        <h3 class="mb-2 text-base font-normal text-gray-500 dark:text-gray-400">Хамгийн их илэрсэн бактери</h3>
+        {% for bacteria in most_common_4_string %}
+        <div class="flex items-center mb-2 gap-2">
+          <div class="w-6 h-6">
+            <img src="{% static 'images/bacteria/' %}{{ bacteria }}.png" alt="{{ bacteria }}">
+          </div>
+          <div class="w-fit text-sm font-medium">{{ bacteria }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      <div id="traffic-channels-chart" class="w-full"></div>
+    </div>
+  </div>
+  <div
+    class="px-4 py-2 mt-4 bg-white border border-gray-200 rounded-lg shadow-sm 2xl:col-span-2 dark:border-gray-700 sm:p-6 dark:bg-gray-800">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex-shrink-0">
+        <span class="text-xl font-bold leading-none text-gray-900 sm:text-2xl dark:text-white">$45,385</span>
+        <h3 class="text-base font-light text-gray-500 dark:text-gray-400">Сар болгоны бактери илрэлт</h3>
+      </div>
+    </div>
+    <div id="bacteria-chart"></div>
+  </div>
+</div>
+
+<!-- <div class="w-100 container p-4">
+  <div class="row">
+    <div class="col-6">
+      bacterias
+    </div>
+    <div class="col-6">
+      monthly bacteria survey graph
+    </div>
+  </div>
+</div> -->
+<script>
+  const bacteria_monthly = {{ bacteria_monthly| safe }}
+  const new_employee_weekly_report = {{ new_employee_weekly_report| safe}}
+  const data = [{{ survey_weekly_report| safe }}]
+</script>
+<!-- monthly chart -->
+<script src="{% static 'js/charts/monthly-bacteria-chart.js' %}"></script>
+
+<!-- weekly chart -->
+<script src="{% static 'js/charts/weekly-employee-chart.js' %}"></script>
+<script src="{% static 'js/charts/weekly-survey-chart.js' %}"></script>
+
 {% endblock merch-content %}

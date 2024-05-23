@@ -19,6 +19,7 @@
     {% endif %}
     <link rel="stylesheet" href="{% static 'css/toaster.css' %}">
     {% block style %}{% endblock style %}
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
 </head>
 
@@ -36,22 +37,22 @@
       <div class="row h-100">
         <!-- Sidebar -->
         <div class="col-3 bg-light h-100">
-          <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;">
+          <div class="d-flex flex-column flex-shrink-0 p-3 bg-light w-100">
             <a class="m-0" href="{% url 'admin-index' %}"
               style="padding-top: 15px; padding-bottom: 15px; height: 100%;">
               <img src="{% static 'images/brand-logo.png' %}" class="navbar-brand-img h-100" style="max-height: 100%;"
                 alt="main_logo">
             </a>
             <hr>
-            <ul class="nav nav-pills flex-column mb-auto">
-              <li class="nav-item">
+            <ul class="nav nav-pills flex-column my-4">
+              <!-- <li class="nav-item">
                 <a href="{% url 'merch-home' %}"
                   class="nav-link {% if request.path == '/merch/' %}active{%else%}link-dark{% endif %}"
                   aria-current="page">
                   <i class="fa-solid fa-house bi me-2" width="16" height="16"></i>
                   Home
                 </a>
-              </li>
+              </li> -->
               <li>
                 <a href="{% url 'merch-dashboard' %}"
                   class="nav-link {% if request.path == '/merch-dashboard/' %}active{%else%}link-dark{% endif %}">
@@ -70,9 +71,9 @@
             <hr>
             <div class="dropdown">
               <a href="#" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false"
-                class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle px-3">
+                class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle p-3">
                 <i class="fa-solid fa-user bi me-2" width="16" height="16"></i>
-                <strong>{{ user.email }}</strong>
+                <strong id="username"></strong>
               </a>
               <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
                 <li><a class="dropdown-item" href="#">Profile</a></li>
@@ -86,12 +87,19 @@
         </div>
 
         <!-- Content -->
-        <div class="col-9 h-100">
+        <div class="col-9 h-100" style="max-height: 100vh; overflow-x: auto;">
           {% block merch-content %}{% endblock merch-content %}
         </div>
       </div>
     </div>
   </main>
+
+  <script>
+    var userEmail = "{{ user.email }}"
+    var atIndex = userEmail.indexOf("@")
+    var maskedEmail = atIndex !== -1 ? userEmail.substring(0, atIndex) : userEmail
+    document.getElementById("username").innerHTML = maskedEmail
+  </script>
 
 </body>
 

@@ -78,10 +78,10 @@
                     <p style="text-align: center;" class="text-xs font-weight-bold mb-0">{{ forloop.counter }}</p>
                   </td>
                   <td>
-                    <div class="d-flex px-2 py-1">
+                    <div class="d-flex px-2 py-1 w-100 justify-content-center">
                       <div class="d-flex flex-column justify-content-center">
                         <!-- <a href="{% url 'admin-merchant' id=user.id %}"> -->
-                        <h6 style="text-align: center;" class="mb-0 text-sm">{{ user.email }}</h6>
+                        <h6 class="mb-0 text-sm">{{ user.email }}</h6>
                         <!-- </a> -->
                       </div>
                     </div>
@@ -92,15 +92,15 @@
                     </p>
                     <p style="text-align: center;" class="text-xs text-secondary mb-0">{{ user.corporateName }}</p>
                   </td>
-                  <td class="align-middle text-sm">
+                  <td class="align-middle text-sm" style="text-align: center;">
                     {% if user.is_active %}
-                    <span class="">Идэвхтэй</span>
+                    <span>Идэвхтэй</span>
                     {% else %}
-                    <span class="">Идэвхгүй</span>
+                    <span>Идэвхгүй</span>
                     {% endif %}
                   </td>
-                  <td class="align-middle">
-                    <span style="text-align: center;" class=" text-secondary text-xs font-weight-bold">
+                  <td class="align-middle" style="text-align: center;">
+                    <span class=" text-secondary text-xs font-weight-bold">
                       {{ user.created_at }}
                     </span>
                   </td>

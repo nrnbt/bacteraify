@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db.models import Count, Sum
 from django.db.models.functions import ExtractYear, ExtractMonth
 from collections import defaultdict
-from authentication.models import MerchantAdmin
+from authentication.models import MerchantAdmin, MerchantEmployee
 
 current_year = timezone.now().year
 

@@ -67,17 +67,17 @@
     <div class="w-100">
       <th><label for="id_phone_no">Утасны дугаар:</label></th>
       <td>
-        <input class="form-control" id="id_phone_no" name="phone_no" type="text"
-          value="{{ form.phone_no.value|default_if_none:'' }}" placeholder="Утасны дугаар" pattern="\d{8}" required {%
-          if not user.is_authenticated %}disabled{% endif %}>
+        <input pattern="\d{8}" class="form-control" name="phone_no" type="text"
+          value="{{ form.phone_no.value|default_if_none:'' }}" id="id_phone_no" required placeholder="Утасны дугаар"
+          {%if not user.is_authenticated %}disabled{% endif %}>
       </td>
     </div>
   </div>
   <div style="margin: 4px; margin-top: 20px;">
     {% include 'components/survey/model-options.html' %}
   </div>
-  <button type="submit" class="submit-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}" {%
-    if not user.is_authenticated %}disabled{% endif %}>
+  <button {% if not user.is_authenticated %}disabled{% endif %} type="submit"
+    class="submit-button flex items-center {% if not user.is_authenticated %}disabled{% endif %}">
     <div class="uploader-button-text">Сорьц Шинжлэх</div>
   </button>
 </form>
