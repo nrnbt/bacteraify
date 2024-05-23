@@ -63,7 +63,8 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'authentication.SystemAdmin'
 AUTHENTICATION_BACKENDS = [
     'authentication.backends.MerchAdminEmailBackend',
-    'authentication.backends.MerchantEmployeeEmailBackend'
+    'authentication.backends.MerchantEmployeeEmailBackend',
+    'authentication.backends.SysAdminEmailBackend'
 ]
 
 LOGIN_URL = '/login/'

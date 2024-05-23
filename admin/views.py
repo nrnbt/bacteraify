@@ -3,7 +3,7 @@ from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChan
 from admin_soft.forms import LoginForm, UserPasswordResetForm, UserSetPasswordForm, UserPasswordChangeForm
 from django.contrib.auth import logout
 from authentication.models import MerchantAdmin
-from authentication.forms import MerchantAdminRegisterForm
+from authentication.forms import MerchantAdminRegisterForm, EmailAuthForm
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
@@ -39,11 +39,14 @@ class AdminLoginView(LoginView):
 def admin_login(request):
     try:
         if request.method == 'POST':
-            form = LoginForm(request, data=request.POST)
+            form = EmailAuthForm(request, data=request.POST)
             if form.is_valid():
-                username = form.cleaned_data.get('username')
+                email = form.cleaned_data.get('email')
                 password = form.cleaned_data.get('password')
-                user = authenticate(username=username, password=password)
+                print(email, password)
+
+                user = authenticate(email=email, password=password)
+                print(user)
                 if user is not None and user.is_superuser:
                     login(request, user)
                     return redirect('admin-dashboard')
