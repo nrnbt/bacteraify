@@ -21,3 +21,5 @@ cnn_model
 #user data files
 core/survey-files/
 core/survey-results/
+
+main/

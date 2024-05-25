@@ -18,16 +18,13 @@ def get_all_user_number():
 
 def new_users_monthly():
     user_stats = get_user_model().objects \
-      .filter(created_at__year=current_year, is_superuser=False) \
-      .annotate(month=ExtractMonth('created_at')) \
-      .values('month') \
-      .annotate(count=Count('id')) \
-      .order_by('month')
-    new_users_mothly_count = [0] * 12
+      .filter(created_at__year=current_year, is_superuser=False)
     
-    for item in user_stats:
-        month_index = item['month'] - 1
-        new_users_mothly_count[month_index] = item['count']
+    new_users_mothly_count = [0] * 12
+
+    for user in user_stats:
+        month = user.created_at.month
+        new_users_mothly_count[month] += 1
     
     return new_users_mothly_count
 
