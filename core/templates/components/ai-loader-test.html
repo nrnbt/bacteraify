@@ -319,6 +319,11 @@
       }, delay);
       delay += delayIncrement;
     });
+
+    setTimeout(() => {
+      window.location.href = "{% url 'test-survey-result' index %}";
+    }, totalDuration);
+
   }
 
   window.onload = function () {
