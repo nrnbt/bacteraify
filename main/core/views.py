@@ -16,6 +16,7 @@ import numpy as np
 from datetime import datetime, timedelta
 from main.core.types import FileDir
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from main.core.file_handler import survey_upload_to_s3
 
 logger = logging.getLogger(__name__)
 
@@ -41,18 +42,19 @@ def upload_survey(request):
                 reg_no = form.cleaned_data['reg_no'].upper()
                 file = form.cleaned_data['file']
                 model_types = form.cleaned_data['model_types']
-                file_reader = FileReader()
-                file_writer = FileWriter()
+                # file_reader = FileReader()
+                # file_writer = FileWriter()
 
-                file_name = file_writer.save_file(file, FileDir.SURVEY)
-                data = file_reader.get_file_contents(file_name, FileDir.SURVEY)
+                file_name, data_len = survey_upload_to_s3(file)
+                # file_name = file_writer.save_file(file, FileDir.SURVEY)
+                # data = file_reader.get_file_contents(file_name, FileDir.SURVEY)
                 
                 if file_name:
                     survey_id = create_survey(
                         user_id=request.user.id, 
                         user_email= request.user.email,
                         file_name=file_name, 
-                        data_len=len(data),
+                        data_len=data_len,
                         patient_hash=hash_user(reg_no, phone_no),
                         model_types = model_types,
                         merch_id=request.user.merchant_id
@@ -92,9 +94,9 @@ def load_model(request):
             file_name = survey.surveyFileName
             model_types = survey.modelTypes
             file_reader = FileReader()
-            data = file_reader.get_file_contents(file_name, FileDir.SURVEY)
+            # data = file_reader.get_file_contents(file_name, FileDir.SURVEY)
             predictor = Predictor()
-            predictor.predict(data, survey_file_name=file_name, model_types=model_types, result=result)
+            # predictor.predict(data, survey_file_name=file_name, model_types=model_types, result=result)
             return render(request, 'pages/survey.html', { 'id': survey_id })
     except Survey.DoesNotExist:
         raise Http404("Survey does not exist")
