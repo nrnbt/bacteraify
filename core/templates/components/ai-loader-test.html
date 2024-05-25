@@ -284,3 +284,49 @@
     left: 365px !important;
   }
 </style>
+
+<div style="display: flex; justify-content: center;">
+  <div
+    style="position: relative; height: 50px; width: 300px; border-color: #003376; border-width: 4px; border-radius: 10px; padding-left: 5px; padding-right: 5px;">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+    <img class="progress-bar-img" src="{% static 'images/progress1.png' %}">
+  </div>
+</div>
+
+<script>
+  function changeImages() {
+    const images = document.querySelectorAll('.progress-bar-img');
+    const totalDuration = 3000;
+    let delay = 0;
+    const delayIncrement = totalDuration / images.length;
+
+    images.forEach((img) => {
+      setTimeout(() => {
+        img.src = "{% static 'images/progress2.png' %}";
+      }, delay);
+      delay += delayIncrement;
+    });
+  }
+
+  window.onload = function () {
+    {% if request.path == '/test/survey/load/' %}
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('index')) {
+      changeImages();
+    }
+    {% endif %}
+  };
+</script>
