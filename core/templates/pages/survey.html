@@ -154,7 +154,7 @@
         {% include 'components/file-upload-form.html' %}
       {% elif '/survey/load/' in request.path %}
       <div style="max-width: 390px; width: 100%;">
-        {% if user %}
+        {% if user.is_authenticated and "test/survey/load" not in request.path %}
         {% include 'components/ai-loader.html' %}
         {% else %}
         {% include 'components/ai-loader-test.html' %}
