@@ -43,10 +43,7 @@ def admin_login(request):
             if form.is_valid():
                 email = form.cleaned_data.get('email')
                 password = form.cleaned_data.get('password')
-                print(email, password)
-
                 user = authenticate(email=email, password=password)
-                print(user)
                 if user is not None and user.is_superuser:
                     login(request, user)
                     return redirect('admin-dashboard')

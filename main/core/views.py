@@ -7,16 +7,18 @@ import logging
 from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
 from io import StringIO
-from main.core.utils import hash_user, FileWriter, FileReader, Predictor, TestDataReader, GraphicGenerator, rendered_html, encode_image_to_base64
+from main.core.utils import hash_user, Predictor, TestDataReader, GraphicGenerator, rendered_html, encode_image_to_base64
 from main.core.survey import create_survey, survey_result_available, filter_survey_by_hash
 from main.core.constants import COLORS, STRAINS
 from main.forms import SurveyForm, SurveySearchForm
 import json
 import numpy as np
 from datetime import datetime, timedelta
-from main.core.types import FileDir
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from main.core.file_handler import survey_upload_to_s3
+from main.core.file_handler import survey_upload_to_s3, fetch_survey_from_s3
+import requests
+
+GPU_SERVER_URL = os.environ.get('GPU_SERVER_URL', 'localhost:8001')
 
 logger = logging.getLogger(__name__)
 
@@ -42,12 +44,7 @@ def upload_survey(request):
                 reg_no = form.cleaned_data['reg_no'].upper()
                 file = form.cleaned_data['file']
                 model_types = form.cleaned_data['model_types']
-                # file_reader = FileReader()
-                # file_writer = FileWriter()
-
                 file_name, data_len = survey_upload_to_s3(file)
-                # file_name = file_writer.save_file(file, FileDir.SURVEY)
-                # data = file_reader.get_file_contents(file_name, FileDir.SURVEY)
                 
                 if file_name:
                     survey_id = create_survey(
@@ -88,15 +85,41 @@ def load_model(request):
         )
         survey = Survey.objects.get(id=survey_id)
         predicted = survey_result_available(survey.status)
+        predicted=False
         if predicted:
             return redirect('/survey/result/?id={}'.format(survey_id))
         else:
+            cnn = False
+            svm = False
+            modelTypes = survey.modelTypes
             file_name = survey.surveyFileName
-            model_types = survey.modelTypes
-            file_reader = FileReader()
-            # data = file_reader.get_file_contents(file_name, FileDir.SURVEY)
+            if 'CNN' in modelTypes:
+                cnn = True
+            if 'SVM' in modelTypes:
+                svm = True
+
+            payload = {
+                'survey_file_name': file_name,
+                'CNN': cnn,
+                'SVM': svm,
+            }
+
+            gpu_load_endpoint = GPU_SERVER_URL + 'survey/load/'
+            response = requests.post(gpu_load_endpoint, json=payload)
+            data = response.json()
             predictor = Predictor()
-            # predictor.predict(data, survey_file_name=file_name, model_types=model_types, result=result)
+            results_via_gpu_server = data['prediction_result_file_names']
+            if results_via_gpu_server is None:
+                data = pd.read_csv(fetch_survey_from_s3(file_name))
+                predictor.predict(data, survey_file_name=file_name, model_types=modelTypes, result=result)
+            else:
+                predictor.process_data_from_gpu_server(
+                    prediction_result_file_names=results_via_gpu_server, 
+                    model_types=modelTypes,
+                    survey_file_name=file_name,
+                    result=result
+                )
+
             return render(request, 'pages/survey.html', { 'id': survey_id })
     except Survey.DoesNotExist:
         raise Http404("Survey does not exist")
@@ -112,7 +135,7 @@ def survey_result(request):
         model_types = survey['modelTypes']
 
         predictor = Predictor()
-        result_data = predictor.suvrey_result_data(
+        result_data = predictor.survey_result_data_from_s3(
             model_types=model_types,
             cnn=survey['cnnPredFileName'],
             svm=survey['svmPredFileName'],

@@ -39,7 +39,7 @@ from bacter_identification.models import Bacteria, ClassificationResult, Survey
 import json
 import numpy as np
 from io import StringIO
-from collections import defaultdict
+from main.core.file_handler import fetch_result_from_s3
 
 logger = logging.getLogger(__name__)
 
@@ -241,6 +241,34 @@ class Predictor:
         except Exception as e:
             logger.error(e)
             return None
+        
+    def process_data_from_gpu_server(self, prediction_result_file_names, survey_file_name, model_types, result):
+        model_types_len = len(model_types)
+        for index, char in enumerate(model_types):
+            if char == "CNN":
+                status = f"{index + 1}/{model_types_len} predicted"
+                update_survey_cnn(survey_file_name, status=status, file_name=prediction_result_file_names[char])
+            elif char == "SVM":
+                status = f"{index + 1}/{model_types_len} predicted"
+                update_survey_svm(survey_file_name, status=status, file_name=prediction_result_file_names[char])
+          
+        survey_records = Survey.objects.get(surveyFileName=survey_file_name)
+        result_data = self.survey_result_data_from_s3(
+                model_types=model_types,
+                cnn=survey_records.cnnPredFileName,
+                svm=survey_records.svmPredFileName,
+                rnn=survey_records.rnnPredFileName
+            )
+        result_data_meta = self.process_prediction_result_meta(result_data)
+        
+        if 'CNN' in result_data_meta and result_data_meta['CNN'] is not None:
+            result.cnn_result = result_data_meta['CNN']
+        if 'SVM' in result_data_meta and result_data_meta['SVM'] is not None:
+            result.svm_result = result_data_meta['SVM']
+        if 'RNN' in result_data_meta and result_data_meta['RNN'] is not None:
+            result.rnn_result = result_data_meta['RNN']
+        result.save()
+        return
     
     def suvrey_result_data(self, model_types: list, cnn: str, svm: str, rnn: str) -> dict:
         file_reader = FileReader()
@@ -253,7 +281,22 @@ class Predictor:
             elif char == 'RNN':
                 data[char] = file_reader.get_file_contents(rnn, FileDir.RESULT)
         return data
-        
+    
+    def survey_result_data_from_s3(self, model_types: list, cnn: str, svm: str, rnn: str):
+        data = {}
+        for char in model_types:
+            print (cnn, svm)
+            if char == 'CNN':
+                s3_cnn_buffer = fetch_result_from_s3(cnn)
+                data[char] = pd.read_csv(s3_cnn_buffer)
+            elif char == 'SVM':
+                s3_svm_buffer = fetch_result_from_s3(svm)
+                data[char] = pd.read_csv(s3_svm_buffer)
+            elif char == 'RNN':
+                s3_rnn_buffer = fetch_result_from_s3(rnn)
+                data[char] = fetch_result_from_s3(s3_rnn_buffer)
+        return data
+    
     def process_prediction_result(self, result_data: dict) -> list:
         result_with_rows = []
         for key, value in result_data.items():

@@ -15,3 +15,4 @@ scikit-learn==1.2.2
 ## for s3 bucket
 boto3==1.29.6
 django-storages==1.14.2
+requests==2.31.0

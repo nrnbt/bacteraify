@@ -5,7 +5,6 @@ class SurveyForm(forms.Form):
   MODEL_CHOICES = [
     ('CNN', 'CNN'),
     ('SVM', 'SVM'),
-    ('RNN', 'RNN'),
   ]
   file = forms.FileField(required=True)
   reg_no = forms.CharField(max_length=10, min_length=10, required=True)
