@@ -62,7 +62,7 @@ def most_identified_bacterias(merch_id):
     for survey in survey_records:
         model_types = survey['modelTypes']
         predictor = Predictor()
-        result_data = predictor.suvrey_result_data(
+        result_data = predictor.survey_result_data_from_s3(
             model_types=model_types,
             cnn=survey['cnnPredFileName'],
             svm=survey['svmPredFileName'],

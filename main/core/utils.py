@@ -285,7 +285,6 @@ class Predictor:
     def survey_result_data_from_s3(self, model_types: list, cnn: str, svm: str, rnn: str):
         data = {}
         for char in model_types:
-            print (cnn, svm)
             if char == 'CNN':
                 s3_cnn_buffer = fetch_result_from_s3(cnn)
                 data[char] = pd.read_csv(s3_cnn_buffer)
