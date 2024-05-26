@@ -23,7 +23,7 @@ def train_model_taskZ():
 
         not_trained_data = TrainingData.objects.filter(status='not trained')
         not_trained_data_num = len(not_trained_data)
-        if not_trained_data_num < 1:
+        if not_trained_data_num < 2:
             print(f"---------------------------- No trainable data returing ---------------------------- \n")
             return
         else:
