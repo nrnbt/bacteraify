@@ -39,7 +39,7 @@ from bacter_identification.models import Bacteria, ClassificationResult, Survey
 import json
 import numpy as np
 from io import StringIO
-from main.core.file_handler import fetch_result_from_s3
+from main.core.file_handler import fetch_result_from_s3, fetch_survey_from_s3
 
 logger = logging.getLogger(__name__)
 
@@ -395,8 +395,35 @@ class GraphicGenerator:
             graphic = graphic.decode("utf-8")
             return graphic
         
+
+    def get_predicted_graphic_v2(self, bacteria: list, surveyFileName: str) -> list:
+        print(' ----------------- bacteria, surveyFileName --------------', bacteria, surveyFileName)
+        content = fetch_survey_from_s3(surveyFileName).read()
+        x_data = content.decode('utf-8')
+
+        graphics = []
+
+        graphic_generator = GraphicGenerator()
+
+        for bacteria_name in bacteria:
+            true_x_data = Bacteria.objects.get(label=bacteria_name)
+            spectrum_list  = json.loads(true_x_data.spectrum)
+            true_x_data_arr = np.array(spectrum_list)
+
+            x_data_io = StringIO(x_data)
+            x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
+
+            bacteria_img = {
+                'bacteria': bacteria_name,
+                'img_data':  graphic_generator.create_graphic(title=bacteria_name, x_data=x_data_array, true_x_data=true_x_data_arr)
+            }
+            graphics.append(bacteria_img)
+
+        return graphics
+    
     def get_predicted_graphic(self, bacteria: list, surveyFileName: str) -> list:
         file_reader = FileReader()
+        print(' ----------------- bacteria, surveyFileName --------------', bacteria, surveyFileName)
         x_data = file_reader.get_file(surveyFileName, FileDir.SURVEY)
         graphics = []
 
@@ -417,6 +444,22 @@ class GraphicGenerator:
             graphics.append(bacteria_img)
 
         return graphics
+    # def get_predicted_graphic(df, surveyFileName):
+    #     graphics = []
+
+    #     x_data = get_test_x_data_file(surveyFileName)
+    #     for predicted_bacteria in df['Bacteria']:
+    #         y_data = Bacteria.objects.get(label=predicted_bacteria)
+    #         spectrum_list  = json.loads(y_data.spectrum)
+    #         y_data_array = np.array(spectrum_list)
+    #         x_data_io = StringIO(x_data)
+    #         x_data_array = np.genfromtxt(x_data_io, delimiter=',', skip_header=1)
+    #         bacteria_img = {
+    #             'bacteria': predicted_bacteria,
+    #             'img_data':  diff_graphic(predicted_bacteria, y_data_array, x_data_array)
+    #         }
+    #         graphics.append(bacteria_img)
+    #     return graphics
 
 # def send_csv(self, file_contents, file_name):
 #     response = HttpResponse(file_contents, content_type='application/force-download')

@@ -196,7 +196,7 @@ def download_survey(request):
             formatted_date = parsed_date.strftime('%Y-%m-%d %H:%M:%S')
             graphic_generator = GraphicGenerator()
             print(' ----------- datas -----------------', parsed_date, formatted_date, graphic_generator)
-            bacteria_graphics = graphic_generator.get_predicted_graphic(
+            bacteria_graphics = graphic_generator.get_predicted_graphic_v2(
                 [item['bacteria'] for item in result_by_percentage], 
                 survey['surveyFileName']
             )
