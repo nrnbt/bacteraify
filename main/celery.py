@@ -20,6 +20,7 @@ def debug_task(self):
 app.conf.beat_schedule = {
     'run-my-task-every-minute': {
         'task': 'main.tasks.train_model_taskZ',
+        # 'schedule': crontab(minute='*/1'),
         'schedule': crontab(hour=1, minute=0),  # every night at 1:00 AM
     },
 }
