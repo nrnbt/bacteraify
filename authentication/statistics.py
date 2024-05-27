@@ -58,7 +58,7 @@ def survey_weekly_report(merch_id):
 def most_identified_bacterias(merch_id):
     survey_records = Survey.objects.filter(merch_id=merch_id).values('surveyFileName', 'modelTypes', 'status', 'cnnPredFileName', 'svmPredFileName', 'rnnPredFileName')
     survey_results = []
-
+    print('---------------> ', survey['cnnPredFileName'], survey['svmPredFileName'])
     for survey in survey_records:
         model_types = survey['modelTypes']
         predictor = Predictor()
