@@ -3,4 +3,4 @@ source venv/bin/activate
 # Path to your build script
 ./build.sh
 # Starting the Django application with gunicorn
-exec python manage.py runserver 0.0.0.0:8000
+exec python manage.py runserver
