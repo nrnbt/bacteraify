@@ -1,5 +1,9 @@
 {% load static %}
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+<script src="{% static 'js/download-survey-result.js' %}"></script>
+
 <div style="position: relative;">
   <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <img src="data:image/png;base64,{{ logo_img_data|safe }}" alt="bacteraify-logo">
@@ -22,48 +26,52 @@
 </div>
 
 <div class="flex flex-col justify-center" style="padding-right: 5px; padding-left: 5px; margin-bottom: 40px; width: 100%;">
-  <table class="table table-bordered" style="border-width: 2px !important; border-color: #000;">
+  <table class="table table-striped w-full">
     <thead>
       <tr>
-        <th scope="col" style="border-width: 2px;" class="text-center">#</th>
-        <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Бактери нэршил</th>
-        {% for columns in result_data.0.keys %}
-          {% if columns == 'CNN' %}
-            <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Илэрсэн хувь (CNN)</th>
-          {% elif columns == 'SVM'  %}
-            <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Илэрсэн хувь (SVM)</th>
-          {% elif columns == 'RNN'  %}
-            <th scope="col" style="border-left: 0px;  border-width: 2px;" class="text-center">Илэрсэн хувь (RNN)</th>
-          {% endif  %}
+        {% if not result_data|length == 1 %}
+          <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">#</th>
+        {% endif %}
+        <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Бактери нэршил</th>
+        {% for model_type in model_types %}
+          <th style="vertical-align: middle" scope="col" class="bg-primary text-white text-center">Илэрсэн хувь {{ model_type }}</th>
         {% endfor %}
       </tr>
     </thead>
     <tbody>
-      {% for row in result_data %}
-        <tr>
-          <th style="border-width: 2px;" class="text-center">{{ forloop.counter }}</th>
-          <td class="text-center">
-            <div class="d-flex justify-content-center gap-2 align-items-center">
-              {{ row.bacteria }}
-              <img style="height: 45px; object-fit: contain;" src="{% static 'images/bacteria/' %}{{row.bacteria}}.png" alt="{{ row.bacteria }}">
-            </div>
-          </td>
-          {% for columns in result_data.0.keys %}
-            {% if columns == 'CNN' %}
-              <td style="border-left: 0px; border-width: 2px;" class="text-center">
-                {{ row.CNN }}
+      {% for item in result_data %}
+        {% for bacteria in item.data %}
+          <tr>
+            {% if not result_data|length == 1 %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">
+                  {{ item.row }}
+                </div>
               </td>
-            {% elif columns == 'SVM'  %}
-              <td style="border-left: 0px; border-width: 2px;" class="text-center">
-                {{ row.SVM }}
+            {% endif %}
+            <td class="text-center">
+              <div class="d-flex justify-content-center gap-2 align-items-center">
+                {{ bacteria.bacteria }}
+                <img style="height: 45px; object-fit: contain;" src="{% static 'images/bacteria/' %}{{bacteria.bacteria}}.png" alt="{{ bacteria.bacteria }}">
+              </div>
+            </td>
+            {% if 'CNN' in model_types  %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ bacteria.CNN }}</div>
               </td>
-            {% elif columns == 'RNN'  %}
-              <td style="border-left: 0px; border-width: 2px;" class="text-center">
-                {{ row.RNN }}
+            {% endif %}
+            {% if 'SVM' in model_types  %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ bacteria.SVM }}</div>
               </td>
-            {% endif  %}
-          {% endfor %}
-        </tr>
+            {% endif %}
+            {% if 'RNN' in model_types  %}
+              <td class="text-center">
+                <div class="d-flex justify-content-center gap-2 align-items-center" style="height: 45px">{{ bacteria.RNN }}</div>
+              </td>
+            {% endif %}
+          </tr>
+        {% endfor %}
       {% endfor %}
     </tbody>
   </table>

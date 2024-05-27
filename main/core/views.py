@@ -183,38 +183,33 @@ def download_survey(request):
 
     try:
         if survey_id is not None:
+            model_types = survey['modelTypes']
             result_data = predictor.survey_result_data_from_s3(
-                model_types=survey['modelTypes'],
+                model_types=model_types,
                 cnn=survey['cnnPredFileName'],
                 svm=survey['svmPredFileName'],
                 rnn=survey['rnnPredFileName']
             )
-            print(result_data)
             result_by_percentage = predictor.process_prediction_result(result_data)
-            print(' ----------- result_by_percentage -----------------', result_by_percentage)
+            process_result_data_v2_data = predictor.process_result_data_v2(result_data)
             parsed_date = datetime.strptime(str(survey['created_at']), '%Y-%m-%d %H:%M:%S.%f%z')
             formatted_date = parsed_date.strftime('%Y-%m-%d %H:%M:%S')
             graphic_generator = GraphicGenerator()
-            print(' ----------- datas -----------------', parsed_date, formatted_date, graphic_generator)
+            bacteria_list = [item['bacteria'] for item in process_result_data_v2_data]
             bacteria_graphics = graphic_generator.get_predicted_graphic_v2(
-                [item['bacteria'] for item in result_by_percentage], 
+                bacteria_list, 
                 survey['surveyFileName']
             )
-            print(' ----------- bacteria_graphics -----------------', bacteria_graphics)
-
             encoded_logo_img = encode_image_to_base64('images/brand-logo.png')
-            print(' ----------- encoded_logo_img -----------------', encoded_logo_img)
-
             context = {
                 'created_at': formatted_date,
                 'logo_img_data': encoded_logo_img,
+                'model_types': model_types,
                 'number': survey['surveyNumber'],
                 'result_data': result_by_percentage,
                 'bacteria_images': bacteria_graphics,
                 'BASE_URL': os.environ.get('BASE_URL', 'http://127.0.0.1:8000')
             }
-
-            print('------------- context ---------------', context)
 
             resp_data = rendered_html('pages/survey-result-pdf.html', context)
             res = json.dumps({

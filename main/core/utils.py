@@ -296,6 +296,22 @@ class Predictor:
                 data[char] = fetch_result_from_s3(s3_rnn_buffer)
         return data
     
+    def process_result_data_v2(self, result_data: dict):
+        for key, value in result_data.items():
+            for index, survey_row in enumerate(value.values):
+                result = []
+                predicted_percentages = survey_row * 100
+
+                for class_label, percentage in enumerate(predicted_percentages):
+                    if percentage > 1:
+                        result.append({
+                            'bacteria': f"{STRAINS[class_label]}",
+                            'percentage': f"{percentage:.4f}%",
+                            'algorithm': f"{key}",
+                        })
+                
+        return result
+    
     def process_prediction_result(self, result_data: dict) -> list:
         result_with_rows = []
         for key, value in result_data.items():
@@ -397,7 +413,6 @@ class GraphicGenerator:
         
 
     def get_predicted_graphic_v2(self, bacteria: list, surveyFileName: str) -> list:
-        print(' ----------------- bacteria, surveyFileName --------------', bacteria, surveyFileName)
         content = fetch_survey_from_s3(surveyFileName).read()
         x_data = content.decode('utf-8')
 
@@ -423,7 +438,6 @@ class GraphicGenerator:
     
     def get_predicted_graphic(self, bacteria: list, surveyFileName: str) -> list:
         file_reader = FileReader()
-        print(' ----------------- bacteria, surveyFileName --------------', bacteria, surveyFileName)
         x_data = file_reader.get_file(surveyFileName, FileDir.SURVEY)
         graphics = []
 
