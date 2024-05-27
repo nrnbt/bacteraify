@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'bacter_identification',
     'whitenoise.runserver_nostatic',
     'storages',
+    'main'
 ]
 AUTH_USER_MODEL = 'authentication.SystemAdmin'
 AUTHENTICATION_BACKENDS = [
@@ -93,6 +94,23 @@ EMAIL_PORT = os.environ.get('EMAIL_PORT', 587)
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'example@gmail.com')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'pass')
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+INSTALLED_APPS += [
+    'django_celery_beat',
+    'django_celery_results',
+]
+
+# Celery settings
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_IMPORTS = [
+    'main.tasks',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

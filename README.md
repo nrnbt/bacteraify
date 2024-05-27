@@ -38,3 +38,14 @@ Use "python manage.py runserver" command for start project
    run "python manage.py collectstatic --noinput"
    if USE_S3 is true on env it will use aws s3 bucket
    else static files will load from local
+
+## To use scheduled task
+   After running `redis` on machine run migrate:
+      - python manage.py migrate django_celery_results
+      - python manage.py migrate django_celery_beat
+
+   run 
+      - `celery -A main worker --loglevel=info` / in windows run : `celery -A main worker --pool=solo --loglevel=info` /
+      - `celery -A main beat --loglevel=info`.
+
+   to clear tasks run `celery -A main purge`

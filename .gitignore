@@ -23,3 +23,7 @@ main/survey-files/
 main/survey-results/
 
 core/
+
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir

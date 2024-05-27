@@ -46,3 +46,9 @@ class ClassificationResult(models.Model):
     cnn_result = models.JSONField(default=dict,null=True)
     svm_result = models.JSONField(default=dict,null=True)
     rnn_result = models.JSONField(default=dict,null=True)
+
+class TrainingData(models.Model):
+  file_name = models.CharField(max_length=255)
+  status = models.CharField(max_length=50)
+  created_at = models.DateTimeField(auto_now_add=True)
+  trained_at = models.DateTimeField(null=True, blank=True)

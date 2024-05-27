@@ -48,7 +48,11 @@
     <div class="step-content-wrapper">
       {% if request.path == '/survey/' or request.path == '/survey/upload/' %}
         {% include 'components/survey/init.html' %}
-      {% elif '/survey/load/' in request.path %}
+      {% elif 'test/survey/load/' in request.path %}
+      <div style="max-width: 390px; width: 100%;">
+        {% include 'components/survey/loading-test.html' %}
+      </div>
+      {% elif 'survey/load/' in request.path %}
       <div style="max-width: 390px; width: 100%;">
         {% include 'components/survey/loading.html' %}
       </div>
