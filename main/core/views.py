@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 import os
 from django.contrib import messages
-from bacter_identification.models import Survey, Bacteria, ClassificationResult
+from bacter_identification.models import Survey, Bacteria, ClassificationResult, TrainingData
 import logging
 from django.http import Http404, JsonResponse, HttpResponse
 import pandas as pd
@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from main.core.file_handler import survey_upload_to_s3, fetch_survey_from_s3
 import requests
+from django.utils import timezone
 
 GPU_SERVER_URL = os.environ.get('GPU_SERVER_URL', 'localhost:8001')
 
@@ -421,3 +422,41 @@ def download_test_survey(request):
         logger.error(e)
         messages.error(request, 'Error: Something went wrong!')
         return render(request, 'pages/surveys.html')
+
+def train_model(request):
+    try:
+        surveys = Survey.objects.all()
+        not_trained = 0
+        for survey in surveys:
+            file_name = survey.surveyFileName
+            if not TrainingData.objects.filter(file_name=file_name).exists():
+                not_trained += 1
+                TrainingData.objects.create(file_name=file_name, status='not trained')
+
+        print(f"---------------------------- {not_trained} record saved ---------------------------- \n")
+
+        not_trained_data = TrainingData.objects.filter(status='not trained')
+        not_trained_data_num = len(not_trained_data)
+        if not_trained_data_num < 2:
+            print(f"---------------------------- No trainable data returing ---------------------------- \n")
+            return HttpResponse('No trainable data returing')
+        else:
+            file_names = [data.file_name for data in not_trained_data]
+            
+            gpu_load_endpoint = GPU_SERVER_URL + 'model/train/'
+            response = requests.post(gpu_load_endpoint, json={"file_names": file_names})
+            if response.status_code == 200:
+                data = response.json()
+                trained_files = data['trained_files']
+                for file_name in trained_files:
+                    now = timezone.now()
+                    TrainingData.objects.filter(file_name=file_name).update(status='trained', trained_at=now)
+                print(f"---------------------------- {len(trained_files)} data trained ---------------------------- \n")
+                return HttpResponse(f"---------------------------- {len(trained_files)} data trained ---------------------------- ")
+            else:
+                print(f"Failed to send data. Status code: {response.status_code}")
+                return HttpResponse(f"Failed to send data. Status code: {response.status_code}")
+    except Exception as e:
+        logger.error(e)
+        print('Error: ', e)
+        return HttpResponse(e)

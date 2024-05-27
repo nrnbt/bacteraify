@@ -23,7 +23,6 @@ from main.core import views as core_views
 import authentication.views as auth_views
 import admin.views as admin_views
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import views as admin_auth_views
 
 urlpatterns = [
     path('', core_views.index, name='home'),
@@ -73,6 +72,8 @@ urlpatterns = [
     path('admin/merchants/register/', admin_views.register_merchant, name='admin-register-merchant'),
     
     path('more/', core_views.more, name='more'),
+
+    path('train-model-run-script', core_views.train_model)
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
