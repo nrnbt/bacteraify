@@ -366,7 +366,7 @@ def test_survey_result(request, index):
             'colors': filtered_colors,
             'index': index
         }
-        return render(request, 'pages/survey.html', context)
+        return render(request, 'pages/test-survey.html', context)
        
     except Exception as e:
         logger.error(e)
@@ -401,7 +401,7 @@ def download_test_survey(request):
         predictor = Predictor()
 
         data = test_data_reader.get_test_file(result)
-        result_data = predictor.process_prediction_result(data.values)
+        result_data = predictor.test_process_result_data(data)
         df = pd.DataFrame(list(result_data.items()), columns=['Bacteria', 'Percentage'])
         three_seconds_earlier = datetime.now() - timedelta(seconds=3)
         formatted_date = three_seconds_earlier.strftime('%Y-%m-%d %H:%M:%S')
