@@ -20,7 +20,7 @@
     {% for survey in surveys %}
       <tr>
         <th class="text-center text-dark align-middle" scope="row">
-          {{ forloop.counter0|add:surveys.start_index }}
+          {{ forloop.counter0 }}
         </th>
         <td class="text-center text-dark align-middle">
           <a href="{% url 'survey-result' %}?id={{ survey.id|urlencode }}">{{ survey.surveyNumber }}</a>
