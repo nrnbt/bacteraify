@@ -368,6 +368,20 @@ class Predictor:
 
         return transformed_data_list
     
+    def test_process_result_data(prediction):
+        result = {}
+        predicted_percentages = prediction * 100
+        for class_label, percentage in zip(range(len(predicted_percentages[0])), predicted_percentages[0]):
+            if percentage > 0.1:
+                bacteria_name = STRAINS[class_label]
+                # result.update({ f'{bacteria_name} (Class {class_label})': f'{percentage:.4f}%' })
+                result.update({ f'{bacteria_name}': f'{percentage:.4f}%' })
+        logger.info('---------------------------- result_data ----------------------------\n', result, '\n')
+
+        sorted_bacteria_counts_desc = dict(sorted(result.items(), key=lambda item: float(item[1].rstrip('%')), reverse=True))
+
+        return sorted_bacteria_counts_desc
+        
     def process_prediction_result_meta(self, result_data: dict) -> dict:
         try:
             transformed_data = {}

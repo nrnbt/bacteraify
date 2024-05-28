@@ -357,7 +357,7 @@ def test_survey_result(request, index):
         test_data_reader = TestDataReader()
         predictor = Predictor()
         data = test_data_reader.get_test_file(index)
-        result_data = predictor.process_prediction_result(data)
+        result_data = predictor.test_process_result_data(data)
         strains=[STRAINS[key] for key in STRAINS]
         indices = [strains.index(strain) for strain in result_data.keys() if strain in strains]
         filtered_colors = [COLORS[index] for index in indices]
