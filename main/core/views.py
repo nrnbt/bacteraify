@@ -370,6 +370,7 @@ def test_survey_result(request, index):
        
     except Exception as e:
         logger.error(e)
+        print('error:', e)
         messages.error(request, 'Error: Something went wrong!')
     return render(request, 'pages/survey.html')
 

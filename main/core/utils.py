@@ -368,10 +368,10 @@ class Predictor:
 
         return transformed_data_list
     
-    def test_process_result_data(prediction):
+    def test_process_result_data(self, prediction):
         result = {}
         predicted_percentages = prediction * 100
-        for class_label, percentage in zip(range(len(predicted_percentages[0])), predicted_percentages[0]):
+        for class_label, percentage in zip(range(len(predicted_percentages.iloc[0])), predicted_percentages.iloc[0]):
             if percentage > 0.1:
                 bacteria_name = STRAINS[class_label]
                 # result.update({ f'{bacteria_name} (Class {class_label})': f'{percentage:.4f}%' })
